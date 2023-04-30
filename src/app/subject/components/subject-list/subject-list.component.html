@@ -1,32 +1,74 @@
 <app-sidenav>
-  <div class="container mt-4" *ngIf="neededData$ | async">
-    <header class="d-flex align-items-center justify-content-between">
-      <span class="h3">Subjects</span>
-      <button
-        mat-flat-button
-        color="primary"
-        (click)="openDialog()"
-        *ngIf="role == 'admin' || role == 'chair' || role == 'faculty'"
-      >
-        <mat-icon>add</mat-icon>
-        Add Subject
-      </button>
-    </header>
+  <div class="container p-4" *ngIf="neededData$ | async">
+    <!-- <header>
+      <span class="h3">SUBJECTS</span>
+    </header> -->
+    <header class="d-flex align-items-center justify-content-between mb-1">
+      <span class="h3 m-o p-o">Subjects</span>
 
+      <div class="d-flex align-items-center">
+        <div class="me-3">
+          <!-- <mat-form-field style="width: 200px" class="example-form-field">
+            <mat-label><mat-icon>search</mat-icon>Search</mat-label>
+            <input matInput type="text" [(ngModel)]="listFilter" />
+          </mat-form-field> -->
+          <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">
+              <mat-icon>search</mat-icon>
+            </span>
+            <input
+              type="text"
+              class="form-control shadow-none"
+              placeholder="Search here..."
+              aria-label="Username"
+              [(ngModel)]="listFilter"
+              aria-describedby="addon-wrapping"
+            />
+          </div>
+        </div>
+        <div>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="openDialog()"
+            *ngIf="
+              (role == 'admin' || role == 'chair' || role == 'faculty') &&
+              selectedTabIndex == 0
+            "
+          >
+            <mat-icon>add</mat-icon>
+            Add Subject
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            class="float-end"
+            (click)="newElective()"
+            *ngIf="
+              (role == 'admin' || role == 'chair' || role == 'faculty') &&
+              selectedTabIndex == 1
+            "
+          >
+            <mat-icon>add</mat-icon>
+            Add Elective Subject
+          </button>
+        </div>
+      </div>
+    </header>
+    <!-- {{ selectedTabIndex }} -->
     <div class="">
-      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab-group
+        mat-stretch-tabs="false"
+        mat-align-tabs="start"
+        [(selectedIndex)]="selectedTabIndex"
+      >
         <mat-tab label="Subjects">
           <app-empty-state
             name="Subject"
             message="once faculty have added Subject, you'll see it here"
             *ngIf="!subjects.length"
           ></app-empty-state>
-          <div class="d-flex justify-content-end my-1">
-            <mat-form-field style="width: 200px" class="example-form-field">
-              <mat-label><mat-icon>search</mat-icon>Search</mat-label>
-              <input matInput type="text" [(ngModel)]="listFilter" />
-            </mat-form-field>
-          </div>
+
           <table class="table">
             <thead class="thead-dark">
               <tr>
@@ -135,17 +177,6 @@
           </mat-paginator
         ></mat-tab>
         <mat-tab label="Elective Subject">
-          <div class="my-2">
-            <button
-              mat-flat-button
-              color="primary"
-              class="float-end"
-              (click)="newElective()"
-            >
-              <mat-icon>add</mat-icon>
-              add elective subject
-            </button>
-          </div>
           <app-empty-state
             name="Elective Subject"
             message="once faculty have added Elective Subject, you'll see it here"
@@ -197,6 +228,13 @@
               </tr>
             </tbody>
           </table>
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPageChange($event)"
+          >
+          </mat-paginator>
 
           <table class="table table-bordered">
             <thead>

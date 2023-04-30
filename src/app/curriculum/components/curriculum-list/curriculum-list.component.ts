@@ -18,8 +18,6 @@ import { MatSort } from '@angular/material/sort';
 })
 
 
-
-
 export class CurriculumListComponent {
   items = [
     { id: 1, name: 'Red', color: 'red', theme: 'cict-curriculum-system-dark-theme' },
@@ -32,7 +30,147 @@ export class CurriculumListComponent {
               private curriculumService: CurriculumService,
               private authService: AuthService
               ) {}
-  
+  selectedTabIndex:number = 0
+  filter:string = ''
+  onSelectedTabChange(index: any) {
+    this.filter = ''
+    this.currentSortColumn = ''
+    this.currentSortDirection = 'asc';
+  }
+
+  filteredData(index: number){
+    let list:any[] = []
+    if(index == 0)list = this.curriculums
+    if(index == 1)list = this.revisions
+    if(index == 2)list = this.curriculumPendings
+
+    if(this.selectedTabIndex != index){
+      return list
+    }
+
+    if(index == 0 || index == 2){
+      let filteredList = list.filter(cur => {
+        if(!this.filter) return true
+        return cur.version.toLowerCase().includes(this.filter.toLowerCase()) ||
+        cur.user?.profile?.name.toLowerCase().includes(this.filter.toLowerCase()) || 
+        cur.department?.department_code?.toLowerCase().includes(this.filter.toLowerCase())
+      })
+      
+      if(!this.currentSortColumn) return filteredList
+
+      let sortedValue:any[] = []
+
+      if(this.currentSortColumn == 'version' || this.currentSortColumn == 'created_at' || this.currentSortColumn == 'status'){        
+        sortedValue = filteredList.sort((a: any, b: any) => {
+          if (a[this.currentSortColumn] < b[this.currentSortColumn]) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a[this.currentSortColumn] > b[this.currentSortColumn]) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      if(this.currentSortColumn == 'name'){
+        sortedValue = filteredList.sort((a: any, b: any) => {
+          if (a.user?.profile?.name < b.user?.profile?.name) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a.user?.profile?.name > b.user?.profile?.name) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      if(this.currentSortColumn == 'department'){
+        sortedValue = filteredList.sort((a: any, b: any) => {
+          if (a.department?.department_code < b.department?.department_code) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a.department?.department_code > b.department?.department_code) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      
+
+      return sortedValue
+              //  cur.status.toLowerCase().includes(this.filter.toLowerCase()) || 
+              //  cur.created_at?.toLowerCase().includes(this.filter.toLowerCase())
+    }else{
+      let filteredData = list.filter(cur => {
+        if(!this.filter) return true
+        return cur.curriculum?.version.toLowerCase().includes(this.filter.toLowerCase()) ||
+        cur.user?.profile?.name.toLowerCase().includes(this.filter.toLowerCase()) || 
+        cur.curriculum?.department?.department_code?.toLowerCase().includes(this.filter.toLowerCase())
+      })
+      if(!this.currentSortColumn) return filteredData
+
+      if(this.currentSortColumn == 'status' ||  this.currentSortColumn == 'created_at'){        
+        filteredData = filteredData.sort((a: any, b: any) => {
+          if (a[this.currentSortColumn] < b[this.currentSortColumn]) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a[this.currentSortColumn] > b[this.currentSortColumn]) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      if(this.currentSortColumn == 'department'){        
+        filteredData = filteredData.sort((a: any, b: any) => {
+          if (a?.curriculum?.department?.department_code < b?.curriculum?.department?.department_code) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a?.curriculum?.department?.department_code > b?.curriculum?.department?.department_code) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      if(this.currentSortColumn == 'version'){        
+        filteredData = filteredData.sort((a: any, b: any) => {
+          if (a?.curriculum?.version < b?.curriculum?.version) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a?.curriculum?.version > b?.curriculum?.version) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      if(this.currentSortColumn == 'name'){
+        filteredData = filteredData.sort((a: any, b: any) => {
+          if (a.user?.profile?.name < b.user?.profile?.name) {
+            return this.currentSortDirection === 'asc' ? -1 : 1;
+          } else if (a.user?.profile?.name > b.user?.profile?.name) {
+            return this.currentSortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        });
+      }
+
+      return filteredData 
+    }
+  }
+
+  currentSortColumn: string='';
+  currentSortDirection: string = 'asc';
+
+  sortCurriculum(column: string) {
+    if (this.currentSortColumn === column) {
+      // Reverse the direction if the same column is clicked again
+      this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc';
+      console.log(this.currentSortColumn);
+    } else {
+      // Set the new column and direction if a different column is clicked
+      this.currentSortColumn = column;
+      this.currentSortDirection = 'asc';
+    }
+  }
+
   role:any = ''  
   isLoading:boolean = true
   curriculums:Curriculum2[] = []
@@ -54,7 +192,8 @@ export class CurriculumListComponent {
       this.currentUser = user
       this.curriculums = curriculums.filter(curr => curr.status != 'p')
       this.curriculumPendings = curriculums.filter(curr => curr.status == 'p')
-
+      console.log(revisions);
+      
       this.revisions = revisions
       this.newRevisionsCount = revisions.filter(rev => rev.is_new).length
       this.newCurPendingsCount = this.curriculumPendings.filter(cur => cur.is_new && cur.status == 'p').length
