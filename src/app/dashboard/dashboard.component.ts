@@ -67,7 +67,6 @@ export class dashboard implements OnInit{
           title:{
             text:'Roles',
             align:'left',
-            
           },
           credits:{
             enabled: false

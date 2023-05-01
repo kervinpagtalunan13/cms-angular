@@ -9,27 +9,26 @@ import { handleError } from '../errorHandling/errorHandler';
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = `http://localhost:8000/api/`;
+  private baseUrl = `https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/`;
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   currentUser$ = this.currentUserSubject.asObservable()
-  currentUser!:User | any
+  currentUser!: User | any
   constructor(private http: HttpClient) { }
-  
-  login(credentials:any){
+
+  login(credentials: any) {
     return this.http.post(`${this.baseUrl}login`, credentials)
       .pipe(
-        tap((response:any) => {
+        tap((response: any) => {
           this.storeToken(response.token)
           this.currentUserSubject.next(response.user)
           this.currentUser = response.user
-          console.log(response.user);
-          
+
         }),
         catchError(handleError)
       )
   }
 
-  logout(){
+  logout() {
     return this.http.post(`${this.baseUrl}logout`, {})
       .pipe(
         tap(response => {
@@ -41,32 +40,32 @@ export class AuthService {
       )
   }
 
-  storeToken(token:string){
+  storeToken(token: string) {
     localStorage.setItem('token', token)
   }
-  removeToken(){
+  removeToken() {
     localStorage.removeItem('token')
   }
 
-  getCurrentUser(){
-    if(this.currentUser)
+  getCurrentUser() {
+    if (this.currentUser)
       return of(this.currentUser)
-    
+
     return this.http.post(`${this.baseUrl}getUser`, {})
-    .pipe(
-      tap((user:any) => {
-        this.currentUserSubject.next(user)
-        this.currentUser = user
-      }),
-      catchError(() => {
-        // this.removeToken()
-        return of(null);
-      })
-    )
+      .pipe(
+        tap((user: any) => {
+          this.currentUserSubject.next(user)
+          this.currentUser = user
+        }),
+        catchError(() => {
+          // this.removeToken()
+          return of(null);
+        })
+      )
   }
 
-  updateProfile(profile:any){
-    const updatedUser = {...this.currentUser, profile: profile}
+  updateProfile(profile: any) {
+    const updatedUser = { ...this.currentUser, profile: profile }
     this.currentUserSubject.next(updatedUser)
     this.currentUser = updatedUser
   }

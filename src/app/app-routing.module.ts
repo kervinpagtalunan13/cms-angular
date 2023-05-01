@@ -5,12 +5,14 @@ import { AuthGuardGuard } from './core/guard/auth-guard.guard';
 import { ForgotPasswordComponent } from './shared/components/forgot-password/forgot-password.component';
 import { LoginGuard } from './core/guard/login.guard';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { LandingPageGuard } from './core/guard/landing-page.guard';
 
 const routes: Routes = [
-  { path: '', component: LandingPageComponent, 
+  { path: 'home', component: LandingPageComponent, 
+    canActivate:[LandingPageGuard]
   },
   { path: 'login', component: LoginComponent, 
-  canActivate:[LoginGuard]
+    canActivate:[LoginGuard]
   },
   { path: 'curriculums', loadChildren: () => import('./curriculum/curriculum.module').then(m => m.CurriculumModule)},
   { path: 'accounts', loadChildren: () => import('./account/account.module').then(m => m.AccountModule)},
@@ -19,7 +21,7 @@ const routes: Routes = [
   { path: 'content', loadChildren: () => import('./content/content.module').then(m => m.ContentModule)},
   { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)},
   { path: 'departments', loadChildren: () => import('./department/department.module').then(m => m.DepartmentModule)},
-  { path: '**', redirectTo: 'login', pathMatch: 'full' }
+  { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
 
 @NgModule({
