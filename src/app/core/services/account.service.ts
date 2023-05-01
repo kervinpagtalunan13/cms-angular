@@ -3,19 +3,23 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { catchError, tap, throwError } from 'rxjs';
 import { AppError } from '../models/app-error';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  private baseUrl = `http://127.0.0.1:8000/api`;
+  
+  constructor(private http: HttpClient, 
+              private authService: AuthService
+    ){ }
 
-  constructor(private http: HttpClient) { }
+  private baseUrl = this.authService.baseUrl;
 
-  users$ = this.http.get<User[]>(`${this.baseUrl}/users`);
+  users$ = this.http.get<User[]>(`${this.baseUrl}users`);
 
   register(credentials:any){
-    return this.http.post(`${this.baseUrl}/register`, credentials)
+    return this.http.post(`${this.baseUrl}register`, credentials)
       .pipe(
         tap((res:any) => {
           console.log(res)
@@ -26,13 +30,13 @@ export class AccountService {
   }
 
   sendEmailForgotPassword(email: string){
-    return this.http.post(`${this.baseUrl}/forgot-password`, {email: email}).pipe(
+    return this.http.post(`${this.baseUrl}forgot-password`, {email: email}).pipe(
       catchError(this.handleError)
     )
   }
 
   toggleStatus(id: number, data: any){
-    return this.http.patch<User>(`${this.baseUrl}/users/${id}`, data).pipe(
+    return this.http.patch<User>(`${this.baseUrl}users/${id}`, data).pipe(
       catchError(this.handleError)
     )
   }

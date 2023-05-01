@@ -14,9 +14,11 @@
         [canEdit]="canEdit()"
         [electiveIncluded]="!!electiveSubjects.length"
         [electiveData]="electiveSubjects"
+        [revisions]="revisions"
         (editCur)="edit()"
         (approveCur)="approve()"
         (reviseCur)="revise()"
+        (openRevisionList)="openRevisionList()"
       ></app-year-dropdown>
     </div>
     <div class="col-xl-3">

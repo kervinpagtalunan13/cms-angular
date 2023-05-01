@@ -17,7 +17,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
   templateUrl: './curriculum-view-revision-container.component.html',
   styleUrls: ['./curriculum-view-revision-container.component.css']
 })
-export class CurriculumViewRevisionContainerComponent implements OnInit{
+export class CurriculumViewRevisionContainerComponent{
   constructor(private curriculumService: CurriculumService,
               private commentService: CommentService,
               private authService: AuthService,
@@ -134,38 +134,8 @@ export class CurriculumViewRevisionContainerComponent implements OnInit{
     });
 
   }
-  // revision/edit/:id
   edit(){
     this.router.navigate(['/curriculums', 'revision', 'edit', this.curriculum.id])
     console.log('edit');
   }
- 
-
-  ngOnInit(): void {
-    // this.route.data.subscribe((data:any) => {
-    //   this.type = data.type
-    //   this.action = data.action
-    // })
-
-    // this.route.params.subscribe(({id}) => {
-    //   this.curriculum$ = this.curriculumService.getRevisionCurriculum(+id).pipe(
-    //     tap((curriculum:any) => {
-    //       this.curriculum = curriculum
-    //       console.log(curriculum);
-          
-    //       this.subjects = JSON.parse(curriculum.metadata)
-    //       this.title = `CICT ${curriculum.curriculum.department.department_code} Curriculum version ${curriculum.curriculum.version}`
-    //       this.status = curriculum.status    
-    //       this.author = curriculum.user.profile.name
-    //       this.created_at = curriculum.created_at
-
-    //       this.commentService.getRevisionComments(this.curriculum.id).pipe(
-    //         tap(comments => this.comments = comments)
-    //       ).subscribe()
-    //     })
-    //   )
-    // })
-  }
-
-
 }
