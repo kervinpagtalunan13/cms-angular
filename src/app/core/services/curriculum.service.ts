@@ -3,15 +3,18 @@ import { Injectable } from '@angular/core';
 import { catchError, map } from 'rxjs';
 import { handleError } from '../errorHandling/errorHandler';
 import { Curriculum2 } from '../models/curriculum';
+import { AuthService } from './auth.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurriculumService {
-  private baseUrl = `http://127.0.0.1:8000/api/`;
-  constructor(private http: HttpClient) { }
-  // {{baseUrl}}curriculums
+  constructor(private http: HttpClient, 
+              private authService: AuthService){}
+    
+  private baseUrl = this.authService.baseUrl;
+  
   curriculums$ = this.http.get<Curriculum2[]>(`${this.baseUrl}curriculums`).pipe(
     catchError(handleError)
   )

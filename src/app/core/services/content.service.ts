@@ -3,14 +3,17 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, tap } from 'rxjs';
 import { handleError } from '../errorHandling/errorHandler';
 import { Content } from '../models/content.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContentService {
-  private baseUrl = `http://localhost:8000/api/`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, 
+              private authService: AuthService){}
+              
+  private baseUrl = this.authService.baseUrl;
 
   private contentSubject = new BehaviorSubject<Content | null | any>(null);
   contentAction$ = this.contentSubject.asObservable()

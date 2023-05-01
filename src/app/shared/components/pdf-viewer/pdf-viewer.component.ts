@@ -8,14 +8,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./pdf-viewer.component.css']
 })
 export class PdfViewerComponent {
-  pdfLoc = 'http://127.0.0.1:8000/api/subjectsGetSyllabus/';
+  pdfLoc = 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/subjectsGetSyllabus/';
   myUrl: SafeResourceUrl;
   constructor(
     private sanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<PdfViewerComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { ref: string }
   ) {
-    this.myUrl = this.sanitizer.bypassSecurityTrustResourceUrl('http://127.0.0.1:8000/api/subjectsGetSyllabus/' + data.ref);
+    this.myUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pdfLoc + data.ref);
   }
 
 }
