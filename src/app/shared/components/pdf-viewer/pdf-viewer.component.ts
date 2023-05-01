@@ -8,7 +8,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./pdf-viewer.component.css']
 })
 export class PdfViewerComponent {
-  pdfLoc = 'http://localhost:8000/api/subjectsGetSyllabus/';
+  pdfLoc = 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/subjectsGetSyllabus/';
   myUrl: SafeResourceUrl;
   constructor(
     private sanitizer: DomSanitizer,

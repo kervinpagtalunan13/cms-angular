@@ -4,7 +4,13 @@
     <mat-icon class="mt-1">chat</mat-icon>
   </h2>
   <div class="my-2">
-    <div [ngStyle]="{ 'max-height': height + 'px', 'background-color':insideColor }" style="overflow-y: scroll; overflow-x:hidden;">
+    <div
+      [ngStyle]="{
+        'max-height': height + 'px',
+        'background-color': insideColor
+      }"
+      style="overflow-y: scroll; overflow-x: hidden"
+    >
       <mat-card class="shadow p-4" *ngIf="comments.length == 0">
         <mat-card-content class="text-center">
           <div>
@@ -13,12 +19,16 @@
           this curriculum doesn't have comments
         </mat-card-content>
       </mat-card>
-      <mat-card class="comment-card mb-3 m-1" *ngFor="let comment of comments" [ngStyle]="{'background-color':commentColor}">
+      <mat-card
+        class="comment-card mb-3 m-1"
+        *ngFor="let comment of comments"
+        [ngStyle]="{ 'background-color': commentColor }"
+      >
         <mat-card-header>
           <img
             mat-card-avatar
             src="{{
-              'http://127.0.0.1:8000/api/profiles/images/' +
+              'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
                 (comment?.user?.profile?.profile_pic || 'no-image.jpg')
             }}"
           />

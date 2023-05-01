@@ -9,8 +9,8 @@ import { handleError } from '../errorHandling/errorHandler';
   providedIn: 'root'
 })
 export class AuthService {
-  // baseUrl = `https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/`;
-  baseUrl = `http://localhost:8000/api/`;
+  baseUrl = `https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/`;
+  // baseUrl = `http://localhost:8000/api/`;
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   currentUser$ = this.currentUserSubject.asObservable()
   currentUser!: User | any
