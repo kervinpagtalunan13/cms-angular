@@ -223,18 +223,6 @@ export class CurriculumListComponent {
   //changeTabEvent
   changeTab(change:MatTabChangeEvent){
    this.tab = change.index;
-   if(this.tab==0){
-    this.listFilter=''
-    this.searchPlaceholder='Search in Existing...'
-   }
-   else if(this.tab==1){
-    this.listFilter=''
-    this.searchPlaceholder='Search in Revision...'
-   }
-   else if(this.tab==2){
-    this.listFilter=''
-    this.searchPlaceholder='Search in Pending...'
-   }
   }
 
     //pang filter
@@ -285,87 +273,49 @@ export class CurriculumListComponent {
     );
 }
   //pangfilter
-    displayRevision:any[]=[];
-    displayedItems: any[] = []; // The items to display on the current page
+  // The items to display on the current page
   //paginator
-    existingtotalItems = this.data.length; // Total number of items in your table
+    existingtotalItems = 0; // Total number of items in your table
     existingPageSize = 3; // Number of items to display per page
     existingPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
     existingCurrentPageIndex = 0; // Current page index
 
-    revisionTotalItems = this.rev.length; // Total number of items in your table
+    revisionTotalItems = 0; // Total number of items in your table
     revisionPageSize = 3; // Number of items to display per page
     revisionPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
     revisionCurrentPageIndex = 0; // Current page index
 
-    pendingTotalItems = this.data.length; // Total number of items in your table
+    pendingTotalItems = 0; // Total number of items in your table
     pendingPageSize = 3; // Number of items to display per page
     pendingPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
     pendingCurrentPageIndex = 0; // Current page index
     
     //paginator
   
-    //pang filter
     ngOnInit(): void {
-      this.listFilter = '';
-      console.log(this.displayedItems)
-      console.log(this.curriculums)
+      //this.listFilter = '';
     }
-    //pang filter
-  
-    //pang check kung may laman yung search input (para di mawalan ng laman yung table)
+    existing:any[]=[];
+    revision:any[]=[];
+    pending: any[] = []; 
+    
+    displayExisting:any[]=[];
+    displayRevision:any[]=[];
+    displayPending: any[] = []; 
     ngDoCheck(): void{
-      console.log(this.displayRevision)
-      if(!this.listFilter){
-        if(this.tab==0){
-          this.existingtotalItems = this.data.length;
-        this.loadPageWithoutFilter(this.existingCurrentPageIndex);
-        }
-        else if(this.tab==1){
-          this.revisionTotalItems = this.rev.length;
-        this.loadPageWithoutFilter(this.revisionCurrentPageIndex);
-        }
-        else if(this.tab==2){
-          this.pendingTotalItems = this.data.length;
-          this.loadPageWithoutFilter(this.pendingCurrentPageIndex);
-        }
-      }
-      else{
-        this.existingCurrentPageIndex=0
-        this.revisionCurrentPageIndex=0
-        this.pendingCurrentPageIndex=0
-        if(this.tab==0){
-          this.existingtotalItems = this.existingFilteredList.length;
-          this.loadPageWithFilter(this.existingCurrentPageIndex);
-          }
-          else if(this.tab==1){
-            this.revisionTotalItems = this.revisionFilteredList.length;
-          this.loadPageWithFilter(this.revisionCurrentPageIndex);
-          }
-          else if(this.tab==2){
-            this.pendingTotalItems = this.pendingFilteredList.length;
-            this.loadPageWithFilter(this.pendingCurrentPageIndex);
-          }
-      }
+      console.log(this.filteredData(0).length)
+      console.log(this.filteredData(1).length)
+      console.log(this.filteredData(2).length)
 
-      
-  //  if(this.tab==0){
-  //   if(this.listFilter){
-  //       this.existingtotalItems = this.existingFilteredList.length;
-  //       console.log(this.existingtotalItems)
-  //       this.loadPageWithFilter(this.existingCurrentPageIndex);
-  //  }
-  // }
-  //  else if(this.tab==2){
-  //   if(this.listFilter){
-  //         this.pendingTotalItems = this.pendingFilteredList.length;
-  //         console.log(this.pendingTotalItems)
-  //         this.loadPageWithFilter(this.pendingCurrentPageIndex);
-  //   }
-  //  }
+      this.existing=this.filteredData(0)
+      this.revision=this.filteredData(1)
+      this.pending=this.filteredData(2)
+
+      this.existingtotalItems = this.filteredData(0).length;
+      this.revisionTotalItems = this.filteredData(1).length;
+      this.pendingTotalItems = this.filteredData(2).length;
     }
   
-    //pang check kung may laman yung search input (para di mawalan ng laman yung table)
   
   
     //paginator
@@ -393,42 +343,17 @@ export class CurriculumListComponent {
       if(this.tab==0){
         startIndex = pageIndex * this.existingPageSize;
         endIndex = startIndex + this.existingPageSize;
-        this.data=this.curriculums;
-        this.displayedItems = this.data.slice(startIndex, endIndex);
+        this.displayExisting = this.filteredData(0).slice(startIndex, endIndex);
       }
       else if(this.tab==1){
         startIndex = pageIndex * this.revisionPageSize;
         endIndex = startIndex + this.revisionPageSize;
-        this.rev=this.revisions;
-        this.displayRevision = this.rev.slice(startIndex, endIndex);
+        this.displayRevision = this.revision.slice(startIndex, endIndex);
       }
       else if(this.tab==2){
         startIndex = pageIndex * this.pendingPageSize;
         endIndex = startIndex + this.pendingPageSize;
-        this.data=this.curriculumPendings;
-        this.displayedItems = this.data.slice(startIndex, endIndex);
-      }
-    }
-    loadPageWithFilter(pageIndex: number): void {
-      let startIndex = 0;
-      let endIndex = 0;
-      if(this.tab==0){
-        startIndex = pageIndex * this.existingPageSize;
-        endIndex = startIndex + this.existingPageSize;
-        this.data=this.curriculums;
-        this.displayedItems = this.existingFilteredList.slice(startIndex, endIndex);
-      }
-      else if(this.tab==1){
-        startIndex = pageIndex * this.revisionPageSize;
-        endIndex = startIndex + this.revisionPageSize;
-        this.rev=this.revisions;
-        this.displayRevision = this.revisionFilteredList.slice(startIndex, endIndex);
-      }
-      else if(this.tab==2){
-        startIndex = pageIndex * this.pendingPageSize;
-        endIndex = startIndex + this.pendingPageSize;
-        this.data=this.curriculumPendings;
-        this.displayedItems = this.pendingFilteredList.slice(startIndex, endIndex);
+        this.displayPending = this.pending.slice(startIndex, endIndex);
       }
     }
   //paginator

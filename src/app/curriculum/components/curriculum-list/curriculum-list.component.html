@@ -1,4 +1,4 @@
-<div class="container p-4" *ngIf="neededData$ | async">
+<div class="p-4" *ngIf="neededData$ | async" style="height: 100vh;">
   <!-- {{ filteredData(0) | json }} -->
 
   <header class="d-flex justify-content-between align-items-center my-2">
@@ -104,7 +104,7 @@
           </button>
         </span>
       </div>
-      <table class="table" *ngIf="curriculums">
+      <table *ngIf="curriculums">
         <tbody>
           <tr *ngFor="let data of filteredData(0)">
             <td scope="row">
@@ -147,7 +147,7 @@
                     background-repeat: no-repeat;
                     background-size: cover;
                     background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        'http://localhost:8000/api/profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
                       }}');"
                     ></div>
@@ -240,7 +240,7 @@
           </button>
         </span>
       </div>
-      <table class="table" *ngIf="revisions">
+      <table *ngIf="revisions">
         <tbody>
           <tr *ngFor="let data of filteredData(1)">
             <td scope="row" class="border-0">
@@ -290,7 +290,7 @@
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        'http://localhost:8000/api/profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
                       }}');"
                     ></div>
@@ -379,7 +379,7 @@
           </button>
         </span>
       </div>
-      <table class="table" *ngIf="curriculumPendings">
+      <table *ngIf="curriculumPendings">
         <tbody>
           <tr *ngFor="let data of filteredData(2)">
             <td scope="row" class="border-0">
@@ -420,7 +420,7 @@
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        'http://localhost:8000/api/profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
                       }}');"
                     ></div>

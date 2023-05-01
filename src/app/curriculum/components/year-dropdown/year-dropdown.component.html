@@ -66,6 +66,7 @@
       <mat-label>Version</mat-label>
       <input
         type="number"
+        min="0"
         matInput
         placeholder="Version"
         name="version"
@@ -259,6 +260,8 @@
                     name="lecUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lec Units"
                     [(ngModel)]="addForms[x]['firstSem'].lecUnits"
                     (input)="unitsOnChange(x, 'firstSem', 'add')"
@@ -270,6 +273,8 @@
                     name="labUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lab Units"
                     [(ngModel)]="addForms[x]['firstSem'].labUnits"
                     (input)="unitsOnChange(x, 'firstSem', 'add')"
@@ -281,6 +286,8 @@
                     name="totalUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Total Units"
                     [(ngModel)]="addForms[x]['firstSem'].totalUnits"
                     required
@@ -291,6 +298,8 @@
                     name="hoursPerWeek"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Hours Per Week"
                     [(ngModel)]="addForms[x]['firstSem'].hoursPerWeek"
                     required
@@ -433,6 +442,8 @@
                     name="lecUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lec Units"
                     (input)="unitsOnChange(x, 'firstSem', 'edit')"
                     [(ngModel)]="isForms[x]['firstSem'].lecUnits"
@@ -444,6 +455,8 @@
                     name="labUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lab Units"
                     [(ngModel)]="isForms[x]['firstSem'].labUnits"
                     (input)="unitsOnChange(x, 'firstSem', 'edit')"
@@ -455,6 +468,8 @@
                     name="totalUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Total Units"
                     [(ngModel)]="isForms[x]['firstSem'].totalUnits"
                     required
@@ -465,6 +480,8 @@
                     name="hoursPerWeek"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Hours Per Week"
                     [(ngModel)]="isForms[x]['firstSem'].hoursPerWeek"
                     required
@@ -586,8 +603,8 @@
           <tr style="font-weight: bold;">
             <td scope="row"></td>
          <td>TOTAL</td>
-         <td>{{ getLecUnits(x, 0) }}</td>
-         <td>{{ getLabUnits(x, 0)}}</td>
+         <td></td>
+         <td></td>
          <td>{{ getTotalUnits(x, 0) }}</td>
          <td>{{ getTotalHrs(x, 0) }}</td>
          <td></td>
@@ -692,6 +709,8 @@
                     name="lecUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lec Units"
                     (input)="unitsOnChange(x, 'secondSem', 'add')"
                     [(ngModel)]="addForms[x]['secondSem'].lecUnits"
@@ -703,6 +722,8 @@
                     name="labUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lab Units"
                     (input)="unitsOnChange(x, 'secondSem', 'add')"
                     [(ngModel)]="addForms[x]['secondSem'].labUnits"
@@ -714,6 +735,8 @@
                     name="totalUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Total Units"
                     [(ngModel)]="addForms[x]['secondSem'].totalUnits"
                     required
@@ -724,6 +747,8 @@
                     name="hoursPerWeek"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Hours Per Week"
                     [(ngModel)]="addForms[x]['secondSem'].hoursPerWeek"
                     required
@@ -869,6 +894,8 @@
                     name="lecUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lec Units"
                     (input)="unitsOnChange(x, 'secondSem', 'edit')"
                     [(ngModel)]="isForms[x]['secondSem'].lecUnits"
@@ -880,6 +907,8 @@
                     name="labUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Lab Units"
                     (input)="unitsOnChange(x, 'secondSem', 'edit')"
                     [(ngModel)]="isForms[x]['secondSem'].labUnits"
@@ -891,6 +920,8 @@
                     name="totalUnits"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Total Units"
                     [(ngModel)]="isForms[x]['secondSem'].totalUnits"
                     required
@@ -901,6 +932,8 @@
                     name="hoursPerWeek"
                     matInput
                     type="number"
+                    max="5"
+                    min="0"
                     placeholder="Hours Per Week"
                     [(ngModel)]="isForms[x]['secondSem'].hoursPerWeek"
                     required
@@ -1025,8 +1058,8 @@
           <tr style="font-weight: bold;">
                <td scope="row"></td>
             <td>TOTAL</td>
-            <td>{{ getLecUnits(x, 1) }}</td>
-            <td>{{ getLabUnits(x, 1)}}</td>
+            <td></td>
+            <td></td>
             <td>{{ getTotalUnits(x, 1) }}</td>
             <td>{{ getTotalHrs(x, 1) }}</td>
             <td></td>

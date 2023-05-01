@@ -342,7 +342,7 @@ viewPdf(ref: string){
   templateUrl: 'view-pdf.html',
 })
 export class ViewPdfClass {
-  pdfLoc = 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/subjectsGetSyllabus/';
+  pdfLoc = 'http://localhost:8000/api/subjectsGetSyllabus/';
   myUrl: SafeResourceUrl;
   constructor(
     private sanitizer: DomSanitizer,

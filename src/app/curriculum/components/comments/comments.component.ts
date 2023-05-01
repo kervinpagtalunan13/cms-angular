@@ -24,14 +24,17 @@ export class CommentsComponent implements OnChanges, OnInit{
         this.comment.body = ''
       }
     )
-    if(this.isDark.isDarkMode){
-      this.insideColor='rgb(85, 85, 85)'
-      this.commentColor='rgb(64, 64, 64)'
-    }
-    else{
-      this.insideColor='#F8F8F8'
-      this.commentColor='white'
-    }
+    this.contentService.contentAction$.subscribe(
+      content => {
+        if(!!Number(content.is_dark_mode_active)){
+          this.insideColor='rgb(85, 85, 85)'
+          this.commentColor='rgb(64, 64, 64)'
+        }else{
+          this.insideColor='#F8F8F8'
+          this.commentColor='white'
+        }
+      }
+    )
   }
   // @Input() comments:any
   @Input() type: string = ''

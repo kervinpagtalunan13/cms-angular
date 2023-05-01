@@ -14,6 +14,7 @@ import autoTable from 'jspdf-autotable';
 import { ElectiveSubjectDialogComponent } from '../elective-subject-dialog/elective-subject-dialog.component';
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { ViewPdfClass } from 'src/app/subject/components/subject-list/subject-list.component';
+import { ToastService } from 'src/app/shared/services/toast.service';
 export interface subjects{
   firstSem :Subject[];
   secondSem: Subject[];
@@ -44,6 +45,7 @@ export class YearDropdownComponent {
               private departmentService: DepartmentService,
               private dialog: MatDialog,
               private curriculumService: CurriculumService,
+              private toastService: ToastService
               // public viewPdfDialog: MatDialog
     ){}
   departments: Department[] | undefined
@@ -515,12 +517,15 @@ export class YearDropdownComponent {
       errors.push('total units should not exceed 5')
     if(form.value.hoursPerWeek > 5)
       errors.push('hours per week should not exceed 5 hours')
+    if(form.value.hoursPerWeek < 1)
+    errors.push('hours per week should not below 1 hour')
     if(this.isSubjectAlreadyAdded(form.value, 'edit'))
       errors.push('subject is already added')
     if(this.isSubjectValid(form.value))
       errors.push('invalid subject')
     
-    this.editFormError[yearLevel][sem] = errors.join(', ')
+    // this.editFormError[yearLevel][sem] = errors.join(', ')
+    this.toastService.showToastError('Error', errors.join(', '))
 
     if(errors.length == 0){
       const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode).syllabus_path
@@ -552,13 +557,19 @@ export class YearDropdownComponent {
       errors.push('total units should not exceed 5')
     if(form.value.hoursPerWeek > 5)
       errors.push('hours per week should not exceed 5 hours')
+    if(form.value.hoursPerWeek < 1)
+      errors.push('hours per week should not below 1 hour')
     if(this.isSubjectAlreadyAdded(form.value))
       errors.push('subject is already added')
     if(this.isSubjectValid(form.value))
       errors.push('invalid subject')
     
     
-    this.addFormError[yearLevel][sem] = errors.join(', ')
+    // this.addFormError[yearLevel][sem] = errors.join(', ')
+    if(errors.length){
+      this.toastService.showToastError('Error', errors.join(', '))
+    }
+
     
     if(errors.length == 0){
       const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode).syllabus_path
@@ -572,6 +583,7 @@ export class YearDropdownComponent {
         // this.removeAddForm(yearLevel, sem);
       }
       else{
+
         this.subject[yearLevel]['secondSem'].push({...form.value, syllabus: syllabus, isElective: isElective})
         this.addForms[yearLevel]['secondSem'] = this.getSubjectDs()
         // form.reset();
@@ -794,85 +806,159 @@ autoTable(pdf,{
   body: [...infoSecondYearSecondSem,['','TOTAL', '','',this.getTotalUnits(1, 1),this.getTotalHrs(1, 1),'','']],
   theme:'plain',
   columnStyles: {0:{halign: 'center'}},
-  //startY: tableMargin,
-  
-  
-})}
+  //startY: tableMargin,  
+    }
+  )
+}
 
 const thirdYear = this.subject[2];
 if(thirdYear){
-const thirdYearFirstSem = thirdYear.firstSem.map((subject) => ({
-  "Course": subject.courseCode,
-  "Descriptive Title": subject.descriptiveTitle,
-  "Lec Units": subject.lecUnits.toString() || '0',
-  "Lab Units": subject.labUnits.toString() || '0',
-  "Total Units": subject.totalUnits.toString() || '0',
-  "Hours Per Week": subject.hoursPerWeek.toString() || '0',
-  "Pre Req": subject.preReq || 'NONE',
-  "Co Req": subject.coReq || 'NONE',
-}));
-let infoThirdYear: string[][] = [];
-thirdYearFirstSem.forEach((element,index,array)=>{
-  infoThirdYear.push([element.Course,element['Descriptive Title'],element['Lec Units'],element['Lab Units'],element['Total Units'],element['Hours Per Week'],element['Pre Req'],element['Co Req']])
-});
+  const secondYearFirstSem = thirdYear.firstSem.map((subject) => ({
+    "Course": subject.courseCode,
+    "Descriptive Title": subject.descriptiveTitle,
+    "Lec Units": subject.lecUnits.toString() || '0',
+    "Lab Units": subject.labUnits.toString() || '0',
+    "Total Units": subject.totalUnits.toString() || '0',
+    "Hours Per Week": subject.hoursPerWeek.toString() || '0',
+    "Pre Req": subject.preReq || 'NONE',
+    "Co Req": subject.coReq || 'NONE',
+  }));
+  let infoSecondYear: string[][] = [];
+  secondYearFirstSem.forEach((element,index,array)=>{
+    infoSecondYear.push([element.Course,element['Descriptive Title'],element['Lec Units'],element['Lab Units'],element['Total Units'],element['Hours Per Week'],element['Pre Req'],element['Co Req']])
+  });
+   
+  const secondYearSecondSem = thirdYear.secondSem.map((subject) => ({
+    "Course": subject.courseCode,
+    "Descriptive Title": subject.descriptiveTitle,
+    "Lec Units": subject.lecUnits.toString() || '0',
+    "Lab Units": subject.labUnits.toString() || '0',
+    "Total Units": subject.totalUnits.toString() || '0',
+    "Hours Per Week": subject.hoursPerWeek.toString() || '0',
+    "Pre Req": subject.preReq || 'NONE',
+    "Co Req": subject.coReq || 'NONE',
+  }));
+  let infoSecondYearSecondSem: string[][] = [];
+  secondYearSecondSem.forEach((element,index,array)=>{
+    infoSecondYearSecondSem.push([element.Course,element['Descriptive Title'],element['Lec Units'],element['Lab Units'],element['Total Units'],element['Hours Per Week'],element['Pre Req'],element['Co Req']])
+  });
+  
+   //second year
+   pdf.addPage();
+   addHeader()
+  autoTable(pdf,{
+    styles: {
+      fontSize: 8,
+       cellWidth:"auto", 
+       halign:'center',
+       lineWidth: 0.3,
+       lineColor: 10,
+       font: 'times new roman'
+      },
+    head:[[
+      {content: 'THIRD YEAR', colSpan: 8, styles: {halign: 'center', fillColor: [202, 202, 202]}}
+    ],
+    [{content: 'FIRST SEMESTER', colSpan: 8, styles: {halign: 'left'}}]
+      ,['Course', 'Descriptive Title', 'Lec Units','Lab Units','Total Units','Hours Per Week','Pre Req','Co Req']],
+    body: [...infoSecondYear,['','TOTAL', '','',this.getTotalUnits(1, 0),this.getTotalHrs(1, 0),'','']],
+    theme:'plain',
+    columnStyles: {0:{halign: 'center'}},
+    startY: tableMargin,
+    
+    
+  })
+  autoTable(pdf,{
+    styles: {
+      fontSize: 8,
+       cellWidth:"auto", 
+       halign:'center',
+       lineWidth: 0.3,
+       lineColor: 10,
+       font: 'times new roman'
+      },
+    head:[
+    [{content: 'SECOND SEMESTER', colSpan: 8, styles: {halign: 'left'}}]
+      ,['Course', 'Descriptive Title', 'Lec Units','Lab Units','Total Units','Hours Per Week','Pre Req','Co Req']],
+    body: [...infoSecondYearSecondSem,['','TOTAL', '','',this.getTotalUnits(1, 1),this.getTotalHrs(1, 1),'','']],
+    theme:'plain',
+    columnStyles: {0:{halign: 'center'}},
+    //startY: tableMargin,  
+      }
+    )
+// const thirdYearFirstSem = thirdYear.firstSem.map((subject) => ({
+//   "Course": subject.courseCode,
+//   "Descriptive Title": subject.descriptiveTitle,
+//   "Lec Units": subject.lecUnits.toString() || '0',
+//   "Lab Units": subject.labUnits.toString() || '0',
+//   "Total Units": subject.totalUnits.toString() || '0',
+//   "Hours Per Week": subject.hoursPerWeek.toString() || '0',
+//   "Pre Req": subject.preReq || 'NONE',
+//   "Co Req": subject.coReq || 'NONE',
+// }));
+// let infoThirdYear: string[][] = [];
+// thirdYearFirstSem.forEach((element,index,array)=>{
+//   infoThirdYear.push([element.Course,element['Descriptive Title'],element['Lec Units'],element['Lab Units'],element['Total Units'],element['Hours Per Week'],element['Pre Req'],element['Co Req']])
+// });
 
-const thirdYearSecondSem = thirdYear.secondSem.map((subject) => ({
-  "Course": subject.courseCode,
-  "Descriptive Title": subject.descriptiveTitle,
-  "Lec Units": subject.lecUnits.toString() || '0',
-  "Lab Units": subject.labUnits.toString() || '0',
-  "Total Units": subject.totalUnits.toString() || '0',
-  "Hours Per Week": subject.hoursPerWeek.toString() || '0',
-  "Pre Req": subject.preReq || 'NONE',
-  "Co Req": subject.coReq || 'NONE',
-}));
-let infoThirdYearSecondSem: string[][] = [];
-thirdYearSecondSem.forEach((element,index,array)=>{
-  infoThirdYearSecondSem.push([element.Course,element['Descriptive Title'],element['Lec Units'],element['Lab Units'],element['Total Units'],element['Hours Per Week'],element['Pre Req'],element['Co Req']])
-});
-//third year
-pdf.addPage();
-addHeader()
-autoTable(pdf,{
- styles: {
-   fontSize: 8,
-    cellWidth:"auto", 
-    halign:'center',
-    lineWidth: 0.3,
-    lineColor: 10,
-    font: 'times new roman'
-   },
- head:[[
-   {content: 'THIRD YEAR', colSpan: 8, styles: {halign: 'center', fillColor: [202, 202, 202]}}
- ],
- [{content: 'FIRST SEMESTER', colSpan: 8, styles: {halign: 'left'}}]
-   ,['Course', 'Descriptive Title', 'Lec Units','Lab Units','Total Units','Hours Per Week','Pre Req','Co Req']],
- body: [...infoThirdYear,['','TOTAL', '','',this.getTotalUnits(2, 0),this.getTotalHrs(2, 0),'','']],
- theme:'plain',
- columnStyles: {0:{halign: 'center'}},
- //startY: tableMargin,
+// const thirdYearSecondSem = thirdYear.secondSem.map((subject) => ({
+//   "Course": subject.courseCode,
+//   "Descriptive Title": subject.descriptiveTitle,
+//   "Lec Units": subject.lecUnits.toString() || '0',
+//   "Lab Units": subject.labUnits.toString() || '0',
+//   "Total Units": subject.totalUnits.toString() || '0',
+//   "Hours Per Week": subject.hoursPerWeek.toString() || '0',
+//   "Pre Req": subject.preReq || 'NONE',
+//   "Co Req": subject.coReq || 'NONE',
+// }));
+// let infoThirdYearSecondSem: string[][] = [];
+// thirdYearSecondSem.forEach((element,index,array)=>{
+//   infoThirdYearSecondSem.push([element.Course,element['Descriptive Title'],element['Lec Units'],element['Lab Units'],element['Total Units'],element['Hours Per Week'],element['Pre Req'],element['Co Req']])
+// });
+
+// //third year
+// pdf.addPage();
+//  addHeader()
+// autoTable(pdf,{
+//  styles: {
+//    fontSize: 8,
+//     cellWidth:"auto", 
+//     halign:'center',
+//     lineWidth: 0.3,
+//     lineColor: 10,
+//     font: 'times new roman'
+//    },
+//  head:[[
+//    {content: 'THIRD YEAR', colSpan: 8, styles: {halign: 'center', fillColor: [202, 202, 202]}}
+//  ],
+//  [{content: 'FIRST SEMESTER', colSpan: 8, styles: {halign: 'left'}}]
+//    ,['Course', 'Descriptive Title', 'Lec Units','Lab Units','Total Units','Hours Per Week','Pre Req','Co Req']],
+//  body: [...infoThirdYear,['','TOTAL', '','',this.getTotalUnits(2, 0),this.getTotalHrs(2, 0),'','']],
+//  theme:'plain',
+//  columnStyles: {0:{halign: 'center'}},
+//  //startY: tableMargin,
  
  
-})
-autoTable(pdf,{
- styles: {
-   fontSize: 8,
-    cellWidth:"auto", 
-    halign:'center',
-    lineWidth: 0.3,
-    lineColor: 10,
-    font: 'times new roman'
-   },
- head:[
- [{content: 'SECOND SEMESTER', colSpan: 8, styles: {halign: 'left'}}]
-   ,['Course', 'Descriptive Title', 'Lec Units','Lab Units','Total Units','Hours Per Week','Pre Req','Co Req']],
- body: [...infoThirdYearSecondSem,['','TOTAL', '','',this.getTotalUnits(2, 1),this.getTotalHrs(2, 1),'','']],
- theme:'plain',
- columnStyles: {0:{halign: 'center'}},
- //startY: tableMargin,
+// })
+// autoTable(pdf,{
+//  styles: {
+//    fontSize: 8,
+//     cellWidth:"auto", 
+//     halign:'center',
+//     lineWidth: 0.3,
+//     lineColor: 10,
+//     font: 'times new roman'
+//    },
+//  head:[
+//  [{content: 'SECOND SEMESTER', colSpan: 8, styles: {halign: 'left'}}]
+//    ,['Course', 'Descriptive Title', 'Lec Units','Lab Units','Total Units','Hours Per Week','Pre Req','Co Req']],
+//  body: [...infoThirdYearSecondSem,['','TOTAL', '','',this.getTotalUnits(2, 1),this.getTotalHrs(2, 1),'','']],
+//  theme:'plain',
+//  columnStyles: {0:{halign: 'center'}},
+//  //startY: tableMargin,
  
  
-})}
+// })
+}
 
 
 const fourthYear = this.subject[3];

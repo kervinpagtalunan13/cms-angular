@@ -1,5 +1,5 @@
 <app-sidenav>
-  <div class="container p-4" *ngIf="neededData$ | async">
+  <div class="p-4" *ngIf="neededData$ | async" style="height: 100vh;">
     <header class="d-flex align-items-center justify-content-between mb-1">
       <span class="h3 m-o p-o">Subjects</span>
       <!-- <div class="container mt-4" *ngIf="neededData$ | async" style="height:100vh;">
@@ -92,7 +92,7 @@
             *ngIf="!subjects.length"
           ></app-empty-state>
 
-          <table class="table">
+          <table style="width: 100%;">
             <!-- ======= -->
             <!-- <div class="d-flex justify-content-end my-1">
             <mat-form-field style="width: 200px" class="example-form-field">
@@ -103,7 +103,7 @@
           <table style="width:100%;"> -->
             <!-- >>>>>>> ae7ed33a4dcffa167619110b07484827b5ab8dbb -->
             <thead class="thead-dark">
-              <tr>
+              <tr class="border-bottom">
                 <th scope="col">
                   Subject Code
                   <button mat-icon-button (click)="sort('subject_code')">
@@ -134,7 +134,8 @@
             </thead>
             <tbody>
               <tr
-                style="border-bottom: 1px solid rgb(70, 70, 70)"
+              class="border-bottom"
+                style=""
                 *ngFor="
                   let subject of displayedItems
                     | orderBy : currentSortColumn : currentSortDirection
@@ -230,16 +231,16 @@
             *ngIf="!electives.length"
           ></app-empty-state>
           <!-- *ngIf="!department.members.length" -->
-          <table class="table">
-            <thead>
-              <tr>
+          <table style="width: 100%;" class="border">
+            <thead class="border text-center">
+              <tr class="border text-center">
                 <th>Description</th>
                 <!-- <th>Status</th> -->
                 <th>Assigned in</th>
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="border text-center">
               <tr *ngFor="let subject of electives">
                 <td>{{ subject.description }}</td>
                 <!-- <td>{{ subject.status == "a" ? "Active" : "Inactive" }}</td> -->
@@ -275,81 +276,15 @@
               </tr>
             </tbody>
           </table>
-          <mat-paginator
-            [length]="totalItems"
-            [pageSize]="pageSize"
-            [pageSizeOptions]="pageSizeOptions"
-            (page)="onPageChange($event)"
-          >
-          </mat-paginator>
+          
 
-          <mat-accordion>
-            <mat-expansion-panel
-              (opened)="panelOpenState = true"
-              (closed)="panelOpenState = false"
-            >
-              <mat-expansion-panel-header>
-                <mat-panel-title class="panel-text"
-                  >Assigned Elective Subjects</mat-panel-title
-                >
-              </mat-expansion-panel-header>
-              <table style="width: 100%">
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <!-- <th>Status</th> -->
-                    <th>Assigned in</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="let subject of electives"
-                    style="border-bottom: 1px solid rgb(70, 70, 70)"
-                  >
-                    <td>{{ subject.description }}</td>
-                    <!-- <td>{{ subject.status == "a" ? "Active" : "Inactive" }}</td> -->
-                    <!-- <td>{{ subject.status }}</td> -->
-                    <td>{{ getAssignedIn(subject.id) }}</td>
-                    <td>
-                      <button
-                        mat-icon-button
-                        (click)="viewPdf(subject.syllabus_path)"
-                      >
-                        <mat-icon color="primary">remove_red_eye</mat-icon>
-                      </button>
-                      <button
-                        mat-icon-button
-                        (click)="clickEditSubject(subject, 'elective')"
-                        *ngIf="
-                          role == 'admin' ||
-                          role == 'faculty' ||
-                          role == 'chair'
-                        "
-                      >
-                        <mat-icon color="primary">settings</mat-icon>
-                      </button>
-                      <button
-                        mat-icon-button
-                        (click)="assignElective(subject.id)"
-                        color="primary"
-                        *ngIf="
-                          role == 'admin' ||
-                          role == 'faculty' ||
-                          role == 'chair'
-                        "
-                      >
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </mat-expansion-panel>
-            <header><h1>Elective Table</h1></header>
-            <table style="width: 100%">
-              <thead>
-                <tr>
+          
+            
+            <table style="width: 100%; margin-top:50px;" class="border">
+              
+              <thead class="border text-center">
+                <tr class="border"><th class="text-center" colspan="4">Elective Table</th></tr>
+                <tr class="border text-center">
                   <th>#</th>
                   <th
                     *ngFor="
@@ -361,13 +296,14 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="border">
                 <tr
+                class="border"
                   *ngFor="let i of [1, 2, 3, 4, 5]"
-                  style="border-bottom: 1px solid rgb(70, 70, 70)"
+                  style=""
                 >
-                  <th>Elective {{ i }}</th>
-                  <td
+                  <th class="border text-center">Elective {{ i }}</th>
+                  <td class="border text-center"
                     *ngFor="
                       let electiveSubject of electiveSubjects;
                       let x = index
@@ -397,7 +333,6 @@
                 </tr>
               </tbody>
             </table>
-          </mat-accordion>
         </mat-tab>
       </mat-tab-group>
     </div>
