@@ -1,4 +1,4 @@
-import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms'
 import { SubjectAddDialogComponent } from '../subject-add-dialog/subject-add-dialog.component';
 import { MatDialog,MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,22 +15,29 @@ import { ElectiveTrack } from 'src/app/core/models/elective';
 import { json } from 'express';
 import { AppError } from 'src/app/core/models/app-error';
 import { ToastService } from 'src/app/shared/services/toast.service';
-
-
+import { AppComponent } from 'src/app/app.component';
+import { ContentService } from 'src/app/core/services/content.service';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-subject-list',
   templateUrl: './subject-list.component.html',
   styleUrls: ['./subject-list.component.css']
 })
-export class SubjectListComponent {
+export class SubjectListComponent implements OnInit{
   constructor(public dialog: MatDialog, 
               private subjectService: SubjectService, 
               public viewPdfDialog: MatDialog,
               private authService: AuthService,
               private toast: ToastService
               ) {}
+              panelOpenState = false;
+
+
   openDialog(): void {
+    if(this.myTabs){
+      this.myTabs.selectedIndex = 0;
+        }
     this.dialog.open(SubjectAddDialogComponent);
   }
 
@@ -77,8 +84,12 @@ export class SubjectListComponent {
   editElected(number: number){
     this.selectedTrack = number
   }
+  @ViewChild('myTabs') myTabs?: MatTabGroup;
 
   newElective(){
+    if(this.myTabs){
+  this.myTabs.selectedIndex = 1;
+    }
     this.dialog.open(AddNewElectiveSubject);
   }
 
@@ -346,15 +357,26 @@ export class ViewPdfClass {
   selector: 'assign-elective-sub',
   templateUrl: './assign-elective-sub.html',
 })
-export class AssignElectiveSubject {
+export class AssignElectiveSubject implements OnInit{
   constructor(
     public dialogRef: MatDialogRef<AssignElectiveSubject>,
+    private contentService: ContentService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
     private subjectService: SubjectService,
     private toast: ToastService
   ) {
 
+  }
+  modalColor = ''
+  isDark = new AppComponent(this.contentService)
+  ngOnInit(): void {
+    if(this.isDark.isDarkMode){
+      this.modalColor='#3b3b3b'
+    }
+    else{
+      this.modalColor='#e4e4e7'
+    }
   }
   // electiveSubjects()
   get selectedElective(){
@@ -439,11 +461,23 @@ export class AssignElectiveSubject {
 })
 
 
-export class AddNewElectiveSubject{
+export class AddNewElectiveSubject implements OnInit{
   constructor(private subjectService: SubjectService, 
+    private contentService: ContentService,
     public dialogRef: MatDialogRef<AddNewElectiveSubject>,
     public toast: ToastService
     ){}
+    modalColor = ''
+  isDark = new AppComponent(this.contentService)
+  ngOnInit(): void {
+    if(this.isDark.isDarkMode){
+      this.modalColor='#3b3b3b'
+    }
+    else{
+      this.modalColor='#e4e4e7'
+    }
+  }
+    
   error$ = new subject<string>();
   success$ = new subject<string>()
   submit(form: NgForm){
@@ -490,12 +524,23 @@ export class AddNewElectiveSubject{
   selector: 'edit-subject',
   templateUrl: './edit-subject.html',
 })
-export class EditSubject{
+export class EditSubject implements OnInit{
   constructor(private subjectService: SubjectService, 
     public dialogRef: MatDialogRef<EditSubject>, 
+    private contentService: ContentService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private toast: ToastService
     ){}
+    modalColor = ''
+  isDark = new AppComponent(this.contentService)
+  ngOnInit(): void {
+    if(this.isDark.isDarkMode){
+      this.modalColor='#3b3b3b'
+    }
+    else{
+      this.modalColor='#e4e4e7'
+    }
+  }
   error$ = new subject<string>();
   success$ = new subject<string>()
 

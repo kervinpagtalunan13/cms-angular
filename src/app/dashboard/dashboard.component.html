@@ -37,7 +37,7 @@
               >Latest Submitted Revision</mat-card-subtitle
             >
             <mat-card-content *ngIf="data.latestSubmittedRevisions">
-              <div class="fw-bold text-dark fs-6">
+              <div class="fw-bold fs-6">
                 <span>
                   CICT
                   {{
@@ -86,7 +86,7 @@
               >Latest Submitted Revision</mat-card-subtitle
             >
             <mat-card-content>
-              <div class="fw-bold text-dark fs-6">
+              <div class="fw-bold fs-6">
                 <span>
                   CICT
                   {{
@@ -123,7 +123,7 @@
         </div>
       </div>
 
-      <div class="col-sm">
+      <mat-card class="col-sm">
         <app-comment
           *ngIf="data.latestComments.length"
           [comments]="data.latestComments"
@@ -132,7 +132,8 @@
           name="comments"
           *ngIf="!data.latestComments.length"
         ></app-empty-state>
-      </div>
+      </mat-card>
+
     </div>
 
     <div class="row gap-2" *ngIf="false">
@@ -141,7 +142,7 @@
           >Latest Submitted Revision</mat-card-subtitle
         >
         <mat-card-content>
-          <div class="fw-bold text-dark fs-6">
+          <div class="fw-bold fs-6">
             <span>
               CICT
               {{

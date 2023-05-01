@@ -152,23 +152,39 @@ export class ContentManagementComponent {
   toggleIsEdit(){
     this.isEdit = !this.isEdit
   }
+  main = new AppComponent(this.contentService);
+  ngDoCheck(): void {
+    if(!this.main.isDarkMode){
+      if(this.main.body){
+        this.main.body.classList.add('theme-light');
+        this.main.body.classList.remove('theme-dark');
+        }
+    }
+    else{
+      if(this.main.body){
+        this.main.body.classList.add('theme-dark');
+        this.main.body.classList.remove('theme-light');
+        }
+    }
+  }
 
-//  toggleTheme = new AppComponent();
-//  isDark=false;
-//  toggle(){
-//   if(!this.isDark)
-//   {
-//     this.toggleTheme.toggleDarkMode();
-//   this.isDark = true;
-//   console.log(this.isDark);
-// }
-  
-//   else {
-//   this.toggleTheme.toggleLightMode();
-//     this.isDark = false;
-//     console.log(this.isDark);
-// }
+  ngOnInit(){
+    if(!this.main.isDarkMode){
+      if(this.main.body){
+      this.main.body.classList.add('theme-light');
+      this.main.body.classList.remove('theme-dark');
+      }
+    }
+    else{
+      if(this.main.body){
+        this.main.body.classList.add('theme-dark');
+        this.main.body.classList.remove('theme-light');
+        }
+    }
+  }
 
-//  }
+  reloadMain(){
+    this.main.reloadPage();
+  }
 
 }

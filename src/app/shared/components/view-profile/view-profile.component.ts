@@ -1,17 +1,27 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
+import { AppComponent } from 'src/app/app.component';
+import { ContentService } from 'src/app/core/services/content.service';
 @Component({
   selector: 'app-view-profile',
   templateUrl: './view-profile.component.html',
   styleUrls: ['./view-profile.component.css']
 })
-export class ViewProfileComponent {
-  constructor(
+export class ViewProfileComponent implements OnInit{
+  constructor(private contentService: ContentService,
     public dialogRef: MatDialogRef<ViewProfileComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
-
+  modalColor=''
+  isDark = new AppComponent(this.contentService);
+  ngOnInit(){
+    if(this.isDark.isDarkMode){
+      this.modalColor='#3b3b3b'
+    }
+    else{
+      this.modalColor='#e4e4e7'
+    }
+  }
   get user() {
     return this.data.user;
   }

@@ -1,4 +1,8 @@
-<div class="container p-4" *ngIf="(neededData$ | async) && canView()">
+<div
+  class="container p-4"
+  *ngIf="(neededData$ | async) && canView()"
+  style="height: 100vh"
+>
   <app-empty-state
     name="Users"
     message="once Admin have added User, you'll see it here"
@@ -30,6 +34,20 @@
   </header>
 
   <table class="table table-bordered mt-2">
+    <!-- <mat-form-field style="width: 200px" class="example-form-field">
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="listFilter"
+      placeholder="Search..."
+    /> -->
+    <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                <mat-icon>clear</mat-icon>
+            </button> -->
+    <!-- </mat-form-field
+  ><mat-icon>search</mat-icon>
+  <table> -->
+
     <thead *ngIf="false">
       <tr>
         <th scope="col" style="padding: 40px">
@@ -62,7 +80,7 @@
           "
         >
           <div class="float-left d-flex p-3 flex-column">
-            <div class="title d-inline-flex">
+            <div class="d-inline-flex">
               <div
                 class="rounded-circle me-3"
                 style="

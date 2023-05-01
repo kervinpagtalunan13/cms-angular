@@ -1,5 +1,5 @@
 <div
-  class="bg-light border shadow rounded overflow-hidden"
+  class="shadow rounded overflow-hidden"
   style="min-width: 500px"
 >
   <div class="text-center p-4" style="color: #d05834">
@@ -8,9 +8,9 @@
       <span class="h5">Register User</span>
     </div>
   </div>
-  <div class="p-4" style="background-color: #e4e4e7">
+  <div class="p-4" [ngStyle]="{'background-color':modalColor}">
     <form class="form" #form="ngForm" (ngSubmit)="submitForm(form)" id="form">
-      <!-- <div>
+      <div>
         <mat-form-field color="primary" style="margin-right: 20px">
           <input
             matInput
@@ -20,8 +20,8 @@
             ngModel
           />
         </mat-form-field>
-      </div> -->
-      <div class="form-floating mb-3">
+      </div>
+      <!-- <div class="form-floating mb-3">
         <input
           name="email"
           class="form-control shadow-none"
@@ -30,9 +30,9 @@
           ngModel
         />
         <label for="email">Email</label>
-      </div>
+      </div> -->
 
-      <div class="form-floating mb-3">
+      <!-- <div class="form-floating mb-3">
         <input
           name="password"
           class="form-control shadow-none"
@@ -41,13 +41,13 @@
           ngModel
         />
         <label for="Password">Password</label>
-      </div>
-      <!-- <div>
+      </div> -->
+      <div>
         <mat-form-field color="primary" style="margin-right: 20px">
           <input name="password" matInput placeholder="password" ngModel />
         </mat-form-field>
-      </div> -->
-      <div class="form-floating mb-3">
+      </div>
+      <!-- <div class="form-floating mb-3">
         <input
           class="form-control shadow-none"
           name="password_confirmation"
@@ -55,8 +55,8 @@
           ngModel
         />
         <label for="Password">Confirm Password</label>
-      </div>
-      <!-- <div>
+      </div> -->
+      <div>
         <mat-form-field color="primary" style="">
           <input
             name="password_confirmation"
@@ -65,9 +65,9 @@
             ngModel
           />
         </mat-form-field>
-      </div> -->
+      </div>
 
-      <div>
+      <!-- <div>
         <div class="form-floating mb-3">
           <select
             class="form-select shadow-none"
@@ -82,8 +82,8 @@
             <option value="reviewer">Stakeholders</option>
           </select>
           <label for="role">Role</label>
-        </div>
-        <!-- <mat-form-field color="primary" style="margin-right: 20px">
+        </div> -->
+        <mat-form-field color="primary" style="margin-right: 20px">
           <mat-label>Role</mat-label>
           <mat-select
             color="primary bg-light"
@@ -97,9 +97,9 @@
             <mat-option value="faculty" default>Committee Members</mat-option>
             <mat-option value="reviewer">Stakeholders</mat-option>
           </mat-select>
-        </mat-form-field> -->
+        </mat-form-field>
         <div class="form-floating mb-3" *ngIf="showDep">
-          <select
+          <!--<select
             class="form-select shadow-none"
             name="departmentId"
             color="primary"
@@ -110,8 +110,8 @@
             <option value="2">BLIS</option>
           </select>
           <label for="departmentId">Department</label>
-        </div>
-        <!-- <mat-form-field
+        </div> -->
+        <mat-form-field
           color="primary"
           style="margin-right: 20px"
           *ngIf="showDep"
@@ -126,7 +126,7 @@
             <mat-option value="1">BSIT</mat-option>
             <mat-option value="2">BLIS</mat-option>
           </mat-select>
-        </mat-form-field> -->
+        </mat-form-field>
       </div>
     </form>
     <app-notification
