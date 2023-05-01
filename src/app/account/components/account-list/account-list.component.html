@@ -1,8 +1,4 @@
-<div
-  class="container p-4"
-  *ngIf="(neededData$ | async) && canView()"
-  style="height: 100vh"
->
+<div class="container p-4" *ngIf="(neededData$ | async) && canView()">
   <app-empty-state
     name="Users"
     message="once Admin have added User, you'll see it here"

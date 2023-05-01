@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { AppComponent } from 'src/app/app.component';
 import { ContentService } from 'src/app/core/services/content.service';
-import context from 'react-bootstrap/esm/AccordionContext';
+// import context from 'react-bootstrap/esm/AccordionContext';
 
 @Component({
   selector: 'app-comment',
