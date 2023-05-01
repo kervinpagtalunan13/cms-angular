@@ -144,6 +144,15 @@
       <mat-icon>print</mat-icon>
       Print
     </button>
+    <button
+      mat-flat-button
+      color="primary"
+      *ngIf="!!revisions.length"
+      (click)="clickRevisionList()"
+    >
+      <mat-icon>list</mat-icon>
+      Revision History
+    </button>
   </div>
 </header>
 <mat-accordion>

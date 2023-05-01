@@ -3,14 +3,16 @@ import { Injectable } from '@angular/core';
 import { Subject, catchError, map, tap } from 'rxjs';
 import { handleError } from '../errorHandling/errorHandler';
 import { Comment } from '../models/comment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommentService {
-  private baseUrl = `http://localhost:8000/api/`;
+  constructor(private http: HttpClient, 
+              private authService: AuthService){}
 
-  constructor(private http: HttpClient) { }
+  private baseUrl = this.authService.baseUrl;
 
   commentSuccess = new Subject();
 

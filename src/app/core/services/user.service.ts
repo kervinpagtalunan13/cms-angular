@@ -9,36 +9,36 @@ import { handleError } from '../errorHandling/errorHandler';
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = `http://127.0.0.1:8000/api`;
+  private baseUrl = this.authService.baseUrl;
 
   constructor(private http: HttpClient,
               private authService: AuthService) {}
 
-  users$ = this.http.get<User[]>(`${this.baseUrl}/users`);
+  users$ = this.http.get<User[]>(`${this.baseUrl}users`);
 
   updateCurrentUser(profile: any){
     const currentUser = this.authService.currentUser
     
     if(!currentUser.profile){
       const credentials = {...profile, userId: currentUser.id}
-      return this.http.post(`${this.baseUrl}/profiles`, credentials).pipe(
+      return this.http.post(`${this.baseUrl}profiles`, credentials).pipe(
         catchError(handleError)
       )
     }
     const credentials = {...profile, userId: currentUser.profile.id}
-    return this.http.patch(`${this.baseUrl}/profiles/${currentUser.profile.id}`, credentials).pipe(
+    return this.http.patch(`${this.baseUrl}profiles/${currentUser.profile.id}`, credentials).pipe(
       catchError(handleError)
     )
   }
 
   changePass(passwords: any){
-    return this.http.post(`${this.baseUrl}/users/changePass`, passwords).pipe(
+    return this.http.post(`${this.baseUrl}users/changePass`, passwords).pipe(
       catchError(handleError)
     )
   }
 
   onUpload(fd: FormData) {
-    return this.http.post(`${this.baseUrl}/profiles/upload`, fd).pipe(
+    return this.http.post(`${this.baseUrl}profiles/upload`, fd).pipe(
       catchError(handleError)
     )
 

@@ -1,17 +1,39 @@
 <div class="container p-4" *ngIf="neededData$ | async">
+  <!-- {{ filteredData(0) | json }} -->
+
   <header class="d-flex justify-content-between align-items-center my-2">
     <h1 class="fw-semib fs-3" style="font-weight: 500">Curriculums</h1>
-    <button
-      mat-flat-button
-      color="primary"
-      [routerLink]="['create']"
-      *ngIf="role == 'chair' || role == 'faculty' || role == 'admin'"
-    >
-      <mat-icon>create</mat-icon>
-      Create Curriculum
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group flex-nowrap">
+        <span class="input-group-text" id="addon-wrapping">
+          <mat-icon>search</mat-icon>
+        </span>
+        <input
+          type="text"
+          class="form-control shadow-none"
+          placeholder="Search here..."
+          aria-label="Username"
+          [(ngModel)]="filter"
+          aria-describedby="addon-wrapping"
+        />
+      </div>
+      <div>
+        <button
+          mat-flat-button
+          color="primary"
+          [routerLink]="['create']"
+          *ngIf="role == 'chair' || role == 'faculty' || role == 'admin'"
+        >
+          <mat-icon>create</mat-icon>
+          Create Curriculum
+        </button>
+      </div>
+    </div>
   </header>
-  <mat-tab-group>
+  <mat-tab-group
+    [(selectedIndex)]="selectedTabIndex"
+    (selectedIndexChange)="onSelectedTabChange($event)"
+  >
     <mat-tab>
       <ng-template mat-tab-label>
         Existing
@@ -24,84 +46,127 @@
         message="once a reviewer approves curriculums, you'll see it here"
         *ngIf="!curriculums.length"
       ></app-empty-state>
+      <div
+        class="d-flex align-items-center justify-content-between px-5"
+        *ngIf="filteredData(0).length"
+      >
+        <span>
+          Version
+          <button mat-icon-button (click)="sortCurriculum('version')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Name
+          <button mat-icon-button (click)="sortCurriculum('name')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Department
+          <button mat-icon-button (click)="sortCurriculum('department')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Status
+          <button mat-icon-button (click)="sortCurriculum('status')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Date
+          <button mat-icon-button (click)="sortCurriculum('created_at')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+      </div>
       <table class="table" *ngIf="curriculums">
-        <thead>
-          <tr *ngIf="false">
-            <th style="">
-              <mat-form-field style="width: 200px" class="example-form-field">
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="listFilter"
-                  placeholder="Search..."
-                />
-
-                <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                          <mat-icon>clear</mat-icon>
-                      </button> --> </mat-form-field
-              ><mat-icon>search</mat-icon>
-              <!-- <button mat-raised-button color="primary"></button> -->
-
-              <!--  -->
-            </th>
-          </tr>
-        </thead>
         <tbody>
-          <tr *ngFor="let data of curriculums">
+          <tr *ngFor="let data of filteredData(0)">
             <td scope="row">
-              <div class="float-left d-flex p-3 flex-column">
-                <div class="d-flex align-items-center">
-                  <span class="h5 m-0 p-0 me-2"
-                    >CICT
-                    {{ data.department.department_code | uppercase }} Curriculum
-                    version {{ data.version }}</span
-                  >
-                  <div>
-                    <span
-                      class="badge rounded-pill text-bg-primary {{
-                        data.status == 'i' && 'text-bg-danger'
-                      }} fs-7 me-2"
-                      >{{ data.status == "a" ? "Active" : "Inactive" }}</span
+              <div
+                class="d-flex align-items-center justify-content-between border"
+                style="
+                  border: 1px solid gray;
+                  border-left: 5px solid #d05834 !important;
+                  width: 100%;
+                "
+              >
+                <div class="float-left d-flex p-3 flex-column">
+                  <div class="d-flex align-items-center">
+                    <span class="h5 m-0 p-0 me-2"
+                      >CICT
+                      {{ data.department.department_code | uppercase }}
+                      Curriculum version {{ data.version }}</span
                     >
-                    <span
-                      class="badge rounded-pill text-bg-danger fs-7"
-                      *ngIf="data.is_new"
-                      >new</span
-                    >
+                    <div>
+                      <span
+                        class="badge rounded-pill text-bg-primary {{
+                          data.status == 'i' && 'text-bg-danger'
+                        }} fs-7 me-2"
+                        >{{ data.status == "a" ? "Active" : "Inactive" }}</span
+                      >
+                      <span
+                        class="badge rounded-pill text-bg-danger fs-7"
+                        *ngIf="data.is_new"
+                        >new</span
+                      >
+                    </div>
                   </div>
+                  <div class="d-flex align-items-center">
+                    <div
+                      class="rounded-circle me-1"
+                      style="
+                    width: 35px;
+                    height: 35px;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    background-image: url('{{
+                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                          (data?.user?.profile?.profile_pic || 'no-image.jpg')
+                      }}');"
+                    ></div>
+                    <div class="">
+                      <small class="author text-secondary">{{
+                        data.user?.profile?.name
+                      }}</small>
+                      <!-- <small
+                      class="author text-secondary"
+                      style="margin-top: -7px"
+                      >{{ data.user?.role | titlecase }}</small
+                    > -->
+                    </div>
+                  </div>
+                  <small class="date text-secondary">{{
+                    data.created_at | date
+                  }}</small>
                 </div>
-                <small class="author text-secondary">{{
-                  data.user?.profile?.name
-                }}</small>
-                <small class="date text-secondary">{{
-                  data.created_at | date
-                }}</small>
-              </div>
-            </td>
-            <td>
-              <div class="float-end">
-                <button
-                  mat-flat-button
-                  color="primary"
-                  class="mt-4"
-                  [routerLink]="[data.id]"
-                >
-                  <mat-icon>remove_red_eye</mat-icon>
-                  View
-                </button>
+                <div class="">
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    class="me-3"
+                    [routerLink]="[data.id]"
+                  >
+                    <mat-icon>remove_red_eye</mat-icon>
+                    View
+                  </button>
+                </div>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <mat-paginator
+      <!-- <mat-paginator
         [length]="totalItems"
         [pageSize]="pageSize"
         [pageSizeOptions]="pageSizeOptions"
         (page)="onPageChange($event)"
       >
-      </mat-paginator>
+      </mat-paginator> -->
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
@@ -117,78 +182,116 @@
         message="once a faculty creates revisions, you'll see it here"
         *ngIf="!revisions.length"
       ></app-empty-state>
+      <div
+        class="d-flex align-items-center justify-content-between px-5 my-1"
+        *ngIf="filteredData(1).length"
+      >
+        <span>
+          Version
+          <button mat-icon-button (click)="sortCurriculum('version')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Name
+          <button mat-icon-button (click)="sortCurriculum('name')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Department
+          <button mat-icon-button (click)="sortCurriculum('department')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Status
+          <button mat-icon-button (click)="sortCurriculum('status')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Date
+          <button mat-icon-button (click)="sortCurriculum('created_at')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+      </div>
       <table class="table" *ngIf="revisions">
-        <thead>
-          <tr *ngIf="false">
-            <th style="">
-              <mat-form-field style="width: 200px" class="example-form-field">
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="listFilter"
-                  placeholder="Search..."
-                />
-
-                <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                          <mat-icon>clear</mat-icon>
-                      </button> --> </mat-form-field
-              ><mat-icon>search</mat-icon>
-              <!-- <button mat-raised-button color="primary"></button> -->
-
-              <!--  -->
-            </th>
-          </tr>
-        </thead>
         <tbody>
-          <tr *ngFor="let data of revisions">
-            <td scope="row">
-              <div class="float-left d-flex p-3 flex-column">
-                <div class="d-flex align-items-center">
-                  <span class="h5 m-0 p-0 me-2"
-                    >CICT
-                    {{
-                      data.curriculum?.department?.department_code | uppercase
-                    }}
-                    Curriculum version{{ data.curriculum?.version }}
-                  </span>
-                  <div>
-                    <span
-                      class="badge rounded-pill {{
-                        data.status == 'a'
-                          ? 'text-bg-primary'
-                          : 'text-bg-danger'
-                      }} fs-7 me-2"
-                      >{{ data.status == "a" ? "Approve" : "Pending" }}</span
-                    >
-                    <span class="badge rounded-pill text-bg-primary fs-7 me-2"
-                      >revision</span
-                    >
-                    <span
-                      class="badge rounded-pill text-bg-danger fs-7"
-                      *ngIf="data.is_new"
-                      >new</span
-                    >
+          <tr *ngFor="let data of filteredData(1)">
+            <td scope="row" class="border-0">
+              <div
+                class="d-flex align-items-center justify-content-between border"
+                style="
+                  border: 1px solid gray;
+                  border-left: 5px solid #d05834 !important;
+                  width: 100%;
+                "
+              >
+                <div class="float-left d-flex p-3 flex-column">
+                  <div class="d-flex align-items-center">
+                    <span class="h5 m-0 p-0 me-2"
+                      >CICT
+                      {{
+                        data.curriculum?.department?.department_code | uppercase
+                      }}
+                      Curriculum version{{ data.curriculum?.version }}
+                    </span>
+                    <div>
+                      <span
+                        class="badge rounded-pill {{
+                          data.status == 'a'
+                            ? 'text-bg-primary'
+                            : 'text-bg-danger'
+                        }} fs-7 me-2"
+                        >{{ data.status == "a" ? "Approve" : "Pending" }}</span
+                      >
+                      <span class="badge rounded-pill text-bg-primary fs-7 me-2"
+                        >revision</span
+                      >
+                      <span
+                        class="badge rounded-pill text-bg-danger fs-7"
+                        *ngIf="data.is_new"
+                        >new</span
+                      >
+                    </div>
                   </div>
+                  <div class="d-flex">
+                    <div
+                      class="rounded-circle me-1"
+                      style="
+                          width: 35px;
+                          height: 35px;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        background-image: url('{{
+                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                          (data?.user?.profile?.profile_pic || 'no-image.jpg')
+                      }}');"
+                    ></div>
+                    <div class="my-auto">
+                      <small class="author text-secondary">{{
+                        data.user?.profile?.name
+                      }}</small>
+                    </div>
+                  </div>
+                  <small class="date text-secondary">{{
+                    data.created_at | date
+                  }}</small>
                 </div>
-                <small class="author text-secondary">{{
-                  data.user?.profile?.name
-                }}</small>
-                <small class="date text-secondary">{{
-                  data.created_at | date
-                }}</small>
-              </div>
-            </td>
-            <td>
-              <div class="float-end">
-                <button
-                  mat-flat-button
-                  color="primary"
-                  class="mt-4"
-                  [routerLink]="['revisions', data.id]"
-                >
-                  <mat-icon>remove_red_eye</mat-icon>
-                  View
-                </button>
+                <div class="">
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    class="me-3"
+                    [routerLink]="['revisions', data.id]"
+                  >
+                    <mat-icon>remove_red_eye</mat-icon>
+                    View
+                  </button>
+                </div>
               </div>
             </td>
           </tr>
@@ -218,23 +321,44 @@
         message="once a faculty creates curriculums, you'll see it here"
         *ngIf="!curriculumPendings.length"
       ></app-empty-state>
+      <div
+        class="d-flex align-items-center justify-content-between px-5 my-1"
+        *ngIf="filteredData(2).length"
+      >
+        <span>
+          Version
+          <button mat-icon-button (click)="sortCurriculum('version')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Name
+          <button mat-icon-button (click)="sortCurriculum('name')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Department
+          <button mat-icon-button (click)="sortCurriculum('department')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Status
+          <button mat-icon-button (click)="sortCurriculum('status')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+        <span>
+          Date
+          <button mat-icon-button (click)="sortCurriculum('created_at')">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </span>
+      </div>
       <table class="table" *ngIf="curriculumPendings">
-        <thead>
-          <tr *ngIf="false">
-            <th style="">
-              <mat-form-field style="width: 200px" class="example-form-field">
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="listFilter"
-                  placeholder="Search..."
-                /> </mat-form-field
-              ><mat-icon>search</mat-icon>
-            </th>
-          </tr>
-        </thead>
         <tbody>
-          <tr *ngFor="let data of curriculumPendings">
+          <tr *ngFor="let data of filteredData(2)">
             <td scope="row" class="border-0">
               <div
                 class="d-flex align-items-center justify-content-between border"
@@ -267,16 +391,15 @@
                     <div
                       class="rounded-circle me-1"
                       style="
-                  width: 35px;
-                  height: 35px;
-                  background-position: center;
-                  background-repeat: no-repeat;
-                  background-size: cover;
-                  background-image: url('{{
-                        'http://127.0.0.1:8000/api/profiles/images/' +
+                        width: 35px;
+                        height: 35px;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        background-image: url('{{
+                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
-                      }}');
-                  "
+                      }}');"
                     ></div>
                     <div>
                       <small class="author text-secondary"

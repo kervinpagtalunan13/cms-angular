@@ -6,27 +6,30 @@
   ></app-empty-state>
   <header class="d-flex justify-content-between align-items-center">
     <span class="h3">Accounts</span>
-    <button
-      mat-raised-button
-      color="primary"
-      style="float: right"
-      (click)="openDialog()"
-    >
-      Create New
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group flex-nowrap">
+        <span class="input-group-text" id="addon-wrapping">
+          <mat-icon>search</mat-icon>
+        </span>
+        <input
+          type="text"
+          class="form-control shadow-none"
+          placeholder="Search here..."
+          aria-label="Username"
+          [(ngModel)]="listFilter"
+          aria-describedby="addon-wrapping"
+        />
+      </div>
+      <div>
+        <button mat-flat-button color="primary" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          add User
+        </button>
+      </div>
+    </div>
   </header>
-  <mat-form-field style="width: 200px" class="example-form-field">
-    <input
-      matInput
-      type="text"
-      [(ngModel)]="listFilter"
-      placeholder="Search..."
-    />
-    <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                <mat-icon>clear</mat-icon>
-            </button> --> </mat-form-field
-  ><mat-icon>search</mat-icon>
-  <table class="table">
+
+  <table class="table table-bordered mt-2">
     <thead *ngIf="false">
       <tr>
         <th scope="col" style="padding: 40px">
@@ -49,7 +52,15 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of displayedItems">
-        <td scope="row">
+        <td
+          scope="row"
+          class="d-flex align-items-center justify-content-between border mt-2"
+          style="
+            border: 1px solid gray;
+            border-left: 5px solid #d05834 !important;
+            width: 100%;
+          "
+        >
           <div class="float-left d-flex p-3 flex-column">
             <div class="title d-inline-flex">
               <div
@@ -61,7 +72,7 @@
                   background-repeat: no-repeat;
                   background-size: cover;
                   background-image: url('{{
-                  'http://127.0.0.1:8000/api/profiles/images/' +
+                  'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
                     (user?.profile?.profile_pic || 'no-image.jpg')
                 }}');
                 "
@@ -87,9 +98,7 @@
               </div>
             </div>
           </div>
-        </td>
-        <td>
-          <div class="floater">
+          <div class="">
             <button
               mat-raised-button
               color="primary"

@@ -42,7 +42,7 @@ export class SubjectListComponent {
       }
     });
   }
-
+  selectedTabIndex: number = 0;
   getElectiveSubject(id: number){
     return this.electives.find(sub => sub.id == id)?.description
   }
@@ -237,6 +237,7 @@ export class SubjectListComponent {
    //pang filter
  
    filteredList: Subject[]=[]; //array ng filtered list
+   electiveFilteredList: any[] = []
 
     performFilter(filterBy: string): Subject[]{
       filterBy = filterBy.toLocaleLowerCase();
@@ -261,6 +262,12 @@ export class SubjectListComponent {
   pageSize = 10; // Number of items to display per page
   pageSizeOptions = [10, 20, 30]; // Options for the number of items per page
 
+  electiveTotalItems = this.electives.length; // Total number of items in your table
+  electivePageSize = 10; // Number of items to display per page
+  electivePageSizeOptions = [10, 20, 30]; // Options for the number of items per page
+  electiveCurrentPageIndex = 0
+  electivedisplayedItems: any[] = [];
+
   currentPageIndex = 0; // Current page index
   displayedItems: any[] = []; // The items to display on the current page
   //paginator
@@ -269,12 +276,12 @@ export class SubjectListComponent {
   ngOnInit(): void {
     this.listFilter = '';
   }
-  //pang filter
 
   //pang check kung may laman yung search input (para di mawalan ng laman yung table)
   ngDoCheck(): void{
     if(!this.listFilter){
       this.totalItems = this.subjects.length;
+      this.electiveTotalItems = this.electives.length
       this.loadPageWithoutFilter(this.currentPageIndex);
     }
     else{
@@ -317,7 +324,6 @@ viewPdf(ref: string){
 //   data: subje
 // });
 
-
 }
 
 @Component({
@@ -325,14 +331,14 @@ viewPdf(ref: string){
   templateUrl: 'view-pdf.html',
 })
 export class ViewPdfClass {
-  pdfLoc = 'http://127.0.0.1:8000/api/subjectsGetSyllabus/';
+  pdfLoc = 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/subjectsGetSyllabus/';
   myUrl: SafeResourceUrl;
   constructor(
     private sanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<ViewPdfClass>,
     @Inject(MAT_DIALOG_DATA) public data: { ref: string }
   ) {
-    this.myUrl = this.sanitizer.bypassSecurityTrustResourceUrl('http://127.0.0.1:8000/api/subjectsGetSyllabus/' + data.ref);
+    this.myUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pdfLoc + data.ref);
   }
 }
 

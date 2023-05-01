@@ -8,7 +8,7 @@ export class OrderByPipe implements PipeTransform {
     if (!value || !column || !direction) {
       return value;
     }
-
+    
     let sortedValue = value.sort((a: any, b: any) => {
       if (a[column] < b[column]) {
         return direction === 'asc' ? -1 : 1;

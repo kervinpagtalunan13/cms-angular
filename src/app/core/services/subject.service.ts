@@ -4,21 +4,24 @@ import { Subject } from '../models/subject';
 import { BehaviorSubject, catchError, combineLatest, map, of, tap} from 'rxjs';
 import { handleError } from '../errorHandling/errorHandler';
 import { ElectiveTrack } from '../models/elective';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubjectService {
-  private baseUrl = `http://127.0.0.1:8000/api`;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, 
+              private authService: AuthService){}
+
+  private baseUrl = this.authService.baseUrl;
   subjectAdd$ = new BehaviorSubject<Subject | null>(null);
 
-  subjects$ = this.http.get<Subject[]>(`${this.baseUrl}/subjects`).pipe(
+  subjects$ = this.http.get<Subject[]>(`${this.baseUrl}subjects`).pipe(
     catchError(handleError)
   )
 
   addSubject(subject:any){
-    return this.http.post<Subject>(`${this.baseUrl}/subjects`, subject)
+    return this.http.post<Subject>(`${this.baseUrl}subjects`, subject)
       .pipe(
         tap((data:any) => {
           this.subjectAdd$.next(data)
@@ -31,7 +34,7 @@ export class SubjectService {
   updateElective$ = new BehaviorSubject<any>(null)
   updateSubject(data:any, type:string, id:number){
     if(type == 'subject'){
-      return this.http.post<any>(`${this.baseUrl}/subjects/update/${id}`, data).pipe(
+      return this.http.post<any>(`${this.baseUrl}subjects/update/${id}`, data).pipe(
         tap(data => {
           this.updateSubject$.next(data)
         }),
@@ -39,7 +42,7 @@ export class SubjectService {
       )
     }
 
-    return this.http.post<any>(`${this.baseUrl}/electives/update/${id}`, data).pipe(
+    return this.http.post<any>(`${this.baseUrl}electives/update/${id}`, data).pipe(
       tap(data => {
         this.updateElective$.next(data)
       }),
@@ -47,7 +50,7 @@ export class SubjectService {
     )
   }
 
-  electives$ = this.http.get<any[]>(`${this.baseUrl}/electives`)
+  electives$ = this.http.get<any[]>(`${this.baseUrl}electives`)
     .pipe(
       catchError(handleError)
     )
@@ -61,7 +64,7 @@ export class SubjectService {
       elective_5: data[4],
     }
 
-    return this.http.patch(`${this.baseUrl}/electiveSubjects/${id}`, body)
+    return this.http.patch(`${this.baseUrl}electiveSubjects/${id}`, body)
       .pipe(
 
         catchError(handleError)
@@ -70,12 +73,12 @@ export class SubjectService {
 
   updateElectiveSubject(data:any, id: number){
     const body = { metadata: data }
-    return this.http.patch<any[]>(`${this.baseUrl}/electiveSubjects/${id}`, body).pipe(
+    return this.http.patch<any[]>(`${this.baseUrl}electiveSubjects/${id}`, body).pipe(
       catchError(handleError)
     )
   }
 
-  electiveSubjects$ = this.http.get<any[]>(`${this.baseUrl}/electiveSubjects`).pipe(
+  electiveSubjects$ = this.http.get<any[]>(`${this.baseUrl}electiveSubjects`).pipe(
     map(electiveSubj => electiveSubj.map(subj => {
       return {...subj, metadata: !!JSON.parse(subj.metadata).length ? JSON.parse(subj.metadata) : [null, null, null, null, null]}})),
     catchError(handleError)
@@ -83,7 +86,7 @@ export class SubjectService {
   
   addedElectiveSubject$ = new BehaviorSubject<any>(null)
   addElective(data: any){
-    return this.http.post<any>(`${this.baseUrl}/electives`, data).pipe(
+    return this.http.post<any>(`${this.baseUrl}electives`, data).pipe(
       tap(x => {
         this.addedElectiveSubject$.next(x)
       }),
@@ -119,7 +122,7 @@ export class SubjectService {
   )
   
   removeSubject(id:number, data:any){
-    return this.http.patch<Subject>(`${this.baseUrl}/subjects/${id}`, data)
+    return this.http.patch<Subject>(`${this.baseUrl}subjects/${id}`, data)
       .pipe(
         catchError(handleError)
       )
