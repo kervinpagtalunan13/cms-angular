@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { YearDropdownComponent } from './components/year-dropdown/year-dropdown.component';
 import { CommentsComponent } from './components/comments/comments.component';
 import { CurriculumCreateContainerComponent } from './components/curriculum-create-container/curriculum-create-container.component';
-import { CurriculumViewContainerComponent } from './components/curriculum-view-container/curriculum-view-container.component';
+import { CurriculumViewContainerComponent, RevisionListDialogComponent } from './components/curriculum-view-container/curriculum-view-container.component';
 import { CurriculumCreateRevisionContainerComponent } from './components/curriculum-create-revision-container/curriculum-create-revision-container.component';
 import { CurriculumViewRevisionContainerComponent } from './components/curriculum-view-revision-container/curriculum-view-revision-container.component';
 import { CurriculumEditContainerComponent } from './components/curriculum-edit-container/curriculum-edit-container.component';
@@ -30,7 +30,14 @@ import { ElectiveSubjectDialogComponent } from './components/elective-subject-di
     curriculumDialog, 
     YearDropdownComponent, 
     CommentsComponent, 
-    CurriculumCreateContainerComponent, CurriculumViewContainerComponent, CurriculumCreateRevisionContainerComponent, CurriculumViewRevisionContainerComponent, CurriculumEditContainerComponent, CurriculumEditRevisionContainerComponent, ElectiveSubjectDialogComponent
+    CurriculumCreateContainerComponent, 
+    CurriculumViewContainerComponent, 
+    CurriculumCreateRevisionContainerComponent, 
+    CurriculumViewRevisionContainerComponent, 
+    CurriculumEditContainerComponent, 
+    CurriculumEditRevisionContainerComponent, 
+    ElectiveSubjectDialogComponent,
+    RevisionListDialogComponent
   ],
   imports: [
     CommonModule,

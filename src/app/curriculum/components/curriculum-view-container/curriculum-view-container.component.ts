@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { EMPTY, Observable, catchError, combineLatest, map, tap } from 'rxjs';
@@ -10,21 +10,23 @@ import { CommentService } from 'src/app/core/services/comment.service';
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-curriculum-view-container',
   templateUrl: './curriculum-view-container.component.html',
   styleUrls: ['./curriculum-view-container.component.css']
 })
-export class CurriculumViewContainerComponent implements OnInit {
+export class CurriculumViewContainerComponent{
   constructor(private curriculumService: CurriculumService,
               private authService: AuthService,
               private commentService: CommentService,
               private route: ActivatedRoute,
               private router: Router,
               private dialog: MatDialog,
-              private toast: ToastService
+              private toast: ToastService,
     ){}
+
   currUserId:any = 0
   userId:any = 0
   comments:Comment[] = []
@@ -42,6 +44,15 @@ export class CurriculumViewContainerComponent implements OnInit {
   currentUser!:User
   electiveSubjects: any[] = []
   departmentId:any = ''
+  revisions: any[] = []
+  
+  openRevisionList(){
+    this.dialog.open(RevisionListDialogComponent, {
+      data: {
+        revisions: this.revisions
+      }
+    })
+  }
 
   needeedData$ = combineLatest([
     this.route.data,
@@ -50,9 +61,10 @@ export class CurriculumViewContainerComponent implements OnInit {
     this.commentService.comments$,
     this.route.params.pipe(
       map(({id}) => id)
-    )
+    ),
+    this.curriculumService.revisions$
   ]).pipe(
-    tap(([data, user, curriculums, comments, id]) => {
+    tap(([data, user, curriculums, comments, id, revisions]) => {
       this.type = data['type']
       this.action = data['action']
 
@@ -65,6 +77,9 @@ export class CurriculumViewContainerComponent implements OnInit {
       this.comments = comments.filter(comment => comment.curriculum_id == id)
       this.departmentId = this.curriculum.department_id
       this.title = `CICT ${this.curriculum.department.department_code} Curriculum version ${this.curriculum.version}`
+
+      this.revisions = revisions.filter(revision => revision.curriculum_id == this.curriculum.id && revision.status == 'a')
+      
 
       this.subjects = JSON.parse(this.curriculum.metadata).subjects
       this.electiveSubjects = JSON.parse(this.curriculum.metadata).electiveSubjects
@@ -142,38 +157,27 @@ export class CurriculumViewContainerComponent implements OnInit {
     )
   }
 
-  ngOnInit():void{
-    // this.route.data.subscribe((data:any) => {
-    //   this.type = data.type
-    //   this.action = data.action
-    // })
-
-    // this.route.params.subscribe(({id}) => {
-    //   // for curriculum
-    //     this.curriculum$ = this.curriculumService.getCurriculum(+id).pipe(
-    //       tap(curriculum => {
-    //         this.curriculum = curriculum
-    //         this.subjects = JSON.parse(curriculum.metadata)
-    //         this.title = `CICT ${curriculum.department.department_code} Curriculum version ${curriculum.version}`
-    //         this.status = curriculum.status  
-    //         this.created_at = curriculum.created_at
-    //         this.author = curriculum.user?.profile?.name
-
-    //         this.commentService.getCurriculumComments(this.curriculum.id).pipe(
-    //           tap(comments => this.comments = comments)
-    //         ).subscribe(
-    //           data => console.log(data)
-    //         )
-
-    //       })
-    //     )
-    // })
-
-
-  }
-
-  
   // curriculum = this.curriculumService.getCurriculum()
   curriculum$ = new Observable<Curriculum2>
 
+}
+
+@Component({
+  selector: 'app-revision-list-dialog',
+  templateUrl: './revision-list-dialog.component.html',
+  // styleUrls: ['./revision-list-dialog.component.css']
+})
+export class RevisionListDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<RevisionListDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private router: Router
+  ) {}
+  get revisions() {
+    return this.data.revisions;
+  }
+  clickView(id: number){
+    this.dialogRef.close()
+    this.router.navigate(['/', 'curriculums', 'revisions', id])
+  }
 }

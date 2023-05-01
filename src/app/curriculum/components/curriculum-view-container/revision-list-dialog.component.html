@@ -1,0 +1,37 @@
+<div class="bg-light shadow rounded overflow-hidden" color="primary">
+  <div class="text-center p-4" style="color: #d05834">
+    <mat-icon>list</mat-icon>
+    <div>
+      <span class="h5">Revisions History</span>
+    </div>
+  </div>
+  <div class="bg-gradient p-4" style="background-color: #e4e4e7">
+    <div mat-dialog-content style="color: #52525b"></div>
+    <table class="table table-bordered border">
+      <thead>
+        <tr>
+          <th>Revise Id</th>
+          <th>Date</th>
+          <th>Revise by</th>
+          <th>link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let revision of revisions">
+          <td>{{ revision.id }}</td>
+          <td>{{ revision.updated_at | date }}</td>
+          <td>
+            {{ revision.user?.profile?.name || "not set his/her name yet" }}
+          </td>
+          <th>
+            <a
+              [routerLink]="['/', 'curriculums', 'revisions', revision.id]"
+              target="_blank"
+              ><mat-icon>remove_red_eye</mat-icon></a
+            >
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -74,14 +74,19 @@ export class YearDropdownComponent {
   @Input() dep:number|null = null
   @Input() electiveData: any[] = []
   @Input() electiveIncluded:boolean = false
+  @Input() revisions: any[] = []
 
   @Output() submitCur = new EventEmitter()
   @Output() approveCur = new EventEmitter()
   @Output() editCur = new EventEmitter()
   @Output() reviseCur = new EventEmitter()
+  @Output() openRevisionList = new EventEmitter()
   
   electiveSubjects:any[] = []
 
+  clickRevisionList(){
+    this.openRevisionList.emit()
+  }
   // electiveSubjects$ = this.curriculumService.electiveSubjects$.pipe(
   //   tap(electiveSubjects => {
   //     this.electiveSubjects = electiveSubjects
