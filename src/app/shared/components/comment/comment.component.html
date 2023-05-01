@@ -3,7 +3,7 @@
     <span class="me-1">Comments</span>
     <mat-icon class="mt-1">chat</mat-icon>
   </h2>
-  <div class="my-2">
+  <div class="my-2" [ngStyle]="{'background-color':insideColor}" style="overflow-y: scroll; height:300px; padding:10px; border-radius:0.3rem;">
     <div class="chat-c" [ngStyle]="{ 'max-height': height + 'px' }">
       <mat-card class="shadow p-4" *ngIf="comments.length == 0">
         <mat-card-content class="text-center">
@@ -13,7 +13,7 @@
           this curriculum doesn't have comments
         </mat-card-content>
       </mat-card>
-      <mat-card class="comment-card mb-3" *ngFor="let comment of comments">
+      <mat-card class="comment-card mb-3" *ngFor="let comment of comments" [ngStyle]="{'background-color':commentColor}">
         <mat-card-header>
           <img
             mat-card-avatar

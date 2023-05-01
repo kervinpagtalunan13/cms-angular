@@ -1,4 +1,4 @@
-<div class="container p-4" *ngIf="(neededData$ | async) && canView()">
+<div class="container p-4" *ngIf="(neededData$ | async) && canView()" style="height:100vh;">
   <app-empty-state
     name="Users"
     message="once Admin have added User, you'll see it here"
@@ -26,7 +26,7 @@
                 <mat-icon>clear</mat-icon>
             </button> --> </mat-form-field
   ><mat-icon>search</mat-icon>
-  <table class="table">
+  <table>
     <thead *ngIf="false">
       <tr>
         <th scope="col" style="padding: 40px">
@@ -48,10 +48,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of displayedItems">
+      <tr *ngFor="let user of displayedItems" style="border-bottom: 1px solid rgb(140, 140, 140);">
         <td scope="row">
           <div class="float-left d-flex p-3 flex-column">
-            <div class="title d-inline-flex">
+            <div class="d-inline-flex">
               <div
                 class="rounded-circle me-3"
                 style="

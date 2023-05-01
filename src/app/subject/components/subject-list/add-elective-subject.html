@@ -1,5 +1,5 @@
 <div
-  class="bg-light border shadow rounded overflow-hidden"
+  class="shadow rounded overflow-hidden"
   style="width: 500px"
 >
   <div class="text-center p-4" style="color: #d05834">
@@ -8,7 +8,7 @@
       <span class="h5">Add Elective</span>
     </div>
   </div>
-  <div class="p-4" style="background-color: #e4e4e7">
+  <div class="p-4" [ngStyle]="{'background-color':modalColor}">
     <div mat-dialog-content>
       <form #form="ngForm" id="form" (ngSubmit)="submit(form)">
         <input

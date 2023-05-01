@@ -12,7 +12,7 @@
     opened
   >
     <!-- <div class="position-relative p-3" style="height: 100%"> -->
-    <header class="text-dark d-flex pb-4 border-bottom">
+    <header class="d-flex pb-4 border-bottom">
       <div class="me-2">
         <!-- <img
           class="shadow-sm rounded"
@@ -40,7 +40,7 @@
       </div>
       <div class="">
         <div>
-          <small class="text-dark nav-item">{{
+          <small class=" nav-item">{{
             user.profile?.name || "not set name yet"
           }}</small>
         </div>
@@ -113,7 +113,7 @@
       <mat-list-item
         role="listitem"
         class="nav-item rounded"
-        [routerLink]="['/content']"
+        (click)="openDialog()"
         routerLinkActive="active"
         *ngIf="user.role == 'admin'"
       >

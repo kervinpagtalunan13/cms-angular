@@ -1,6 +1,14 @@
-<div class="container p-4" *ngIf="neededData$ | async">
+<div class="p-4" *ngIf="neededData$ | async" style="height:100vh;">
   <header class="d-flex justify-content-between align-items-center my-2">
     <h1 class="fw-semib fs-3" style="font-weight: 500">Curriculums</h1>
+          <mat-form-field style="width: 200px" class="example-form-field">
+            <mat-label><mat-icon>search</mat-icon>{{searchPlaceholder}}</mat-label>
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="listFilter"
+            /></mat-form-field
+          >
     <button
       mat-flat-button
       color="primary"
@@ -11,7 +19,7 @@
       Create Curriculum
     </button>
   </header>
-  <mat-tab-group>
+  <mat-tab-group (selectedTabChange)="changeTab($event)">
     <mat-tab>
       <ng-template mat-tab-label>
         Existing
@@ -24,30 +32,9 @@
         message="once a reviewer approves curriculums, you'll see it here"
         *ngIf="!curriculums.length"
       ></app-empty-state>
-      <table class="table" *ngIf="curriculums">
-        <thead>
-          <tr *ngIf="false">
-            <th style="">
-              <mat-form-field style="width: 200px" class="example-form-field">
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="listFilter"
-                  placeholder="Search..."
-                />
-
-                <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                          <mat-icon>clear</mat-icon>
-                      </button> --> </mat-form-field
-              ><mat-icon>search</mat-icon>
-              <!-- <button mat-raised-button color="primary"></button> -->
-
-              <!--  -->
-            </th>
-          </tr>
-        </thead>
+      <table *ngIf="curriculums">
         <tbody>
-          <tr *ngFor="let data of curriculums">
+          <tr *ngFor="let data of displayedItems">
             <td scope="row">
               <div class="float-left d-flex p-3 flex-column">
                 <div class="d-flex align-items-center">
@@ -96,9 +83,9 @@
       </table>
 
       <mat-paginator
-        [length]="totalItems"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
+        [length]="existingtotalItems"
+        [pageSize]="existingPageSize"
+        [pageSizeOptions]="existingPageSizeOptions"
         (page)="onPageChange($event)"
       >
       </mat-paginator>
@@ -117,30 +104,9 @@
         message="once a faculty creates revisions, you'll see it here"
         *ngIf="!revisions.length"
       ></app-empty-state>
-      <table class="table" *ngIf="revisions">
-        <thead>
-          <tr *ngIf="false">
-            <th style="">
-              <mat-form-field style="width: 200px" class="example-form-field">
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="listFilter"
-                  placeholder="Search..."
-                />
-
-                <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                          <mat-icon>clear</mat-icon>
-                      </button> --> </mat-form-field
-              ><mat-icon>search</mat-icon>
-              <!-- <button mat-raised-button color="primary"></button> -->
-
-              <!--  -->
-            </th>
-          </tr>
-        </thead>
+      <table *ngIf="revisions">
         <tbody>
-          <tr *ngFor="let data of revisions">
+          <tr *ngFor="let data of displayRevision">
             <td scope="row">
               <div class="float-left d-flex p-3 flex-column">
                 <div class="d-flex align-items-center">
@@ -196,9 +162,9 @@
       </table>
 
       <mat-paginator
-        [length]="totalItems"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
+        [length]="revisionTotalItems"
+        [pageSize]="revisionPageSize"
+        [pageSizeOptions]="revisionPageSizeOptions"
         (page)="onPageChange($event)"
       >
       </mat-paginator>
@@ -218,28 +184,14 @@
         message="once a faculty creates curriculums, you'll see it here"
         *ngIf="!curriculumPendings.length"
       ></app-empty-state>
-      <table class="table" *ngIf="curriculumPendings">
-        <thead>
-          <tr *ngIf="false">
-            <th style="">
-              <mat-form-field style="width: 200px" class="example-form-field">
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="listFilter"
-                  placeholder="Search..."
-                /> </mat-form-field
-              ><mat-icon>search</mat-icon>
-            </th>
-          </tr>
-        </thead>
+      <table *ngIf="curriculumPendings">
         <tbody>
-          <tr *ngFor="let data of curriculumPendings">
-            <td scope="row" class="border-0">
+          <tr *ngFor="let data of displayedItems">
+            <td scope="row" class="">
               <div
-                class="d-flex align-items-center justify-content-between border"
+                class="d-flex align-items-center justify-content-between"
                 style="
-                  border: 1px solid gray;
+                  border-bottom: 1px solid rgb(70, 70, 70);
                   border-left: 5px solid #d05834 !important;
                   width: 100%;
                 "
@@ -324,9 +276,9 @@
       </table>
 
       <mat-paginator
-        [length]="totalItems"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
+        [length]="pendingTotalItems"
+        [pageSize]="pendingPageSize"
+        [pageSizeOptions]="pendingPageSizeOptions"
         (page)="onPageChange($event)"
       >
       </mat-paginator>

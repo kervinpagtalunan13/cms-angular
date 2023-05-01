@@ -228,6 +228,21 @@ export class YearDropdownComponent {
     }, 0) 
     return totalUnits
   }
+
+  getLecUnits(yearLvl:number, sem:number){
+    const units = this.subject[yearLvl][sem ? 'secondSem' : 'firstSem'].map(subj => Number(subj.lecUnits))
+    const totaleclUnits = units.reduce((accumulator:number, currentValue:number) => {
+      return accumulator + currentValue;
+    }, 0) 
+    return totaleclUnits
+  }
+  getLabUnits(yearLvl:number, sem:number){
+    const units = this.subject[yearLvl][sem ? 'secondSem' : 'firstSem'].map(subj => Number(subj.labUnits))
+    const totalablUnits = units.reduce((accumulator:number, currentValue:number) => {
+      return accumulator + currentValue;
+    }, 0) 
+    return totalablUnits
+  }
   
   getTotalHrs(yearLvl:number, sem:number){
     const hrs = this.subject[yearLvl][sem ? 'secondSem' : 'firstSem'].map(subj => Number(subj.hoursPerWeek))

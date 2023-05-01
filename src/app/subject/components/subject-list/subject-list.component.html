@@ -1,7 +1,8 @@
 <app-sidenav>
-  <div class="container mt-4" *ngIf="neededData$ | async">
+  <div class="container mt-4" *ngIf="neededData$ | async" style="height:100vh;">
     <header class="d-flex align-items-center justify-content-between">
       <span class="h3">Subjects</span>
+      <div>
       <button
         mat-flat-button
         color="primary"
@@ -11,10 +12,21 @@
         <mat-icon>add</mat-icon>
         Add Subject
       </button>
+      <button
+              style="margin-left: 10px;"
+              mat-flat-button
+              color="primary"
+              class="float-end"
+              (click)="newElective()"
+            >
+              <mat-icon>add</mat-icon>
+              Add Elective Subject
+            </button>
+          </div>
     </header>
 
     <div class="">
-      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" #myTabs>
         <mat-tab label="Subjects">
           <app-empty-state
             name="Subject"
@@ -27,7 +39,7 @@
               <input matInput type="text" [(ngModel)]="listFilter" />
             </mat-form-field>
           </div>
-          <table class="table">
+          <table style="width:100%;">
             <thead class="thead-dark">
               <tr>
                 <th scope="col">
@@ -59,7 +71,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
+              <tr style="border-bottom: 1px solid rgb(70, 70, 70);"
                 *ngFor="
                   let subject of displayedItems
                     | orderBy : currentSortColumn : currentSortDirection
@@ -134,8 +146,13 @@
           >
           </mat-paginator
         ></mat-tab>
+
+
+
+
+
         <mat-tab label="Elective Subject">
-          <div class="my-2">
+          <!-- <div class="my-2">
             <button
               mat-flat-button
               color="primary"
@@ -143,62 +160,72 @@
               (click)="newElective()"
             >
               <mat-icon>add</mat-icon>
-              add elective subject
+              Add Elective Subject
             </button>
-          </div>
+          </div> -->
           <app-empty-state
             name="Elective Subject"
-            message="once faculty have added Elective Subject, you'll see it here"
+            message="Once faculty have added Elective Subject, you'll see it here"
             *ngIf="!electives.length"
           ></app-empty-state>
           <!-- *ngIf="!department.members.length" -->
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Description</th>
-                <!-- <th>Status</th> -->
-                <th>Assigned in</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let subject of electives">
-                <td>{{ subject.description }}</td>
-                <!-- <td>{{ subject.status == "a" ? "Active" : "Inactive" }}</td> -->
-                <!-- <td>{{ subject.status }}</td> -->
-                <td>{{ getAssignedIn(subject.id) }}</td>
-                <td>
-                  <button
-                    mat-icon-button
-                    (click)="viewPdf(subject.syllabus_path)"
-                  >
-                    <mat-icon color="primary">remove_red_eye</mat-icon>
-                  </button>
-                  <button
-                    mat-icon-button
-                    (click)="clickEditSubject(subject, 'elective')"
-                    *ngIf="
-                      role == 'admin' || role == 'faculty' || role == 'chair'
-                    "
-                  >
-                    <mat-icon color="primary">settings</mat-icon>
-                  </button>
-                  <button
-                    mat-icon-button
-                    (click)="assignElective(subject.id)"
-                    color="primary"
-                    *ngIf="
-                      role == 'admin' || role == 'faculty' || role == 'chair'
-                    "
-                  >
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
 
-          <table class="table table-bordered">
+          <mat-accordion>
+            <mat-expansion-panel
+    (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title class="panel-text">Assigned Elective Subjects</mat-panel-title>
+    </mat-expansion-panel-header>
+    <table style="width:100%;">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <!-- <th>Status</th> -->
+          <th>Assigned in</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let subject of electives" style="border-bottom: 1px solid rgb(70, 70, 70);">
+          <td>{{ subject.description }}</td>
+          <!-- <td>{{ subject.status == "a" ? "Active" : "Inactive" }}</td> -->
+          <!-- <td>{{ subject.status }}</td> -->
+          <td>{{ getAssignedIn(subject.id) }}</td>
+          <td>
+            <button
+              mat-icon-button
+              (click)="viewPdf(subject.syllabus_path)"
+            >
+              <mat-icon color="primary">remove_red_eye</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="clickEditSubject(subject, 'elective')"
+              *ngIf="
+                role == 'admin' || role == 'faculty' || role == 'chair'
+              "
+            >
+              <mat-icon color="primary">settings</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="assignElective(subject.id)"
+              color="primary"
+              *ngIf="
+                role == 'admin' || role == 'faculty' || role == 'chair'
+              "
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-expansion-panel>
+<header><h1>Elective Table</h1></header>
+          <table style="width: 100%;">
             <thead>
               <tr>
                 <th>#</th>
@@ -213,7 +240,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let i of [1, 2, 3, 4, 5]">
+              <tr *ngFor="let i of [1, 2, 3, 4, 5]" style="border-bottom: 1px solid rgb(70, 70, 70);">
                 <th>Elective {{ i }}</th>
                 <td
                   *ngFor="
@@ -245,6 +272,7 @@
               </tr>
             </tbody>
           </table>
+        </mat-accordion>
         </mat-tab>
       </mat-tab-group>
     </div>

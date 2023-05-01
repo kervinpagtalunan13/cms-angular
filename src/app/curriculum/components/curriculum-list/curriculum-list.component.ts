@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Curriculum, Curriculum2 } from 'src/app/core/models/curriculum';
 import {MatDialog} from '@angular/material/dialog';
-
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { EMPTY, catchError, combineLatest, map, tap } from 'rxjs';
@@ -79,7 +79,24 @@ export class CurriculumListComponent {
       console.log(`Dialog result: ${result}`);
     });
   }
-
+  searchPlaceholder = 'Search in Existing...'
+  tab = 0
+  //changeTabEvent
+  changeTab(change:MatTabChangeEvent){
+   this.tab = change.index;
+   if(this.tab==0){
+    this.listFilter=''
+    this.searchPlaceholder='Search in Existing...'
+   }
+   else if(this.tab==1){
+    this.listFilter=''
+    this.searchPlaceholder='Search in Revision...'
+   }
+   else if(this.tab==2){
+    this.listFilter=''
+    this.searchPlaceholder='Search in Pending...'
+   }
+  }
 
     //pang filter
     private _listFilter: string = '';
@@ -88,112 +105,125 @@ export class CurriculumListComponent {
     }
     set listFilter(value: string){
         this._listFilter=value;
-        this.filteredList = this.performFilter(value);
+        if(this.tab==0){
+        this.existingFilteredList = this.performFilter(value);
+        }
+        else if(this.tab==1){
+          this.revisionFilteredList = this.performRevisionFilter(value);
+        }
+        else if(this.tab==2){
+          this.pendingFilteredList = this.performFilter(value);
+        }
     }
     //pang filter
-  
-    filteredList: Curriculum[]=[]; //array ng filtered list
-  
-    data: Curriculum[] = [
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.2.1',
-      'date':'04-03-2005',
-      'author':'Kyla Delfin',
-      'role':'Chair',
-      'status':'Proposed',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.2.0',
-      'date':'01-12-2004',
-      'author':'Mang Ben',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.9',
-      'date':'01-12-2004',
-      'author':'Kervs',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.8',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.7',
-      'date':'01-12-2004',
-      'author':'Kervin',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.6',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.5',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.4',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-    ];
-  
+    revisionFilteredList = this.revisions;
+    existingFilteredList=this.curriculums; //array ng filtered list
+    pendingFilteredList=this.curriculums; //array ng filtered list
+    rev:any[]=[];
+    data: any[]=[];
+    //data= this.curriculums;
+    
     //pangfilter 
-    performFilter(filterBy: string): Curriculum[]{
+    performFilter(filterBy: string): Curriculum2[]{
       filterBy = filterBy.toLocaleLowerCase();
-      return this.data.filter((titles: Curriculum)=>
-      titles.title.toLowerCase().includes(filterBy)||
+      return this.data.filter((titles: Curriculum2)=>
+      titles.department.department_code.toLowerCase().includes(filterBy)||
       titles.version.toLowerCase().includes(filterBy)||
-      titles.date.toLowerCase().includes(filterBy)||
-      titles.author.toLowerCase().includes(filterBy)||
-      titles.role.toLowerCase().includes(filterBy)||
       titles.status.toLowerCase().includes(filterBy)||
-      titles.isCurrent.toLowerCase().includes(filterBy)
+      titles.user?.profile?.name.toLowerCase().includes(filterBy)||
+      titles.created_at.toLowerCase().includes(filterBy)
       );
   }
+
+  performRevisionFilter(filterBy: string): Curriculum2[]{
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.rev.filter((titles: Curriculum2)=>
+    titles.department?.department_code?.toLowerCase().includes(filterBy)||
+    titles.version.toLowerCase().includes(filterBy)||
+    titles.status.toLowerCase().includes(filterBy)||
+    titles.user?.profile?.name.toLowerCase().includes(filterBy)||
+    titles.created_at.toLowerCase().includes(filterBy)
+    );
+}
   //pangfilter
-   
-    
-  //paginator
-    totalItems = this.data.length; // Total number of items in your table
-    pageSize = 3; // Number of items to display per page
-    pageSizeOptions = [3, 5, 10]; // Options for the number of items per page
-  
-    currentPageIndex = 0; // Current page index
+    displayRevision:any[]=[];
     displayedItems: any[] = []; // The items to display on the current page
+  //paginator
+    existingtotalItems = this.data.length; // Total number of items in your table
+    existingPageSize = 3; // Number of items to display per page
+    existingPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
+    existingCurrentPageIndex = 0; // Current page index
+
+    revisionTotalItems = this.rev.length; // Total number of items in your table
+    revisionPageSize = 3; // Number of items to display per page
+    revisionPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
+    revisionCurrentPageIndex = 0; // Current page index
+
+    pendingTotalItems = this.data.length; // Total number of items in your table
+    pendingPageSize = 3; // Number of items to display per page
+    pendingPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
+    pendingCurrentPageIndex = 0; // Current page index
+    
     //paginator
   
     //pang filter
     ngOnInit(): void {
       this.listFilter = '';
+      console.log(this.displayedItems)
+      console.log(this.curriculums)
     }
     //pang filter
   
     //pang check kung may laman yung search input (para di mawalan ng laman yung table)
     ngDoCheck(): void{
+      console.log(this.displayRevision)
       if(!this.listFilter){
-        this.totalItems = this.data.length;
-        this.loadPageWithoutFilter(this.currentPageIndex);
+        if(this.tab==0){
+          this.existingtotalItems = this.data.length;
+        this.loadPageWithoutFilter(this.existingCurrentPageIndex);
+        }
+        else if(this.tab==1){
+          this.revisionTotalItems = this.rev.length;
+        this.loadPageWithoutFilter(this.revisionCurrentPageIndex);
+        }
+        else if(this.tab==2){
+          this.pendingTotalItems = this.data.length;
+          this.loadPageWithoutFilter(this.pendingCurrentPageIndex);
+        }
       }
       else{
-        this.totalItems = this.filteredList.length;
-        this.loadPageWithFilter(this.currentPageIndex);
+        this.existingCurrentPageIndex=0
+        this.revisionCurrentPageIndex=0
+        this.pendingCurrentPageIndex=0
+        if(this.tab==0){
+          this.existingtotalItems = this.existingFilteredList.length;
+          this.loadPageWithFilter(this.existingCurrentPageIndex);
+          }
+          else if(this.tab==1){
+            this.revisionTotalItems = this.revisionFilteredList.length;
+          this.loadPageWithFilter(this.revisionCurrentPageIndex);
+          }
+          else if(this.tab==2){
+            this.pendingTotalItems = this.pendingFilteredList.length;
+            this.loadPageWithFilter(this.pendingCurrentPageIndex);
+          }
       }
+
+      
+  //  if(this.tab==0){
+  //   if(this.listFilter){
+  //       this.existingtotalItems = this.existingFilteredList.length;
+  //       console.log(this.existingtotalItems)
+  //       this.loadPageWithFilter(this.existingCurrentPageIndex);
+  //  }
+  // }
+  //  else if(this.tab==2){
+  //   if(this.listFilter){
+  //         this.pendingTotalItems = this.pendingFilteredList.length;
+  //         console.log(this.pendingTotalItems)
+  //         this.loadPageWithFilter(this.pendingCurrentPageIndex);
+  //   }
+  //  }
     }
   
     //pang check kung may laman yung search input (para di mawalan ng laman yung table)
@@ -201,20 +231,66 @@ export class CurriculumListComponent {
   
     //paginator
     onPageChange(event: PageEvent): void {
-      this.currentPageIndex = event.pageIndex;
-      this.pageSize = event.pageSize;
-      this.loadPageWithoutFilter(this.currentPageIndex);
+      if(this.tab==0){
+      this.existingCurrentPageIndex = event.pageIndex;
+      this.existingPageSize = event.pageSize;
+      this.loadPageWithoutFilter(this.existingCurrentPageIndex);
+      }
+      else if(this.tab==1){
+        this.revisionCurrentPageIndex = event.pageIndex;
+        this.revisionPageSize = event.pageSize;
+        this.loadPageWithoutFilter(this.revisionCurrentPageIndex);
+        }
+      else if(this.tab==2){
+        this.pendingCurrentPageIndex = event.pageIndex;
+        this.pendingPageSize = event.pageSize;
+        this.loadPageWithoutFilter(this.pendingCurrentPageIndex);
+        }
     }
     
     loadPageWithoutFilter(pageIndex: number): void {
-      const startIndex = pageIndex * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.displayedItems = this.data.slice(startIndex, endIndex);
+      let startIndex = 0;
+      let endIndex = 0;
+      if(this.tab==0){
+        startIndex = pageIndex * this.existingPageSize;
+        endIndex = startIndex + this.existingPageSize;
+        this.data=this.curriculums;
+        this.displayedItems = this.data.slice(startIndex, endIndex);
+      }
+      else if(this.tab==1){
+        startIndex = pageIndex * this.revisionPageSize;
+        endIndex = startIndex + this.revisionPageSize;
+        this.rev=this.revisions;
+        this.displayRevision = this.rev.slice(startIndex, endIndex);
+      }
+      else if(this.tab==2){
+        startIndex = pageIndex * this.pendingPageSize;
+        endIndex = startIndex + this.pendingPageSize;
+        this.data=this.curriculumPendings;
+        this.displayedItems = this.data.slice(startIndex, endIndex);
+      }
     }
     loadPageWithFilter(pageIndex: number): void {
-      const startIndex = pageIndex * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.displayedItems = this.filteredList.slice(startIndex, endIndex);
+      let startIndex = 0;
+      let endIndex = 0;
+      if(this.tab==0){
+        startIndex = pageIndex * this.existingPageSize;
+        endIndex = startIndex + this.existingPageSize;
+        this.data=this.curriculums;
+        this.displayedItems = this.existingFilteredList.slice(startIndex, endIndex);
+      }
+      else if(this.tab==1){
+        startIndex = pageIndex * this.revisionPageSize;
+        endIndex = startIndex + this.revisionPageSize;
+        this.rev=this.revisions;
+        this.displayRevision = this.revisionFilteredList.slice(startIndex, endIndex);
+      }
+      else if(this.tab==2){
+        startIndex = pageIndex * this.pendingPageSize;
+        endIndex = startIndex + this.pendingPageSize;
+        this.data=this.curriculumPendings;
+        this.displayedItems = this.pendingFilteredList.slice(startIndex, endIndex);
+      }
     }
   //paginator
 }
