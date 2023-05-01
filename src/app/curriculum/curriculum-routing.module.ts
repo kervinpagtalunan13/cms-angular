@@ -18,7 +18,7 @@ const routes: Routes = [
     canActivate:[AuthGuard],
     children: [
       { path: '', component: CurriculumListComponent},
-      // { path: 'create', component: CurriculumViewComponent },
+      { path: 'view', component: CurriculumViewComponent },
       
 
       // creating curriculum -done

@@ -42,9 +42,9 @@ export class ContentManagementComponent {
     if(this.imageUrl)
       return this.imageUrl
     if(this.content.logo_path)
-      return 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/' + this.content.logo_path
+      return 'http://localhost:8000/api/content/logo/' + this.content.logo_path
     else
-      return 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/logo-cict.png' 
+      return 'http://localhost:8000/api/content/logo/logo-cict.png' 
   }
 
   originalContent:any = {}
@@ -183,8 +183,8 @@ export class ContentManagementComponent {
     }
   }
 
-  reloadMain(){
-    this.main.reloadPage();
-  }
+  // reloadMain(){
+  //  this.main.reloadPage();
+  // }
 
 }
