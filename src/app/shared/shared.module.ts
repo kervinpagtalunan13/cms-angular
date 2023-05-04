@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { CommentComponent } from './components/comment/comment.component';
 import { AppComponent } from '../app.component';
 import { EmptyStateComponent } from './components/empty-state/empty-state.component';
+import { DecimalFormatPipe } from './pipe/decimal-format.pipe';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
     ForgotPasswordComponent,
     CommentComponent,
     EmptyStateComponent,
+    DecimalFormatPipe,
   ],
   imports: [
     CommonModule,
@@ -49,7 +51,8 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
     ReloadPageComponent,
     NotificationComponent,
     CommentComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    DecimalFormatPipe
   ]
 })
 export class SharedModule { }

@@ -19,12 +19,23 @@ import { AppComponent } from 'src/app/app.component';
 import { ContentService } from 'src/app/core/services/content.service';
 import { MatTabGroup } from '@angular/material/tabs';
 
+import { ApexGrid, ColumnConfiguration } from 'apex-grid';
+ApexGrid.register();
 @Component({
   selector: 'app-subject-list',
   templateUrl: './subject-list.component.html',
   styleUrls: ['./subject-list.component.css']
 })
 export class SubjectListComponent implements OnInit{
+  // columns: ColumnConfiguration<any> = [
+  //   { field: 'price', title: 'Price', type:'number' },
+  //   { field: 'name', title: 'Name', type:'number' },
+  // ];
+  // products: any[] = [
+  //   { price: 1, asd: 2 },
+  //   { price: 1, asd: 2 },
+  //   { price: 1, asd: 2 },
+  // ];
   constructor(public dialog: MatDialog, 
               private subjectService: SubjectService, 
               public viewPdfDialog: MatDialog,

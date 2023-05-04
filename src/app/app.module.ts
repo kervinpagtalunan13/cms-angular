@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,22 +13,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptor/auth.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { LandingPageComponent } from './landing-page/landing-page.component';
-
-// angular material
-// import { MatIconModule } from '@angular/material/icon';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import { MatListModule } from '@angular/material/list';
-// import { MatButtonToggleModule } from '@angular/material/button-toggle';
-// import { MatToolbarModule} from '@angular/material/toolbar';
-// import { MatCardModule } from '@angular/material/card';
-// import { MatGridListModule } from '@angular/material/grid-list';
-// import { MatExpansionModule } from '@angular/material/expansion';
-// import { MatTableModule } from '@angular/material/table';
-// import { MatInputModule } from '@angular/material/input';
-// import { MatProgressBarModule } from '@angular/material/progress-bar';
-// import { MatPaginatorModule } from '@angular/material/paginator';
-// import { MaterialModule } from './shared/material';
+;
 
 
 @NgModule({
@@ -46,11 +31,12 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
     ReactiveFormsModule,
     MaterialModule,
     HttpClientModule,
-    SharedModule
+    SharedModule, 
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

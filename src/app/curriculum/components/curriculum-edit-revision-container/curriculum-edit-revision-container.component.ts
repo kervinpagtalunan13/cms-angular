@@ -44,6 +44,7 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
   buttonTxt = 'edit curriculum'
   electiveSubjects:any[] = []
   curriculumDepartment:any = ''
+  incrementRevision = false
 
   neededData$ = combineLatest([
     this.route.data,
@@ -60,6 +61,8 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
 
       this.curriculum = revisions.find((curriculum:any) => curriculum.id == id)
       this.currUserId = this.curriculum.user_id
+
+      this.incrementRevision = this.curriculum.increment_version
 
       this.currentUser = user
       this.userId = this.currentUser.id
@@ -103,11 +106,13 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
           }, 
         id: this.curriculum.id
         }
+        
         // const body = {...data, id: this.curriculum.id}
         this.curriculumService.updateRevision(data).subscribe({
           next: (response:any) => {
             this.router.navigate(['/curriculums', 'revisions', response.id])
             this.toast.showToastSuccess('Edited Successfully', `revision has been edited`)
+            
           },
           error: err => {
             this.toast.showToastError('Creation Failed', `${err.message}`)

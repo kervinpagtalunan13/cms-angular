@@ -1,5 +1,5 @@
 import { SlicePipe } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, NgZone, OnInit, ViewChild  } from "@angular/core";
 import {Chart} from 'angular-highcharts';
 import { AuthService } from "../core/services/auth.service";
 import { EMPTY, catchError, combineLatest, map } from "rxjs";
@@ -17,13 +17,18 @@ import { DepartmentService } from "../core/services/department.service";
 
 export class dashboard implements OnInit{
 
+
+
     constructor(private authService: AuthService,
                 private curriculumService: CurriculumService,
                 private commentService: CommentService,
                 private accountService: AccountService,
                 private subjectService: SubjectService,
-                private departmentService: DepartmentService
-                ){}
+                private departmentService: DepartmentService,
+                )
+    {
+
+    }
   
 
   ngOnInit(): void {

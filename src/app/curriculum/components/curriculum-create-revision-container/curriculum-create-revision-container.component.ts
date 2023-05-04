@@ -109,11 +109,12 @@ export class CurriculumCreateRevisionContainerComponent{
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const data = {...subjects, metadata: {
+        const data = {...subjects, 
+          metadata: {
           subjects: subjects.subjects,
           electiveSubjects: subjects.electiveSubjects,
           }, 
-        curriculumId: this.curriculum.id
+          curriculumId: this.curriculum.id,
         }
         
         // const data = { curriculumId: this.curriculum.id, metadata: subjects.subjects, version: subjects.version }

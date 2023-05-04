@@ -162,6 +162,7 @@
                     > -->
                     </div>
                   </div>
+
                   <small class="date text-secondary">{{
                     data.created_at | date
                   }}</small>
@@ -188,6 +189,7 @@
         [pageSize]="existingPageSize"
         [pageSizeOptions]="existingPageSizeOptions"
         (page)="onPageChange($event)"
+        *ngIf="curriculums.length"
       >
       </mat-paginator>
     </mat-tab>
@@ -259,7 +261,7 @@
                       {{
                         data.curriculum?.department?.department_code | uppercase
                       }}
-                      Curriculum version{{ data.curriculum?.version }}
+                      Curriculum version {{ data.curriculum?.version }}
                     </span>
                     <div>
                       <span
@@ -326,6 +328,7 @@
         [pageSize]="revisionPageSize"
         [pageSizeOptions]="revisionPageSizeOptions"
         (page)="onPageChange($event)"
+        *ngIf="revisions.length"
       >
       </mat-paginator>
     </mat-tab>
@@ -474,6 +477,7 @@
         [pageSize]="pendingPageSize"
         [pageSizeOptions]="pendingPageSizeOptions"
         (page)="onPageChange($event)"
+        *ngIf="curriculumPendings.length"
       >
       </mat-paginator>
     </mat-tab>

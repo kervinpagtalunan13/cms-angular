@@ -21,7 +21,6 @@ export class AppComponent{
       
 
       ngDoCheck(): void {
-        console.log('is dark? '+this.isDarkMode)
         if(!this.isDarkMode){
           if (this.body) {
            // this.reloadPage()

@@ -1,5 +1,5 @@
 <app-sidenav>
-  <div class="p-4" *ngIf="neededData$ | async" style="height: 100vh;">
+  <div class="p-4" *ngIf="neededData$ | async" style="height: 100vh">
     <header class="d-flex align-items-center justify-content-between mb-1">
       <span class="h3 m-o p-o">Subjects</span>
       <!-- <div class="container mt-4" *ngIf="neededData$ | async" style="height:100vh;">
@@ -92,7 +92,7 @@
             *ngIf="!subjects.length"
           ></app-empty-state>
 
-          <table style="width: 100%;">
+          <table style="width: 100%">
             <!-- ======= -->
             <!-- <div class="d-flex justify-content-end my-1">
             <mat-form-field style="width: 200px" class="example-form-field">
@@ -134,7 +134,7 @@
             </thead>
             <tbody>
               <tr
-              class="border-bottom"
+                class="border-bottom"
                 style=""
                 *ngFor="
                   let subject of displayedItems
@@ -231,7 +231,7 @@
             *ngIf="!electives.length"
           ></app-empty-state>
           <!-- *ngIf="!department.members.length" -->
-          <table style="width: 100%;" class="border">
+          <table style="width: 100%" class="border">
             <thead class="border text-center">
               <tr class="border text-center">
                 <th>Description</th>
@@ -276,63 +276,58 @@
               </tr>
             </tbody>
           </table>
-          
 
-          
-            
-            <table style="width: 100%; margin-top:50px;" class="border">
-              
-              <thead class="border text-center">
-                <tr class="border"><th class="text-center" colspan="4">Elective Table</th></tr>
-                <tr class="border text-center">
-                  <th>#</th>
-                  <th
-                    *ngFor="
-                      let electiveSubject of electiveSubjects;
-                      let x = index
-                    "
-                  >
-                    {{ electiveSubject.track | uppercase }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="border">
-                <tr
-                class="border"
-                  *ngFor="let i of [1, 2, 3, 4, 5]"
-                  style=""
+          <table style="width: 100%; margin-top: 50px" class="border">
+            <thead class="border text-center">
+              <tr class="border">
+                <th class="text-center" colspan="4">Elective Table</th>
+              </tr>
+              <tr class="border text-center">
+                <th>#</th>
+                <th
+                  *ngFor="
+                    let electiveSubject of electiveSubjects;
+                    let x = index
+                  "
                 >
-                  <th class="border text-center">Elective {{ i }}</th>
-                  <td class="border text-center"
-                    *ngFor="
-                      let electiveSubject of electiveSubjects;
-                      let x = index
-                    "
-                  >
-                    <span *ngIf="selectedTrack != x"
-                      >{{
-                        getElectiveSubject(electiveSubject.metadata[i - 1]) ||
-                          "not yet assigned"
-                      }}
-                      <button
-                        mat-icon-button
-                        color="primary"
-                        *ngIf="
-                          getElectiveSubject(electiveSubject.metadata[i - 1])
-                        "
-                        (click)="
-                          viewPdf(
-                            getSyllabusSubject(electiveSubject.metadata[i - 1])
-                          )
-                        "
-                      >
-                        <mat-icon>remove_red_eye</mat-icon>
-                      </button>
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  {{ electiveSubject.track | uppercase }}
+                </th>
+              </tr>
+            </thead>
+            <tbody class="border">
+              <tr class="border" *ngFor="let i of [1, 2, 3, 4, 5]" style="">
+                <th class="border text-center">Elective {{ i }}</th>
+                <td
+                  class="border text-center"
+                  *ngFor="
+                    let electiveSubject of electiveSubjects;
+                    let x = index
+                  "
+                >
+                  <span *ngIf="selectedTrack != x"
+                    >{{
+                      getElectiveSubject(electiveSubject.metadata[i - 1]) ||
+                        "not yet assigned"
+                    }}
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      *ngIf="
+                        getElectiveSubject(electiveSubject.metadata[i - 1])
+                      "
+                      (click)="
+                        viewPdf(
+                          getSyllabusSubject(electiveSubject.metadata[i - 1])
+                        )
+                      "
+                    >
+                      <mat-icon>remove_red_eye</mat-icon>
+                    </button>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </mat-tab>
       </mat-tab-group>
     </div>

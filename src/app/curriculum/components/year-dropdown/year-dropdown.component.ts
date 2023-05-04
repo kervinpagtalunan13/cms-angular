@@ -60,6 +60,7 @@ export class YearDropdownComponent {
   }
 
   @Input() subject: subjects[] = []
+  @Input() originalSubject: subjects[] = [] 
   @Input() type: string = ''
   @Input() departmentId: number = 1
   @Input() status: string = ''
@@ -75,9 +76,17 @@ export class YearDropdownComponent {
   @Input() department:string = ''
   @Input() dep:number|null = null
   @Input() electiveData: any[] = []
+  @Input() originalElectiveData: any[] = []
   @Input() electiveIncluded:boolean = false
   @Input() revisions: any[] = []
+  @Input() incrementRevision: boolean = false
+  @Input() approveBy: string = ''
+  @Input() versions: any[] = []
+  @Input() versionSelected: any
+  @Input() originalVersion: any
 
+  @Input() reviewer: any
+ 
   @Output() submitCur = new EventEmitter()
   @Output() approveCur = new EventEmitter()
   @Output() editCur = new EventEmitter()
@@ -85,9 +94,27 @@ export class YearDropdownComponent {
   @Output() openRevisionList = new EventEmitter()
   
   electiveSubjects:any[] = []
+  selectedVersion:number = 0
 
   clickRevisionList(){
     this.openRevisionList.emit()
+  }
+
+  versionChange(){
+    if(this.selectedVersion == 0){
+      this.subject = this.originalSubject
+      this.electiveData = this.originalElectiveData
+      this.versionSelected = this.originalVersion
+      
+    }else{
+      const version = this.versions.find(version => version.id == this.selectedVersion)
+      const {subjects, electiveSubjects} = JSON.parse(version.metadata)
+
+      this.subject = subjects
+      this.electiveData = electiveSubjects
+      
+      this.versionSelected = version.version
+    }    
   }
   // electiveSubjects$ = this.curriculumService.electiveSubjects$.pipe(
   //   tap(electiveSubjects => {
@@ -200,7 +227,7 @@ export class YearDropdownComponent {
     return this.role != 'admin'
   }
   submitCurriculum(){     
-    this.submitCur.emit({
+    let data:any = {
       subjects: this.subject,
       version: this.version,
       departmentId: this.department,
@@ -209,7 +236,12 @@ export class YearDropdownComponent {
       electiveSubjects: this.department != '1' || !this.electiveSubjectPresent.length ? []: 
       this.type == 'create' ? this.electiveSubjects : 
       !!this.electiveData.length ? this.electiveData : this.electiveSubjects
-      })  
+      }
+    if((this.type == 'create' || this.type == 'edit') && this.action == 'revise'){
+      data = {...data, increment_version: this.incrementRevision}
+    }
+    
+    this.submitCur.emit(data)  
   }
 
   

@@ -6,7 +6,9 @@
     class="d-flex align-items-center {{ !descriptiveTitle && 'mt-2' }}"
     style=""
   >
-    <span class="fw-semibold mt-0 fs-4 me-2">{{ title }}</span>
+    <span class="fw-semibold mt-0 fs-4 me-2" *ngIf="versionSelected"
+      >{{ title }}{{ versionSelected }}</span
+    >
     <span
       class="badge rounded-pill text-bg-primary mt-0 me-2"
       *ngIf="status == 'p'"
@@ -24,1113 +26,1281 @@
       >Revision</span
     >
   </div>
-  <div>
-    <span class="text-secondary">{{ author }}</span>
-  </div>
-  <div>
-    <span class="text-secondary">{{ created_at | date }}</span>
-  </div>
-</div>
 
-<!-- <div class="mt-2">
+  <div>
+    <div class="d-flex align-items-center" style="margin-top: -5px">
+      <div
+        class="rounded-circle me-1"
+        style="
+      width: 25px;
+      height: 25px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: url('{{
+          'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+            ('' || 'no-image.jpg')
+        }}');"
+      ></div>
+      <small class="text-secondary">{{ author }}</small>
+    </div>
+    <div *ngIf="reviewer">
+      <div class="mt-2">
+        <small class="text-secondary">Approved by:</small>
+      </div>
+      <div class="d-flex align-items-center">
+        <div
+          class="rounded-circle me-1"
+          style="
+      width: 25px;
+      height: 25px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: url('{{
+            'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+              (reviewer?.profile?.profile_pic || 'no-image.jpg')
+          }}');"
+        ></div>
+        <small class="text-secondary">{{
+          reviewer?.profile?.name || "not set his/her name"
+        }}</small>
+      </div>
+      <div>
+        <span class="text-secondary">{{ created_at | date }}</span>
+      </div>
+    </div>
+
+    <!-- <div class="mt-2">
   <span class="mt-0 fs-6">Kervin Pagtalunan</span>
   <br />
   <span class="mt-0">Faculty (BSIT)</span>
 </div> -->
 
-<header class="d-flex justify-content-between align-items-center mt-4">
-  <div *ngIf="currentUser$ | async as user" class="">
-    <!-- <mat-form-field class="me-2" *ngIf="type != 'view' && (action == 'create') "> -->
-    <mat-form-field class="me-2" *ngIf="isShown() && role == 'admin'">
-      <mat-label>Department</mat-label>
-      <mat-select [(ngModel)]="department">
-        <mat-option
-          *ngFor="let department of departments"
-          [value]="department.id"
-          >{{ department.department_code | uppercase }}</mat-option
+    <header class="d-flex justify-content-between align-items-center mt-4">
+      <div *ngIf="currentUser$ | async as user" class="">
+        <!-- <mat-form-field class="me-2" *ngIf="type != 'view' && (action == 'create') "> -->
+        <mat-form-field class="me-2" *ngIf="isShown() && role == 'admin'">
+          <mat-label>Department</mat-label>
+          <mat-select [(ngModel)]="department">
+            <mat-option
+              *ngFor="let department of departments"
+              [value]="department.id"
+              >{{ department.department_code | uppercase }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="me-2" *ngIf="isShown() && role != 'admin'">
+          <mat-label>Department</mat-label>
+          <input
+            type="text"
+            matInput
+            [value]="getDepartment() | uppercase"
+            [disabled]="true"
+          />
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width" *ngIf="isShown()">
+          <mat-label>Version</mat-label>
+          <input
+            type="number"
+            min="0"
+            matInput
+            placeholder="Version"
+            name="version"
+            ngModel="1"
+            [(ngModel)]="version"
+          />
+        </mat-form-field>
+
+        <mat-slide-toggle
+          class="example-margin"
+          *ngIf="
+            (type == 'create' || type == 'edit' || type == 'view') &&
+            action == 'revise'
+          "
+          [disabled]="type == 'view' && action == 'revise'"
+          [(ngModel)]="incrementRevision"
         >
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="me-2" *ngIf="isShown() && role != 'admin'">
-      <mat-label>Department</mat-label>
-      <input
-        type="text"
-        matInput
-        [value]="getDepartment() | uppercase"
-        [disabled]="true"
-      />
-    </mat-form-field>
-
-    <mat-form-field class="example-full-width" *ngIf="isShown()">
-      <mat-label>Version</mat-label>
-      <input
-        type="number"
-        min="0"
-        matInput
-        placeholder="Version"
-        name="version"
-        ngModel="1"
-        [(ngModel)]="version"
-      />
-    </mat-form-field>
-  </div>
-  <div class="mb-2">
-    <button
-      mat-flat-button
-      color="primary"
-      class="me-2"
-      (click)="addYearLevel()"
-      *ngIf="type != 'view'"
-    >
-      <mat-icon>add</mat-icon>
-      Add Year Level
-    </button>
-    <button
-      mat-flat-button
-      color="primary"
-      (click)="removeYearLevel()"
-      *ngIf="type != 'view'"
-    >
-      <mat-icon>remove</mat-icon>
-      Remove Year Level
-    </button>
-
-    <button
-      mat-flat-button
-      color="primary"
-      class="me-2"
-      *ngIf="type == 'view' && status == 'p' && role == 'reviewer'"
-      (click)="approve()"
-    >
-      <mat-icon>pending</mat-icon>
-      Approve
-    </button>
-    <!-- edit btn -->
-    <button
-      mat-flat-button
-      color="primary"
-      class="me-2"
-      *ngIf="type == 'view' && status == 'p' && canEdit && role != 'reviewer'"
-      (click)="update()"
-    >
-      <mat-icon>edit</mat-icon>
-      Edit
-    </button>
-
-    <!-- revise btn -->
-    <button
-      mat-flat-button
-      color="primary"
-      class="me-2"
-      *ngIf="
-        type == 'view' &&
-        status == 'a' &&
-        action != 'revise' &&
-        role != 'reviewer'
-      "
-      (click)="revise()"
-    >
-      <mat-icon>edit</mat-icon>
-      Revise
-    </button>
-
-    <button
-      mat-flat-button
-      (click)="convertToPDF()"
-      color="primary"
-      class="me-2"
-      *ngIf="type == 'view'"
-    >
-      <mat-icon>print</mat-icon>
-      Print
-    </button>
-    <button
-      mat-flat-button
-      color="primary"
-      *ngIf="!!revisions.length"
-      (click)="clickRevisionList()"
-    >
-      <mat-icon>list</mat-icon>
-      Revision History
-    </button>
-  </div>
-</header>
-<mat-accordion>
-  <mat-expansion-panel
-    (opened)="panelOpenState = true"
-    (closed)="panelOpenState = false"
-    *ngFor="let subjects of subject; let x = index"
-  >
-    <mat-expansion-panel-header>
-      <mat-panel-title class="panel-text"
-        >{{ assignYearX(x) }} Year</mat-panel-title
-      >
-    </mat-expansion-panel-header>
-    <div class="firstSem">
-      <button
-        class="mb-2 mt-2"
-        mat-raised-button
-        color="primary"
-        (click)="clickAddSubject(x, 'firstSem')"
-        *ngIf="type != 'view'"
-      >
-        Add Subject<mat-icon>add</mat-icon></button
-      ><br />
-      <!-- <thead *ngIf="isAddFormShow[x][0]"> -->
-        <thead *ngIf="isAddFormShow[x]['firstSem']" style="box-shadow:1px 1px 1px 1px black; border-radius:0.5rem;">
-          <tr>
-            <td colspan="9" class="forms">
-              <div>
-                <mat-icon color="primary">add</mat-icon
-                ><strong>Add Subject</strong>
-              </div>
-              <form
-                #firstSemesterForm="ngForm"
-                (ngSubmit)="addSubject(firstSemesterForm, x, 'firstSem')"
-                class="mb-0"
-              >
-                <mat-form-field
-                  class="subject-input"
-                  style="width: 80px; margin-left: 10px; margin-right:10px;"
-                  ><input
-                    name="courseCode"
-                    matInput
-                    type="text"
-                    placeholder="Course Code"
-                    required
-                    [matAutocomplete]="subjectCode"
-                    [(ngModel)]="addForms[x]['firstSem'].courseCode"
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectCode="matAutocomplete"
-                    (optionSelected)="onSubjecCodeSelected($event, x, 'firstSem')"
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInput(
-                          x,
-                          'firstSem',
-                          'courseCode'
-                        )
-                      "
-                      [value]="option.subject_code"
-                    >
-                      {{ option.subject_code }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 200px; margin-right:10px;"
-                  ><input
-                    name="descriptiveTitle"
-                    matInput
-                    type="text"
-                    placeholder="Descriptive Title"
-                    required
-                    [matAutocomplete]="subjectDesc"
-                    [(ngModel)]="addForms[x]['firstSem'].descriptiveTitle"
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectDesc="matAutocomplete"
-                    (optionSelected)="
-                      onDescriptionSelected($event, x, 'firstSem')
-                    "
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInput(
-                          x,
-                          'firstSem',
-                          'description'
-                        )
-                      "
-                      style="font-size: 12px"
-                      [value]="option?.description"
-                    >
-                      {{ option.description }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="lecUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lec Units"
-                    [(ngModel)]="addForms[x]['firstSem'].lecUnits"
-                    (input)="unitsOnChange(x, 'firstSem', 'add')"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="labUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lab Units"
-                    [(ngModel)]="addForms[x]['firstSem'].labUnits"
-                    (input)="unitsOnChange(x, 'firstSem', 'add')"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="totalUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Total Units"
-                    [(ngModel)]="addForms[x]['firstSem'].totalUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 90px; margin-right:10px;"
-                  ><input
-                    name="hoursPerWeek"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Hours Per Week"
-                    [(ngModel)]="addForms[x]['firstSem'].hoursPerWeek"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px; margin-right:10px;">
-                  <mat-label>Pre-Requisite</mat-label
-                  ><mat-select
-                    name="preReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    [(ngModel)]="addForms[x]['firstSem'].preReq"
-                  >
-                    <mat-option
-                      *ngFor="let course of preReqs(x, 'firstSem'); let i = index"
-                      [value]="course.courseCode"
-                    >
-                      {{ course.courseCode }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px;">
-                  <mat-label>Co-Requisite</mat-label
-                  ><mat-select
-                    name="coReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    [(ngModel)]="addForms[x]['firstSem'].coReq"
-                  >
-                    <mat-option
-                      *ngFor="let course of subjects.firstSem; let i = index"
-                      [value]="course.courseCode"
-                      >{{ course.courseCode }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-  
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="includeSubjectText"
-                  type="submit"
-                >
-                  <mat-icon>add</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="cancelAddSubject"
-                  type="button"
-                  (click)="removeAddForm(x, 'firstSem')"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </form>
-              <small *ngIf="addFormError[x]['firstSem']" class="text-danger">{{
-                addFormError[x]["firstSem"]
-              }}</small>
-            </td>
-          </tr>
-        </thead>
-  
-
-        <thead *ngIf="isEditFormShow[x]['firstSem']" style="box-shadow:1px 1px 1px 1px black; border-radius:0.5rem;">
-          <tr>
-            <td colspan="9" class="forms">
-              <div>
-                <mat-icon color="primary">edit</mat-icon
-                ><strong>Edit Subject</strong>
-              </div>
-              <form
-                #editForm="ngForm"
-                (ngSubmit)="editCourse(editForm, x, 'firstSem')"
-              >
-                <mat-form-field class="subject-input" style="width: 80px; margin-left:10px; margin-right:10px;"
-                  ><input
-                    name="courseCode"
-                    matInput
-                    type="text"
-                    placeholder="Course Code"
-                    [matAutocomplete]="subjectCodeEditFirstSem"
-                    [(ngModel)]="isForms[x]['firstSem'].courseCode"
-                    required
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectCodeEditFirstSem="matAutocomplete"
-                    (optionSelected)="
-                      onSubjectCodeEditSelected($event, x, 'firstSem')
-                    "
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInputEdit(
-                          x,
-                          'firstSem',
-                          'courseCode'
-                        )
-                      "
-                      [value]="option.subject_code"
-                    >
-                      {{ option.subject_code }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 200px; margin-right:10px;"
-                  ><input
-                    name="descriptiveTitle"
-                    matInput
-                    type="text"
-                    placeholder="Descriptive Title"
-                    [(ngModel)]="isForms[x]['firstSem'].descriptiveTitle"
-                    [matAutocomplete]="subjectDescEditFirstSem"
-                    required
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectDescEditFirstSem="matAutocomplete"
-                    (optionSelected)="onDescEditSelected($event, x, 'firstSem')"
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInputEdit(
-                          x,
-                          'firstSem',
-                          'description'
-                        )
-                      "
-                      [value]="option.description"
-                    >
-                      {{ option.description }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="lecUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lec Units"
-                    (input)="unitsOnChange(x, 'firstSem', 'edit')"
-                    [(ngModel)]="isForms[x]['firstSem'].lecUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="labUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lab Units"
-                    [(ngModel)]="isForms[x]['firstSem'].labUnits"
-                    (input)="unitsOnChange(x, 'firstSem', 'edit')"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="totalUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Total Units"
-                    [(ngModel)]="isForms[x]['firstSem'].totalUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 90px; margin-right:10px;"
-                  ><input
-                    name="hoursPerWeek"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Hours Per Week"
-                    [(ngModel)]="isForms[x]['firstSem'].hoursPerWeek"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px; margin-right:10px;">
-                  <mat-label>Pre-Requisite</mat-label
-                  ><mat-select
-                    name="preReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    ngModel
-                  >
-                    <mat-option
-                      *ngFor="let course of preReqs(x, 'firstSem'); let i = index"
-                      [value]="course.courseCode"
-                    >
-                      {{ course.courseCode }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px;">
-                  <mat-label>Co-Requisite</mat-label
-                  ><mat-select
-                    name="coReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    ngModel
-                  >
-                    <mat-option
-                      *ngFor="let course of subjects.firstSem; let i = index"
-                      [value]="course.courseCode"
-                      >{{ course.courseCode }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-  
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="includeSubjectText"
-                  type="submit"
-                >
-                  <mat-icon>check</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="cancelAddSubject"
-                  type="button"
-                  (click)="cancelEditSub(x, 'firstSem')"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </form>
-              <small *ngIf="editFormError[x]['firstSem']" class="text-danger">{{
-                editFormError[x]["firstSem"]
-              }}</small>
-            </td>
-          </tr>
-        </thead>
-      <strong>First Semester</strong>
-      <table style="width:100%;">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Course Code</th>
-            <th scope="col">Descriptive Title</th>
-            <th scope="col">Lec Units</th>
-            <th scope="col">Lab Units</th>
-            <th scope="col">Total Units</th>
-            <th scope="col">Hours Per Week</th>
-            <th scope="col">Pre-Req</th>
-            <th scope="col">Co-Req</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let subjects of subject"></tr>
-          <tr *ngFor="let course of subjects.firstSem; let i = index" style="border-bottom: 1px solid rgb(140, 140, 140);">
-            <td scope="row">{{ course.courseCode }}</td>
-            <td>{{ course.descriptiveTitle }}</td>
-            <td>{{ course.lecUnits }}</td>
-            <td>{{ course.labUnits }}</td>
-            <td>{{ course.totalUnits }}</td>
-            <td>{{ course.hoursPerWeek }}</td>
-            <td>{{ course.preReq || "None" }}</td>
-            <td>{{ course.coReq || "None" }}</td>
-            <td>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="view"
-                (click)="viewSyllabus(course.syllabus)"
-              >
-                <mat-icon>remove_red_eye</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="edit"
-                (click)="selectCourse(course, x, i, 'firstSem')"
-                *ngIf="type != 'view'"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="del"
-                (click)="deleteCourse(x, i, 'firstSem')"
-                *ngIf="type != 'view'"
-              >
-                <mat-icon>delete_forever</mat-icon>
-              </button>
-            </td>
-          </tr>
-          <tr style="font-weight: bold;">
-            <td scope="row"></td>
-         <td>TOTAL</td>
-         <td></td>
-         <td></td>
-         <td>{{ getTotalUnits(x, 0) }}</td>
-         <td>{{ getTotalHrs(x, 0) }}</td>
-         <td></td>
-         <td></td>
-         <td></td>
-       </tr>
-        </tbody>
-      </table>
-    </div>
-    <hr />
-    <div class="secondSem">
-      <button
-        class="mb-2 mt-2"
-        mat-raised-button
-        color="primary"
-        (click)="clickAddSubject(x, 'secondSem')"
-        *ngIf="type != 'view'"
-      >
-        Add Subject<mat-icon>add</mat-icon></button
-      ><br />
-
-      <!-- <thead *ngIf="isAddFormShow[x][1]"> -->
-        <thead *ngIf="isAddFormShow[x]['secondSem']" style="box-shadow:1px 1px 1px 1px black; border-radius:0.5rem;">
-          <tr>
-            <td colspan="9" class="forms">
-              <div>
-                <mat-icon color="primary">add</mat-icon
-                ><strong>Add Subject</strong>
-              </div>
-              <form
-                #secondSemesterForm="ngForm"
-                (ngSubmit)="addSubject(secondSemesterForm, x, 'secondSem')"
-              >
-                <mat-form-field class="subject-input" style="width: 80px; margin-left: 10px; margin-right:10px;"
-                  ><input
-                    name="courseCode"
-                    matInput
-                    type="text"
-                    placeholder="Course Code"
-                    ngModel
-                    required
-                    [matAutocomplete]="subjectCodeSecondSem"
-                    [(ngModel)]="addForms[x]['secondSem'].courseCode"
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectCodeSecondSem="matAutocomplete"
-                    (optionSelected)="
-                      onSubjecCodeSelected($event, x, 'secondSem')
-                    "
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInput(
-                          x,
-                          'secondSem',
-                          'courseCode'
-                        )
-                      "
-                      [value]="option.subject_code"
-                      style="font-size: 12px"
-                    >
-                      {{ option.subject_code }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-                <mat-form-field class="subject-input" style="width: 200px; margin-right:10px;"
-                  ><input
-                    name="descriptiveTitle"
-                    matInput
-                    type="text"
-                    placeholder="Descriptive Title"
-                    required
-                    [matAutocomplete]="subjectDescSecond"
-                    [(ngModel)]="addForms[x]['secondSem'].descriptiveTitle"
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectDescSecond="matAutocomplete"
-                    (optionSelected)="
-                      onDescriptionSelected($event, x, 'secondSem')
-                    "
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInput(
-                          x,
-                          'secondSem',
-                          'description'
-                        )
-                      "
-                      [value]="option.description"
-                      style="font-size: 12px"
-                    >
-                      {{ option.description }}
-                    </mat-option>
-                  </mat-autocomplete></mat-form-field
-                >
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="lecUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lec Units"
-                    (input)="unitsOnChange(x, 'secondSem', 'add')"
-                    [(ngModel)]="addForms[x]['secondSem'].lecUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="labUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lab Units"
-                    (input)="unitsOnChange(x, 'secondSem', 'add')"
-                    [(ngModel)]="addForms[x]['secondSem'].labUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="totalUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Total Units"
-                    [(ngModel)]="addForms[x]['secondSem'].totalUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 90px; margin-right:10px;"
-                  ><input
-                    name="hoursPerWeek"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Hours Per Week"
-                    [(ngModel)]="addForms[x]['secondSem'].hoursPerWeek"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px; margin-right:10px;">
-                  <mat-label>Pre-Requisite</mat-label
-                  ><mat-select
-                    name="preReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    [(ngModel)]="addForms[x]['secondSem'].preReq"
-                  >
-                    <mat-option
-                      *ngFor="
-                        let course of preReqs(x, 'secondSem');
-                        let i = index
-                      "
-                      [value]="course.courseCode"
-                    >
-                      {{ course.courseCode }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px">
-                  <mat-label>Co-Requisite</mat-label
-                  ><mat-select
-                    name="coReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    [(ngModel)]="addForms[x]['secondSem'].coReq"
-                  >
-                    <mat-option
-                      *ngFor="let course of subjects.secondSem; let i = index"
-                      [value]="course.courseCode"
-                      >{{ course.courseCode }}</mat-option
-                    >
-                  </mat-select></mat-form-field
-                >
-  
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="includeSubjectText"
-                  type="submit"
-                >
-                  <mat-icon>add</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="cancelAddSubject"
-                  type="button"
-                  (click)="removeAddForm(x, 'secondSem')"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </form>
-              <small *ngIf="addFormError[x]['secondSem']" class="text-danger">{{
-                addFormError[x]["secondSem"]
-              }}</small>
-            </td>
-          </tr>
-        </thead>
-
-        <thead *ngIf="isEditFormShow[x]['secondSem']"style="box-shadow:1px 1px 1px 1px black; border-radius:0.5rem;">
-          <tr>
-            <td colspan="9" class="forms">
-              <div>
-                <strong
-                  ><mat-icon color="primary">edit</mat-icon>Edit Subject</strong
-                >
-              </div>
-              <form
-                #editForm="ngForm"
-                (ngSubmit)="editCourse(editForm, x, 'secondSem')"
-              >
-                <mat-form-field class="subject-input" style="width: 80px; margin-left:10px; margin-right:10px;"
-                  ><input
-                    name="courseCode"
-                    matInput
-                    type="text"
-                    placeholder="Course Code"
-                    [matAutocomplete]="subjectCodeEditSecondSem"
-                    [(ngModel)]="isForms[x]['secondSem'].courseCode"
-                    required
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectCodeEditSecondSem="matAutocomplete"
-                    (optionSelected)="
-                      onSubjectCodeEditSelected($event, x, 'secondSem')
-                    "
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInputEdit(
-                          x,
-                          'secondSem',
-                          'courseCode'
-                        )
-                      "
-                      [value]="option.subject_code"
-                    >
-                      {{ option.subject_code }}
-                    </mat-option>
-                  </mat-autocomplete></mat-form-field
-                >
-  
-                <mat-form-field class="subject-input" style="width: 200px; margin-right:10px;"
-                  ><input
-                    name="descriptiveTitle"
-                    matInput
-                    type="text"
-                    placeholder="Descriptive Title"
-                    [(ngModel)]="isForms[x]['secondSem'].descriptiveTitle"
-                    [matAutocomplete]="subjectDescEditSecondSem"
-                    required
-                  />
-                  <mat-autocomplete
-                    autoActiveFirstOption
-                    #subjectDescEditSecondSem="matAutocomplete"
-                    (optionSelected)="onDescEditSelected($event, x, 'secondSem')"
-                  >
-                    <mat-option
-                      *ngFor="
-                        let option of subjectCodeInputEdit(
-                          x,
-                          'secondSem',
-                          'description'
-                        )
-                      "
-                      [value]="option.description"
-                    >
-                      {{ option.description }}
-                    </mat-option>
-                  </mat-autocomplete></mat-form-field
-                >
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="lecUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lec Units"
-                    (input)="unitsOnChange(x, 'secondSem', 'edit')"
-                    [(ngModel)]="isForms[x]['secondSem'].lecUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="labUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Lab Units"
-                    (input)="unitsOnChange(x, 'secondSem', 'edit')"
-                    [(ngModel)]="isForms[x]['secondSem'].labUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 60px; margin-right:10px;"
-                  ><input
-                    name="totalUnits"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Total Units"
-                    [(ngModel)]="isForms[x]['secondSem'].totalUnits"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 90px; margin-right:10px;"
-                  ><input
-                    name="hoursPerWeek"
-                    matInput
-                    type="number"
-                    max="5"
-                    min="0"
-                    placeholder="Hours Per Week"
-                    [(ngModel)]="isForms[x]['secondSem'].hoursPerWeek"
-                    required
-                /></mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px; margin-right:10px;">
-                  <mat-label>Pre-Requisite</mat-label
-                  ><mat-select
-                    name="preReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    ngModel
-                  >
-                    <mat-option
-                      *ngFor="
-                        let course of preReqs(x, 'secondSem');
-                        let i = index
-                      "
-                      [value]="course.courseCode"
-                    >
-                      {{ course.courseCode }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-  
-                <mat-form-field class="subject-input" style="width: 80px">
-                  <mat-label>Co-Requisite</mat-label
-                  ><mat-select
-                    name="coReq"
-                    color="primary"
-                    style="margin-right: 20px"
-                    ngModel
-                  >
-                    <mat-option
-                      *ngFor="let course of subjects.secondSem; let i = index"
-                      [value]="course.courseCode"
-                      >{{ course.courseCode }}</mat-option
-                    >
-                  </mat-select></mat-form-field
-                >
-  
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="includeSubjectText"
-                  type="submit"
-                >
-                  <mat-icon>check</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [title]="cancelAddSubject"
-                  type="button"
-                  (click)="cancelEditSub(x, 'secondSem')"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </form>
-              <small *ngIf="editFormError[x]['secondSem']" class="text-danger">{{
-                editFormError[x]["secondSem"]
-              }}</small>
-            </td>
-          </tr>
-        </thead>
-
-      <strong>Second Semester</strong>
-      <table style="width:100%;">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Course Code</th>
-            <th scope="col">Descriptive Title</th>
-            <th scope="col">Lec Units</th>
-            <th scope="col">Lab Units</th>
-            <th scope="col">Total Units</th>
-            <th scope="col">Hours Per Week</th>
-            <th scope="col">Pre-Req</th>
-            <th scope="col">Co-Req</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let subjects of subject"></tr>
-          <tr *ngFor="let course of subjects.secondSem; let i = index" style="border-bottom: 1px solid rgb(140, 140, 140);">
-            <td scope="row">{{ course.courseCode }}</td>
-            <td>{{ course.descriptiveTitle }}</td>
-            <td>{{ course.lecUnits }}</td>
-            <td>{{ course.labUnits }}</td>
-            <td>{{ course.totalUnits }}</td>
-            <td>{{ course.hoursPerWeek }}</td>
-            <td>{{ course.preReq || "None" }}</td>
-            <td>{{ course.coReq || "None" }}</td>
-            <td>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="view"
-                (click)="viewSyllabus(course.syllabus)"
-              >
-                <mat-icon>remove_red_eye</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="edit"
-                (click)="selectCourse(course, x, i, 'secondSem')"
-                *ngIf="type != 'view'"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="del"
-                (click)="deleteCourse(x, i, 'secondSem')"
-                *ngIf="type != 'view'"
-              >
-                <mat-icon>delete_forever</mat-icon>
-              </button>
-            </td>
-          </tr>
-          <tr style="font-weight: bold;">
-               <td scope="row"></td>
-            <td>TOTAL</td>
-            <td></td>
-            <td></td>
-            <td>{{ getTotalUnits(x, 1) }}</td>
-            <td>{{ getTotalHrs(x, 1) }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- Hanggang dito yung table -->
-  </mat-expansion-panel>
-  <!-- End of first Year Year -->
-<mat-expansion-panel
-(opened)="panelOpenState = true"
-    (closed)="panelOpenState = false">
-    <mat-expansion-panel-header>
-      <mat-panel-title class="panel-text">Elective Subjects</mat-panel-title>
-    </mat-expansion-panel-header>
-<table
-  class=""
-  style="width: 100%"
-  *ngIf="!!showElectiveTable().length && department == '1'"
->
-  <thead class="thead-dark">
-    <tr>
-      <th class="th-elective p-0 m-0">#</th>
-      <th
-        *ngFor="let electiveSubject of electiveSubjects"
-        class="th-elective py-0 my-0"
-      >
-        {{ electiveSubject.track | uppercase }}
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let i of electiveSubjectNumberPresent()" style="border-bottom: 1px solid rgb(140, 140, 140);">
-      <th class="th-elective">Elective {{ i }}</th>
-      <td
-        *ngFor="let electiveSubject of selectElectiveToBeShow()"
-        class="td-elective"
-      >
-        {{
-          getElectiveSubject(electiveSubject.metadata[i - 1]) || "not yet set"
-        }}
+          Increment Version
+        </mat-slide-toggle>
+        <mat-form-field class="me-2" *ngIf="versions.length">
+          <mat-label>versions</mat-label>
+          <mat-select
+            [(ngModel)]="selectedVersion"
+            (selectionChange)="versionChange()"
+          >
+            <mat-option value="0" selected>current version</mat-option>
+            <mat-option *ngFor="let version of versions" [value]="version.id">{{
+              version.increment_version ? "v" + version.version : ""
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="mb-2">
         <button
-          mat-icon-button
-          *ngIf="getElectiveSubject(electiveSubject.metadata[i - 1])"
+          mat-flat-button
           color="primary"
-          (click)="viewPdf(getSyllabusSubject(electiveSubject.metadata[i - 1]))"
+          class="me-2"
+          (click)="addYearLevel()"
+          *ngIf="type != 'view'"
         >
-          <mat-icon>remove_red_eye</mat-icon>
+          <mat-icon>add</mat-icon>
+          Add Year Level
         </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-  
-</mat-expansion-panel>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="removeYearLevel()"
+          *ngIf="type != 'view'"
+        >
+          <mat-icon>remove</mat-icon>
+          Remove Year Level
+        </button>
 
-</mat-accordion>
+        <button
+          mat-flat-button
+          color="primary"
+          class="me-2"
+          *ngIf="type == 'view' && status == 'p' && role == 'reviewer'"
+          (click)="approve()"
+        >
+          <mat-icon>pending</mat-icon>
+          Approve
+        </button>
+        <!-- edit btn -->
+        <button
+          mat-flat-button
+          color="primary"
+          class="me-2"
+          *ngIf="
+            type == 'view' && status == 'p' && canEdit && role != 'reviewer'
+          "
+          (click)="update()"
+        >
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
 
+        <!-- revise btn -->
+        <button
+          mat-flat-button
+          color="primary"
+          class="me-2"
+          *ngIf="
+            type == 'view' &&
+            status == 'a' &&
+            action != 'revise' &&
+            role != 'reviewer'
+          "
+          (click)="revise()"
+        >
+          <mat-icon>edit</mat-icon>
+          Revise
+        </button>
 
-<div class="mt-3">
-  <button
-    mat-flat-button
-    color="primary"
-    class="float-end"
-    (click)="submitCurriculum()"
-    *ngIf="type != 'view'"
-  >
-    <mat-icon>create</mat-icon>
-    {{ buttonTxt | titlecase }}
-  </button>
+        <button
+          mat-flat-button
+          (click)="convertToPDF()"
+          color="primary"
+          class="me-2"
+          *ngIf="type == 'view'"
+        >
+          <mat-icon>print</mat-icon>
+          Print
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          *ngIf="!!revisions.length"
+          (click)="clickRevisionList()"
+        >
+          <mat-icon>list</mat-icon>
+          Revision History
+        </button>
+      </div>
+    </header>
+    <mat-accordion>
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+        *ngFor="let subjects of subject; let x = index"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title class="panel-text"
+            >{{ assignYearX(x) }} Year</mat-panel-title
+          >
+        </mat-expansion-panel-header>
+        <div class="firstSem">
+          <button
+            class="mb-2 mt-2"
+            mat-raised-button
+            color="primary"
+            (click)="clickAddSubject(x, 'firstSem')"
+            *ngIf="type != 'view'"
+          >
+            Add Subject<mat-icon>add</mat-icon></button
+          ><br />
+          <!-- <thead *ngIf="isAddFormShow[x][0]"> -->
+          <thead
+            *ngIf="isAddFormShow[x]['firstSem']"
+            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
+          >
+            <tr>
+              <td colspan="9" class="forms">
+                <div>
+                  <mat-icon color="primary">add</mat-icon
+                  ><strong>Add Subject</strong>
+                </div>
+                <form
+                  #firstSemesterForm="ngForm"
+                  (ngSubmit)="addSubject(firstSemesterForm, x, 'firstSem')"
+                  class="mb-0"
+                >
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-left: 10px; margin-right: 10px"
+                    ><input
+                      name="courseCode"
+                      matInput
+                      type="text"
+                      placeholder="Course Code"
+                      required
+                      [matAutocomplete]="subjectCode"
+                      [(ngModel)]="addForms[x]['firstSem'].courseCode"
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectCode="matAutocomplete"
+                      (optionSelected)="
+                        onSubjecCodeSelected($event, x, 'firstSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInput(
+                            x,
+                            'firstSem',
+                            'courseCode'
+                          )
+                        "
+                        [value]="option.subject_code"
+                      >
+                        {{ option.subject_code }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 200px; margin-right: 10px"
+                    ><input
+                      name="descriptiveTitle"
+                      matInput
+                      type="text"
+                      placeholder="Descriptive Title"
+                      required
+                      [matAutocomplete]="subjectDesc"
+                      [(ngModel)]="addForms[x]['firstSem'].descriptiveTitle"
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectDesc="matAutocomplete"
+                      (optionSelected)="
+                        onDescriptionSelected($event, x, 'firstSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInput(
+                            x,
+                            'firstSem',
+                            'description'
+                          )
+                        "
+                        style="font-size: 12px"
+                        [value]="option?.description"
+                      >
+                        {{ option.description }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="lecUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lec Units"
+                      [(ngModel)]="addForms[x]['firstSem'].lecUnits"
+                      (input)="unitsOnChange(x, 'firstSem', 'add')"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="labUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lab Units"
+                      [(ngModel)]="addForms[x]['firstSem'].labUnits"
+                      (input)="unitsOnChange(x, 'firstSem', 'add')"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="totalUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Total Units"
+                      [(ngModel)]="addForms[x]['firstSem'].totalUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 90px; margin-right: 10px"
+                    ><input
+                      name="hoursPerWeek"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Hours Per Week"
+                      [(ngModel)]="addForms[x]['firstSem'].hoursPerWeek"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-right: 10px"
+                  >
+                    <mat-label>Pre-Requisite</mat-label
+                    ><mat-select
+                      name="preReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      [(ngModel)]="addForms[x]['firstSem'].preReq"
+                    >
+                      <mat-option
+                        *ngFor="
+                          let course of preReqs(x, 'firstSem');
+                          let i = index
+                        "
+                        [value]="course.courseCode"
+                      >
+                        {{ course.courseCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="subject-input" style="width: 80px">
+                    <mat-label>Co-Requisite</mat-label
+                    ><mat-select
+                      name="coReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      [(ngModel)]="addForms[x]['firstSem'].coReq"
+                    >
+                      <mat-option
+                        *ngFor="let course of subjects.firstSem; let i = index"
+                        [value]="course.courseCode"
+                        >{{ course.courseCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="includeSubjectText"
+                    type="submit"
+                  >
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="cancelAddSubject"
+                    type="button"
+                    (click)="removeAddForm(x, 'firstSem')"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </form>
+                <small
+                  *ngIf="addFormError[x]['firstSem']"
+                  class="text-danger"
+                  >{{ addFormError[x]["firstSem"] }}</small
+                >
+              </td>
+            </tr>
+          </thead>
+
+          <thead
+            *ngIf="isEditFormShow[x]['firstSem']"
+            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
+          >
+            <tr>
+              <td colspan="9" class="forms">
+                <div>
+                  <mat-icon color="primary">edit</mat-icon
+                  ><strong>Edit Subject</strong>
+                </div>
+                <form
+                  #editForm="ngForm"
+                  (ngSubmit)="editCourse(editForm, x, 'firstSem')"
+                >
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-left: 10px; margin-right: 10px"
+                    ><input
+                      name="courseCode"
+                      matInput
+                      type="text"
+                      placeholder="Course Code"
+                      [matAutocomplete]="subjectCodeEditFirstSem"
+                      [(ngModel)]="isForms[x]['firstSem'].courseCode"
+                      required
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectCodeEditFirstSem="matAutocomplete"
+                      (optionSelected)="
+                        onSubjectCodeEditSelected($event, x, 'firstSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInputEdit(
+                            x,
+                            'firstSem',
+                            'courseCode'
+                          )
+                        "
+                        [value]="option.subject_code"
+                      >
+                        {{ option.subject_code }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 200px; margin-right: 10px"
+                    ><input
+                      name="descriptiveTitle"
+                      matInput
+                      type="text"
+                      placeholder="Descriptive Title"
+                      [(ngModel)]="isForms[x]['firstSem'].descriptiveTitle"
+                      [matAutocomplete]="subjectDescEditFirstSem"
+                      required
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectDescEditFirstSem="matAutocomplete"
+                      (optionSelected)="
+                        onDescEditSelected($event, x, 'firstSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInputEdit(
+                            x,
+                            'firstSem',
+                            'description'
+                          )
+                        "
+                        [value]="option.description"
+                      >
+                        {{ option.description }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="lecUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lec Units"
+                      (input)="unitsOnChange(x, 'firstSem', 'edit')"
+                      [(ngModel)]="isForms[x]['firstSem'].lecUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="labUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lab Units"
+                      [(ngModel)]="isForms[x]['firstSem'].labUnits"
+                      (input)="unitsOnChange(x, 'firstSem', 'edit')"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="totalUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Total Units"
+                      [(ngModel)]="isForms[x]['firstSem'].totalUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 90px; margin-right: 10px"
+                    ><input
+                      name="hoursPerWeek"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Hours Per Week"
+                      [(ngModel)]="isForms[x]['firstSem'].hoursPerWeek"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-right: 10px"
+                  >
+                    <mat-label>Pre-Requisite</mat-label
+                    ><mat-select
+                      name="preReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      ngModel
+                    >
+                      <mat-option
+                        *ngFor="
+                          let course of preReqs(x, 'firstSem');
+                          let i = index
+                        "
+                        [value]="course.courseCode"
+                      >
+                        {{ course.courseCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="subject-input" style="width: 80px">
+                    <mat-label>Co-Requisite</mat-label
+                    ><mat-select
+                      name="coReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      ngModel
+                    >
+                      <mat-option
+                        *ngFor="let course of subjects.firstSem; let i = index"
+                        [value]="course.courseCode"
+                        >{{ course.courseCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="includeSubjectText"
+                    type="submit"
+                  >
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="cancelAddSubject"
+                    type="button"
+                    (click)="cancelEditSub(x, 'firstSem')"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </form>
+                <small
+                  *ngIf="editFormError[x]['firstSem']"
+                  class="text-danger"
+                  >{{ editFormError[x]["firstSem"] }}</small
+                >
+              </td>
+            </tr>
+          </thead>
+          <strong>First Semester</strong>
+          <table style="width: 100%">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Course Code</th>
+                <th scope="col">Descriptive Title</th>
+                <th scope="col">Lec Units</th>
+                <th scope="col">Lab Units</th>
+                <th scope="col">Total Units</th>
+                <th scope="col">Hours Per Week</th>
+                <th scope="col">Pre-Req</th>
+                <th scope="col">Co-Req</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let subjects of subject"></tr>
+              <tr
+                *ngFor="let course of subjects.firstSem; let i = index"
+                style="border-bottom: 1px solid rgb(140, 140, 140)"
+              >
+                <td scope="row">{{ course.courseCode }}</td>
+                <td>{{ course.descriptiveTitle }}</td>
+                <td>{{ course.lecUnits }}</td>
+                <td>{{ course.labUnits }}</td>
+                <td>{{ course.totalUnits }}</td>
+                <td>{{ course.hoursPerWeek }}</td>
+                <td>{{ course.preReq || "None" }}</td>
+                <td>{{ course.coReq || "None" }}</td>
+                <td>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="view"
+                    (click)="viewSyllabus(course.syllabus)"
+                  >
+                    <mat-icon>remove_red_eye</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="edit"
+                    (click)="selectCourse(course, x, i, 'firstSem')"
+                    *ngIf="type != 'view'"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="del"
+                    (click)="deleteCourse(x, i, 'firstSem')"
+                    *ngIf="type != 'view'"
+                  >
+                    <mat-icon>delete_forever</mat-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr style="font-weight: bold">
+                <td scope="row"></td>
+                <td>TOTAL</td>
+                <td></td>
+                <td></td>
+                <td>{{ getTotalUnits(x, 0) }}</td>
+                <td>{{ getTotalHrs(x, 0) }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <div class="secondSem">
+          <button
+            class="mb-2 mt-2"
+            mat-raised-button
+            color="primary"
+            (click)="clickAddSubject(x, 'secondSem')"
+            *ngIf="type != 'view'"
+          >
+            Add Subject<mat-icon>add</mat-icon></button
+          ><br />
+
+          <!-- <thead *ngIf="isAddFormShow[x][1]"> -->
+          <thead
+            *ngIf="isAddFormShow[x]['secondSem']"
+            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
+          >
+            <tr>
+              <td colspan="9" class="forms">
+                <div>
+                  <mat-icon color="primary">add</mat-icon
+                  ><strong>Add Subject</strong>
+                </div>
+                <form
+                  #secondSemesterForm="ngForm"
+                  (ngSubmit)="addSubject(secondSemesterForm, x, 'secondSem')"
+                >
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-left: 10px; margin-right: 10px"
+                    ><input
+                      name="courseCode"
+                      matInput
+                      type="text"
+                      placeholder="Course Code"
+                      ngModel
+                      required
+                      [matAutocomplete]="subjectCodeSecondSem"
+                      [(ngModel)]="addForms[x]['secondSem'].courseCode"
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectCodeSecondSem="matAutocomplete"
+                      (optionSelected)="
+                        onSubjecCodeSelected($event, x, 'secondSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInput(
+                            x,
+                            'secondSem',
+                            'courseCode'
+                          )
+                        "
+                        [value]="option.subject_code"
+                        style="font-size: 12px"
+                      >
+                        {{ option.subject_code }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 200px; margin-right: 10px"
+                    ><input
+                      name="descriptiveTitle"
+                      matInput
+                      type="text"
+                      placeholder="Descriptive Title"
+                      required
+                      [matAutocomplete]="subjectDescSecond"
+                      [(ngModel)]="addForms[x]['secondSem'].descriptiveTitle"
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectDescSecond="matAutocomplete"
+                      (optionSelected)="
+                        onDescriptionSelected($event, x, 'secondSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInput(
+                            x,
+                            'secondSem',
+                            'description'
+                          )
+                        "
+                        [value]="option.description"
+                        style="font-size: 12px"
+                      >
+                        {{ option.description }}
+                      </mat-option>
+                    </mat-autocomplete></mat-form-field
+                  >
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="lecUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lec Units"
+                      (input)="unitsOnChange(x, 'secondSem', 'add')"
+                      [(ngModel)]="addForms[x]['secondSem'].lecUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="labUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lab Units"
+                      (input)="unitsOnChange(x, 'secondSem', 'add')"
+                      [(ngModel)]="addForms[x]['secondSem'].labUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="totalUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Total Units"
+                      [(ngModel)]="addForms[x]['secondSem'].totalUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 90px; margin-right: 10px"
+                    ><input
+                      name="hoursPerWeek"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Hours Per Week"
+                      [(ngModel)]="addForms[x]['secondSem'].hoursPerWeek"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-right: 10px"
+                  >
+                    <mat-label>Pre-Requisite</mat-label
+                    ><mat-select
+                      name="preReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      [(ngModel)]="addForms[x]['secondSem'].preReq"
+                    >
+                      <mat-option
+                        *ngFor="
+                          let course of preReqs(x, 'secondSem');
+                          let i = index
+                        "
+                        [value]="course.courseCode"
+                      >
+                        {{ course.courseCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="subject-input" style="width: 80px">
+                    <mat-label>Co-Requisite</mat-label
+                    ><mat-select
+                      name="coReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      [(ngModel)]="addForms[x]['secondSem'].coReq"
+                    >
+                      <mat-option
+                        *ngFor="let course of subjects.secondSem; let i = index"
+                        [value]="course.courseCode"
+                        >{{ course.courseCode }}</mat-option
+                      >
+                    </mat-select></mat-form-field
+                  >
+
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="includeSubjectText"
+                    type="submit"
+                  >
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="cancelAddSubject"
+                    type="button"
+                    (click)="removeAddForm(x, 'secondSem')"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </form>
+                <small
+                  *ngIf="addFormError[x]['secondSem']"
+                  class="text-danger"
+                  >{{ addFormError[x]["secondSem"] }}</small
+                >
+              </td>
+            </tr>
+          </thead>
+
+          <thead
+            *ngIf="isEditFormShow[x]['secondSem']"
+            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
+          >
+            <tr>
+              <td colspan="9" class="forms">
+                <div>
+                  <strong
+                    ><mat-icon color="primary">edit</mat-icon>Edit
+                    Subject</strong
+                  >
+                </div>
+                <form
+                  #editForm="ngForm"
+                  (ngSubmit)="editCourse(editForm, x, 'secondSem')"
+                >
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-left: 10px; margin-right: 10px"
+                    ><input
+                      name="courseCode"
+                      matInput
+                      type="text"
+                      placeholder="Course Code"
+                      [matAutocomplete]="subjectCodeEditSecondSem"
+                      [(ngModel)]="isForms[x]['secondSem'].courseCode"
+                      required
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectCodeEditSecondSem="matAutocomplete"
+                      (optionSelected)="
+                        onSubjectCodeEditSelected($event, x, 'secondSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInputEdit(
+                            x,
+                            'secondSem',
+                            'courseCode'
+                          )
+                        "
+                        [value]="option.subject_code"
+                      >
+                        {{ option.subject_code }}
+                      </mat-option>
+                    </mat-autocomplete></mat-form-field
+                  >
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 200px; margin-right: 10px"
+                    ><input
+                      name="descriptiveTitle"
+                      matInput
+                      type="text"
+                      placeholder="Descriptive Title"
+                      [(ngModel)]="isForms[x]['secondSem'].descriptiveTitle"
+                      [matAutocomplete]="subjectDescEditSecondSem"
+                      required
+                    />
+                    <mat-autocomplete
+                      autoActiveFirstOption
+                      #subjectDescEditSecondSem="matAutocomplete"
+                      (optionSelected)="
+                        onDescEditSelected($event, x, 'secondSem')
+                      "
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of subjectCodeInputEdit(
+                            x,
+                            'secondSem',
+                            'description'
+                          )
+                        "
+                        [value]="option.description"
+                      >
+                        {{ option.description }}
+                      </mat-option>
+                    </mat-autocomplete></mat-form-field
+                  >
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="lecUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lec Units"
+                      (input)="unitsOnChange(x, 'secondSem', 'edit')"
+                      [(ngModel)]="isForms[x]['secondSem'].lecUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="labUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Lab Units"
+                      (input)="unitsOnChange(x, 'secondSem', 'edit')"
+                      [(ngModel)]="isForms[x]['secondSem'].labUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 60px; margin-right: 10px"
+                    ><input
+                      name="totalUnits"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Total Units"
+                      [(ngModel)]="isForms[x]['secondSem'].totalUnits"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 90px; margin-right: 10px"
+                    ><input
+                      name="hoursPerWeek"
+                      matInput
+                      type="number"
+                      max="5"
+                      min="0"
+                      placeholder="Hours Per Week"
+                      [(ngModel)]="isForms[x]['secondSem'].hoursPerWeek"
+                      required
+                  /></mat-form-field>
+
+                  <mat-form-field
+                    class="subject-input"
+                    style="width: 80px; margin-right: 10px"
+                  >
+                    <mat-label>Pre-Requisite</mat-label
+                    ><mat-select
+                      name="preReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      ngModel
+                    >
+                      <mat-option
+                        *ngFor="
+                          let course of preReqs(x, 'secondSem');
+                          let i = index
+                        "
+                        [value]="course.courseCode"
+                      >
+                        {{ course.courseCode }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="subject-input" style="width: 80px">
+                    <mat-label>Co-Requisite</mat-label
+                    ><mat-select
+                      name="coReq"
+                      color="primary"
+                      style="margin-right: 20px"
+                      ngModel
+                    >
+                      <mat-option
+                        *ngFor="let course of subjects.secondSem; let i = index"
+                        [value]="course.courseCode"
+                        >{{ course.courseCode }}</mat-option
+                      >
+                    </mat-select></mat-form-field
+                  >
+
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="includeSubjectText"
+                    type="submit"
+                  >
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="cancelAddSubject"
+                    type="button"
+                    (click)="cancelEditSub(x, 'secondSem')"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </form>
+                <small
+                  *ngIf="editFormError[x]['secondSem']"
+                  class="text-danger"
+                  >{{ editFormError[x]["secondSem"] }}</small
+                >
+              </td>
+            </tr>
+          </thead>
+
+          <strong>Second Semester</strong>
+          <table style="width: 100%">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Course Code</th>
+                <th scope="col">Descriptive Title</th>
+                <th scope="col">Lec Units</th>
+                <th scope="col">Lab Units</th>
+                <th scope="col">Total Units</th>
+                <th scope="col">Hours Per Week</th>
+                <th scope="col">Pre-Req</th>
+                <th scope="col">Co-Req</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let subjects of subject"></tr>
+              <tr
+                *ngFor="let course of subjects.secondSem; let i = index"
+                style="border-bottom: 1px solid rgb(140, 140, 140)"
+              >
+                <td scope="row">{{ course.courseCode }}</td>
+                <td>{{ course.descriptiveTitle }}</td>
+                <td>{{ course.lecUnits }}</td>
+                <td>{{ course.labUnits }}</td>
+                <td>{{ course.totalUnits }}</td>
+                <td>{{ course.hoursPerWeek }}</td>
+                <td>{{ course.preReq || "None" }}</td>
+                <td>{{ course.coReq || "None" }}</td>
+                <td>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="view"
+                    (click)="viewSyllabus(course.syllabus)"
+                  >
+                    <mat-icon>remove_red_eye</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="edit"
+                    (click)="selectCourse(course, x, i, 'secondSem')"
+                    *ngIf="type != 'view'"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    [title]="del"
+                    (click)="deleteCourse(x, i, 'secondSem')"
+                    *ngIf="type != 'view'"
+                  >
+                    <mat-icon>delete_forever</mat-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr style="font-weight: bold">
+                <td scope="row"></td>
+                <td>TOTAL</td>
+                <td></td>
+                <td></td>
+                <td>{{ getTotalUnits(x, 1) }}</td>
+                <td>{{ getTotalHrs(x, 1) }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Hanggang dito yung table -->
+      </mat-expansion-panel>
+      <!-- End of first Year Year -->
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+        *ngIf="!!showElectiveTable().length && department == '1'"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title class="panel-text"
+            >Elective Subjects</mat-panel-title
+          >
+        </mat-expansion-panel-header>
+        <table
+          class=""
+          style="width: 100%"
+          *ngIf="!!showElectiveTable().length && department == '1'"
+        >
+          <thead class="thead-dark">
+            <tr>
+              <th class="th-elective p-0 m-0">#</th>
+              <th
+                *ngFor="let electiveSubject of electiveSubjects"
+                class="th-elective py-0 my-0"
+              >
+                {{ electiveSubject.track | uppercase }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let i of electiveSubjectNumberPresent()"
+              style="border-bottom: 1px solid rgb(140, 140, 140)"
+            >
+              <th class="th-elective">Elective {{ i }}</th>
+              <td
+                *ngFor="let electiveSubject of selectElectiveToBeShow()"
+                class="td-elective"
+              >
+                {{
+                  getElectiveSubject(electiveSubject.metadata[i - 1]) ||
+                    "not yet set"
+                }}
+                <button
+                  mat-icon-button
+                  *ngIf="getElectiveSubject(electiveSubject.metadata[i - 1])"
+                  color="primary"
+                  (click)="
+                    viewPdf(getSyllabusSubject(electiveSubject.metadata[i - 1]))
+                  "
+                >
+                  <mat-icon>remove_red_eye</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <div class="mt-3">
+      <button
+        mat-flat-button
+        color="primary"
+        class="float-end"
+        (click)="submitCurriculum()"
+        *ngIf="type != 'view'"
+      >
+        <mat-icon>create</mat-icon>
+        {{ buttonTxt | titlecase }}
+      </button>
+    </div>
+  </div>
 </div>

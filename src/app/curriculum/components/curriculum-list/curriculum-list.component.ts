@@ -192,7 +192,7 @@ export class CurriculumListComponent {
       this.currentUser = user
       this.curriculums = curriculums.filter(curr => curr.status != 'p')
       this.curriculumPendings = curriculums.filter(curr => curr.status == 'p')
-      console.log(revisions);
+      console.log(curriculums);
       
       this.revisions = revisions
       this.newRevisionsCount = revisions.filter(rev => rev.is_new).length
@@ -303,9 +303,7 @@ export class CurriculumListComponent {
     displayRevision:any[]=[];
     displayPending: any[] = []; 
     ngDoCheck(): void{
-      console.log(this.filteredData(0).length)
-      console.log(this.filteredData(1).length)
-      console.log(this.filteredData(2).length)
+ 
 
       this.existing=this.filteredData(0)
       this.revision=this.filteredData(1)
