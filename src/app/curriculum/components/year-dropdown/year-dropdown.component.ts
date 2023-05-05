@@ -15,6 +15,8 @@ import { ElectiveSubjectDialogComponent } from '../elective-subject-dialog/elect
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { ViewPdfClass } from 'src/app/subject/components/subject-list/subject-list.component';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { User } from 'src/app/core/models/user';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 export interface subjects{
   firstSem :Subject[];
   secondSem: Subject[];
@@ -84,6 +86,7 @@ export class YearDropdownComponent {
   @Input() versions: any[] = []
   @Input() versionSelected: any
   @Input() originalVersion: any
+  @Input() user!: User
 
   @Input() reviewer: any
  
@@ -368,38 +371,71 @@ export class YearDropdownComponent {
       }
     }
 
-  addYearLevel(){
-    console.log('asdasd');
+  isLastSubjectValid(){
+    const lastSubject = this.subject[this.subject.length - 1]
+    return lastSubject.firstSem.length < 1 || lastSubject.secondSem.length < 1
+  }
+  doesYearHaveSubject(){
+    const lastSubject = this.subject[this.subject.length - 1]
+    return lastSubject.firstSem.length > 0 || lastSubject.secondSem.length > 0
+  }
 
-    if(this.subject.length < 4){
-      this.addForms.push({
-        firstSem: this.getSubjectDs(),
-        secondSem:this.getSubjectDs()
-      })
-      this.isEditFormShow.push({firstSem: false, secondSem:false})
-      this.isAddFormShow.push({firstSem: false, secondSem:false})
-      this.isForms.push({
-        firstSem: this.getSubjectDs(),
-        secondSem:this.getSubjectDs()
-      })
-      this.subject.push({
-        firstSem: [],
-        secondSem: []
-      })
-      this.addFormError.push({firstSem: '', secondSem: ''})
-      this.editFormError.push({firstSem: '', secondSem: ''})
+  addYearLevel(){
+    if(!this.isLastSubjectValid()){
+      if(this.subject.length < 4 && !this.isLastSubjectValid()){
+        this.addForms.push({
+          firstSem: this.getSubjectDs(),
+          secondSem:this.getSubjectDs()
+        })
+        this.isEditFormShow.push({firstSem: false, secondSem:false})
+        this.isAddFormShow.push({firstSem: false, secondSem:false})
+        this.isForms.push({
+          firstSem: this.getSubjectDs(),
+          secondSem:this.getSubjectDs()
+        })
+        this.subject.push({
+          firstSem: [],
+          secondSem: []
+        })
+        this.addFormError.push({firstSem: '', secondSem: ''})
+        this.editFormError.push({firstSem: '', secondSem: ''})
+      }
+    }else{
+      this.toastService.showToastError('Failed', `Make sure other year has subjects.`)
     }
   }
 
   removeYearLevel(){
     if(this.subject.length > 1){
-      this.subject.pop()
-      this.addForms.pop()
-      this.isEditFormShow.pop()
-      this.isAddFormShow.pop()
-      this.isForms.pop()
-      this.addFormError.pop()
-      this.editFormError.pop()
+      if(this.doesYearHaveSubject()){
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title: 'Remove Year Level',
+            message: 'Are you sure you want to remove this year Level?',
+            listMessage: ['all subject that you have added will be deleted']
+          }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.subject.pop()
+            this.addForms.pop()
+            this.isEditFormShow.pop()
+            this.isAddFormShow.pop()
+            this.isForms.pop()
+            this.addFormError.pop()
+            this.editFormError.pop()
+          } else {
+          }
+        });
+      }else{
+        this.subject.pop()
+        this.addForms.pop()
+        this.isEditFormShow.pop()
+        this.isAddFormShow.pop()
+        this.isForms.pop()
+        this.addFormError.pop()
+        this.editFormError.pop()
+      }
     }
   }
 

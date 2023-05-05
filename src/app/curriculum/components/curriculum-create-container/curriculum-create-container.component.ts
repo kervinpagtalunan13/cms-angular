@@ -27,7 +27,7 @@ export class CurriculumCreateContainerComponent{
   isLoading:boolean = true
   error:boolean = false
   currentUser!:User
-
+  user!: User
   
   neededData$ = combineLatest([
     this.route.data,
@@ -40,6 +40,7 @@ export class CurriculumCreateContainerComponent{
       this.userDeptId = user.department_id
       this.currentUser = user
       this.isLoading = false
+      this.user = user
     }),
     catchError(err => {
       this.isLoading = false

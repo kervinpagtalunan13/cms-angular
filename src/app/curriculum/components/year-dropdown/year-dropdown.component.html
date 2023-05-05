@@ -6,8 +6,9 @@
     class="d-flex align-items-center {{ !descriptiveTitle && 'mt-2' }}"
     style=""
   >
-    <span class="fw-semibold mt-0 fs-4 me-2" *ngIf="versionSelected"
-      >{{ title }}{{ versionSelected }}</span
+    <span class="fw-semibold mt-0 fs-4 me-2"
+      >{{ title }}
+      <span *ngIf="versionSelected">{{ versionSelected }}</span></span
     >
     <span
       class="badge rounded-pill text-bg-primary mt-0 me-2"
@@ -28,7 +29,11 @@
   </div>
 
   <div>
-    <div class="d-flex align-items-center" style="margin-top: -5px">
+    <div
+      class="d-flex align-items-center"
+      style="margin-top: -5px"
+      *ngIf="user"
+    >
       <div
         class="rounded-circle me-1"
         style="
@@ -39,10 +44,12 @@
       background-size: cover;
       background-image: url('{{
           'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
-            ('' || 'no-image.jpg')
+            (user?.profile?.profile_pic || 'no-image.jpg')
         }}');"
       ></div>
-      <small class="text-secondary">{{ author }}</small>
+      <small class="text-secondary">{{
+        user?.profile?.name || "not set his/her name yet"
+      }}</small>
     </div>
     <div *ngIf="reviewer">
       <div class="mt-2">
@@ -221,20 +228,79 @@
         </button>
       </div>
     </header>
+    <!-- <div *ngFor="let subjects of subject; let x = index">
+      <table class="table table-bordered w-100">
+        <thead class="thead-dark">
+          <tr>
+            <th colspan="9" class="text-center">First Semester</th>
+          </tr>
+          <tr>
+            <th>Course Code</th>
+            <th>Descriptive Title</th>
+            <th>Lec Units</th>
+            <th>Lab Units</th>
+            <th>Total Units</th>
+            <th>Hours Per Week</th>
+            <th>Pre-Req</th>
+            <th>Co-Req</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of subjects.firstSem; let i = index">
+            <td class="m-0">{{ course.courseCode }}</td>
+            <td class="m-0">{{ course.descriptiveTitle }}</td>
+            <td class="m-0">{{ course.lecUnits }}</td>
+            <td class="m-0">{{ course.labUnits }}</td>
+            <td class="m-0">{{ course.totalUnits }}</td>
+            <td class="m-0">{{ course.hoursPerWeek }}</td>
+            <td class="m-0">{{ course.preReq || "None" }}</td>
+            <td class="m-0">{{ course.coReq || "None" }}</td>
+            <td class="m-0">
+              <mat-icon
+                color="primary"
+                [title]="view"
+                (click)="viewSyllabus(course.syllabus)"
+                class="border p-0 m-0"
+                >remove_red_eye</mat-icon
+              >
+              <button
+                mat-icon-button
+                color="primary"
+                [title]="edit"
+                (click)="selectCourse(course, x, i, 'firstSem')"
+                *ngIf="type != 'view'"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="primary"
+                [title]="del"
+                (click)="deleteCourse(x, i, 'firstSem')"
+                *ngIf="type != 'view'"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div> -->
     <mat-accordion>
       <mat-expansion-panel
         (opened)="panelOpenState = true"
         (closed)="panelOpenState = false"
         *ngFor="let subjects of subject; let x = index"
       >
-        <mat-expansion-panel-header>
-          <mat-panel-title class="panel-text"
+        <mat-expansion-panel-header class="">
+          <mat-panel-title class="panel-text m-0 p-0"
             >{{ assignYearX(x) }} Year</mat-panel-title
           >
         </mat-expansion-panel-header>
         <div class="firstSem">
           <button
-            class="mb-2 mt-2"
+            class="mb-2"
             mat-raised-button
             color="primary"
             (click)="clickAddSubject(x, 'firstSem')"
@@ -243,10 +309,8 @@
             Add Subject<mat-icon>add</mat-icon></button
           ><br />
           <!-- <thead *ngIf="isAddFormShow[x][0]"> -->
-          <thead
-            *ngIf="isAddFormShow[x]['firstSem']"
-            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
-          >
+          <thead *ngIf="isAddFormShow[x]['firstSem']">
+            <!-- style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem" -->
             <tr>
               <td colspan="9" class="forms">
                 <div>
@@ -656,7 +720,9 @@
               </td>
             </tr>
           </thead>
-          <strong>First Semester</strong>
+          <div class="">
+            <strong>First Semester</strong>
+          </div>
           <table style="width: 100%">
             <thead class="thead-dark">
               <tr>
@@ -673,7 +739,6 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let subjects of subject"></tr>
               <tr
                 *ngFor="let course of subjects.firstSem; let i = index"
                 style="border-bottom: 1px solid rgb(140, 140, 140)"
@@ -742,10 +807,7 @@
           ><br />
 
           <!-- <thead *ngIf="isAddFormShow[x][1]"> -->
-          <thead
-            *ngIf="isAddFormShow[x]['secondSem']"
-            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
-          >
+          <thead *ngIf="isAddFormShow[x]['secondSem']">
             <tr>
               <td colspan="9" class="forms">
                 <div>
