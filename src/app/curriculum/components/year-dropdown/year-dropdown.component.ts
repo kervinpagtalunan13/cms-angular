@@ -218,7 +218,7 @@ export class YearDropdownComponent {
   }
 
   approve(){
-    this.approveCur.emit()    
+      this.approveCur.emit()    
   }
   update(){
     this.editCur.emit()
@@ -229,22 +229,26 @@ export class YearDropdownComponent {
   departmentDisable(){
     return this.role != 'admin'
   }
-  submitCurriculum(){     
-    let data:any = {
-      subjects: this.subject,
-      version: this.version,
-      departmentId: this.department,
-      // electiveSubjects: this.department != '1' ? []: this.electiveIncluded ? this.electiveSubjects : this.electiveSubjects
-
-      electiveSubjects: this.department != '1' || !this.electiveSubjectPresent.length ? []: 
-      this.type == 'create' ? this.electiveSubjects : 
-      !!this.electiveData.length ? this.electiveData : this.electiveSubjects
+  submitCurriculum(){  
+    if(!this.isLastSubjectValid()){
+      let data:any = {
+        subjects: this.subject,
+        version: this.version,
+        departmentId: this.department,
+        // electiveSubjects: this.department != '1' ? []: this.electiveIncluded ? this.electiveSubjects : this.electiveSubjects
+  
+        electiveSubjects: this.department != '1' || !this.electiveSubjectPresent.length ? []: 
+        this.type == 'create' ? this.electiveSubjects : 
+        !!this.electiveData.length ? this.electiveData : this.electiveSubjects
+        }
+      if((this.type == 'create' || this.type == 'edit') && this.action == 'revise'){
+        data = {...data, increment_version: this.incrementRevision}
       }
-    if((this.type == 'create' || this.type == 'edit') && this.action == 'revise'){
-      data = {...data, increment_version: this.incrementRevision}
+      
+      this.submitCur.emit(data)  
+    }else{
+      this.toastService.showToastError('Failed', `Make sure there's no vacant semester, before creating a curriculum`)
     }
-    
-    this.submitCur.emit(data)  
   }
 
   

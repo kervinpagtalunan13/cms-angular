@@ -228,65 +228,6 @@
         </button>
       </div>
     </header>
-    <!-- <div *ngFor="let subjects of subject; let x = index">
-      <table class="table table-bordered w-100">
-        <thead class="thead-dark">
-          <tr>
-            <th colspan="9" class="text-center">First Semester</th>
-          </tr>
-          <tr>
-            <th>Course Code</th>
-            <th>Descriptive Title</th>
-            <th>Lec Units</th>
-            <th>Lab Units</th>
-            <th>Total Units</th>
-            <th>Hours Per Week</th>
-            <th>Pre-Req</th>
-            <th>Co-Req</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let course of subjects.firstSem; let i = index">
-            <td class="m-0">{{ course.courseCode }}</td>
-            <td class="m-0">{{ course.descriptiveTitle }}</td>
-            <td class="m-0">{{ course.lecUnits }}</td>
-            <td class="m-0">{{ course.labUnits }}</td>
-            <td class="m-0">{{ course.totalUnits }}</td>
-            <td class="m-0">{{ course.hoursPerWeek }}</td>
-            <td class="m-0">{{ course.preReq || "None" }}</td>
-            <td class="m-0">{{ course.coReq || "None" }}</td>
-            <td class="m-0">
-              <mat-icon
-                color="primary"
-                [title]="view"
-                (click)="viewSyllabus(course.syllabus)"
-                class="border p-0 m-0"
-                >remove_red_eye</mat-icon
-              >
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="edit"
-                (click)="selectCourse(course, x, i, 'firstSem')"
-                *ngIf="type != 'view'"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                color="primary"
-                [title]="del"
-                (click)="deleteCourse(x, i, 'firstSem')"
-                *ngIf="type != 'view'"
-              >
-                <mat-icon>delete_forever</mat-icon>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
     <mat-accordion>
       <mat-expansion-panel
         (opened)="panelOpenState = true"
@@ -515,10 +456,8 @@
             </tr>
           </thead>
 
-          <thead
-            *ngIf="isEditFormShow[x]['firstSem']"
-            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
-          >
+          <thead *ngIf="isEditFormShow[x]['firstSem']">
+            <!-- style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem" -->
             <tr>
               <td colspan="9" class="forms">
                 <div>
@@ -1012,10 +951,8 @@
             </tr>
           </thead>
 
-          <thead
-            *ngIf="isEditFormShow[x]['secondSem']"
-            style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem"
-          >
+          <thead *ngIf="isEditFormShow[x]['secondSem']">
+            <!-- style="box-shadow: 1px 1px 1px 1px black; border-radius: 0.5rem" -->
             <tr>
               <td colspan="9" class="forms">
                 <div>
