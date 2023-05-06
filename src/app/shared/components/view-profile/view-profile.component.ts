@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AppComponent } from 'src/app/app.component';
 import { ContentService } from 'src/app/core/services/content.service';
+import { url } from 'src/app/core/url';
 @Component({
   selector: 'app-view-profile',
   templateUrl: './view-profile.component.html',
@@ -13,6 +14,7 @@ export class ViewProfileComponent implements OnInit{
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   modalColor=''
+  baseUrl = url
   isDark = new AppComponent(this.contentService);
   ngOnInit(){
     if(this.isDark.isDarkMode){

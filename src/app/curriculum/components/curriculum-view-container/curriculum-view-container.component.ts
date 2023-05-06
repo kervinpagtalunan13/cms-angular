@@ -94,8 +94,8 @@ export class CurriculumViewContainerComponent{
 
       this.revisions = revisions.filter(revision => revision.curriculum_id == this.curriculum.id && revision.status == 'a')
       
-
       this.subjects = JSON.parse(this.curriculum.metadata).subjects
+      
       this.electiveSubjects = JSON.parse(this.curriculum.metadata).electiveSubjects
 
       this.status = this.curriculum.status   
@@ -130,6 +130,7 @@ export class CurriculumViewContainerComponent{
           next: response => {
             this.status = 'a'
             this.curriculum.status = 'a'
+            this.reviewer = response.approved_by
             this.toast.showToastSuccess('Approved Successfully', `curriculum has been approved`)
           },
           error: err => {

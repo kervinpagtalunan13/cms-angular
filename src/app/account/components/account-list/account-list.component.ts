@@ -10,6 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ViewProfileComponent } from 'src/app/shared/components/view-profile/view-profile.component';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { url } from 'src/app/core/url';
 export interface UserData {
   age: number;
   name: string;
@@ -29,7 +30,7 @@ export class AccountListComponent2{
               private toast: ToastService
               ) {}
 
-
+  baseUrl = url
   user:User | any
   role:any = ''
   isLoading:boolean = true

@@ -5,6 +5,7 @@ import {AppComponent} from 'src/app/app.component';
 import { Content } from 'src/app/core/models/content.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ContentService } from 'src/app/core/services/content.service';
+import { url } from 'src/app/core/url';
 import { ToastService } from 'src/app/shared/services/toast.service';
 @Component({
   selector: 'app-content-management',
@@ -42,11 +43,11 @@ export class ContentManagementComponent {
     if(this.imageUrl)
       return this.imageUrl
     if(this.content.logo_path)
-      return 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/' + this.content.logo_path
+      return this.baseUrl + 'content/logo/' + this.content.logo_path
     else
-      return 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/logo-cict.png' 
+      return this.baseUrl + 'content/logo/logo-cict.png' 
   }
-
+  baseUrl = url
   originalContent:any = {}
   neededData$ = combineLatest([
     this.contentService.content$,

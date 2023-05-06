@@ -2,31 +2,6 @@
   <div class="p-4" *ngIf="neededData$ | async" style="height: 100vh">
     <header class="d-flex align-items-center justify-content-between mb-1">
       <span class="h3 m-o p-o">Subjects</span>
-      <!-- <div class="container mt-4" *ngIf="neededData$ | async" style="height:100vh;">
-    <header class="d-flex align-items-center justify-content-between">
-      <span class="h3">Subjects</span>
-      <div>
-      <button
-        mat-flat-button
-        color="primary"
-        (click)="openDialog()"
-        *ngIf="role == 'admin' || role == 'chair' || role == 'faculty'"
-      >
-        <mat-icon>add</mat-icon>
-        Add Subject
-      </button>
-      <button
-              style="margin-left: 10px;"
-              mat-flat-button
-              color="primary"
-              class="float-end"
-              (click)="newElective()"
-            >
-              <mat-icon>add</mat-icon>
-              Add Elective Subject
-            </button>
-          </div>
-    </header> -->
 
       <div class="d-flex align-items-center">
         <div class="me-3">
@@ -231,7 +206,7 @@
             *ngIf="!electives.length"
           ></app-empty-state>
           <!-- *ngIf="!department.members.length" -->
-          <table style="width: 100%" class="border">
+          <table style="width: 100%" class="table table-bordered">
             <thead class="border text-center">
               <tr class="border text-center">
                 <th>Description</th>

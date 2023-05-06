@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { AppComponent } from 'src/app/app.component';
 import { ContentService } from 'src/app/core/services/content.service';
+import { url } from 'src/app/core/url';
 // import context from 'react-bootstrap/esm/AccordionContext';
 
 @Component({
@@ -15,7 +16,7 @@ export class CommentComponent implements OnChanges, OnInit{
   constructor(private commentService: CommentService,
     private contentService: ContentService){}
 
-    
+    baseUrl = url
   // @Input() comments:any
   @Input() type: string = ''
   @Input() action: string = ''

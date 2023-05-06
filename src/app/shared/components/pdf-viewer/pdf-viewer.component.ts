@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { url } from 'src/app/core/url';
 
 @Component({
   selector: 'app-pdf-viewer',
@@ -8,7 +9,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./pdf-viewer.component.css']
 })
 export class PdfViewerComponent {
-  pdfLoc = 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/subjectsGetSyllabus/';
+  pdfLoc = url + 'subjectsGetSyllabus/';
   myUrl: SafeResourceUrl;
   constructor(
     private sanitizer: DomSanitizer,

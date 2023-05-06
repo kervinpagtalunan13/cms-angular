@@ -17,6 +17,7 @@ import { ViewPdfClass } from 'src/app/subject/components/subject-list/subject-li
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { User } from 'src/app/core/models/user';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { url } from 'src/app/core/url';
 export interface subjects{
   firstSem :Subject[];
   secondSem: Subject[];
@@ -98,7 +99,7 @@ export class YearDropdownComponent {
   
   electiveSubjects:any[] = []
   selectedVersion:number = 0
-
+  baseUrl = url
   clickRevisionList(){
     this.openRevisionList.emit()
   }

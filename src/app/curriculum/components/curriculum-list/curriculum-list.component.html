@@ -147,7 +147,8 @@
                     background-repeat: no-repeat;
                     background-size: cover;
                     background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        baseUrl +
+                          'profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
                       }}');"
                     ></div>
@@ -184,14 +185,14 @@
         </tbody>
       </table>
 
-      <mat-paginator
+      <!-- <mat-paginator
         [length]="existingtotalItems"
         [pageSize]="existingPageSize"
         [pageSizeOptions]="existingPageSizeOptions"
         (page)="onPageChange($event)"
         *ngIf="curriculums.length"
       >
-      </mat-paginator>
+      </mat-paginator> -->
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
@@ -292,7 +293,8 @@
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        baseUrl +
+                          'profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
                       }}');"
                     ></div>
@@ -323,14 +325,14 @@
         </tbody>
       </table>
 
-      <mat-paginator
+      <!-- <mat-paginator
         [length]="revisionTotalItems"
         [pageSize]="revisionPageSize"
         [pageSizeOptions]="revisionPageSizeOptions"
         (page)="onPageChange($event)"
         *ngIf="revisions.length"
       >
-      </mat-paginator>
+      </mat-paginator> -->
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
@@ -423,7 +425,8 @@
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        baseUrl +
+                          'profiles/images/' +
                           (data?.user?.profile?.profile_pic || 'no-image.jpg')
                       }}');"
                     ></div>
@@ -472,14 +475,14 @@
         </tbody>
       </table>
 
-      <mat-paginator
+      <!-- <mat-paginator
         [length]="pendingTotalItems"
         [pageSize]="pendingPageSize"
         [pageSizeOptions]="pendingPageSizeOptions"
         (page)="onPageChange($event)"
         *ngIf="curriculumPendings.length"
       >
-      </mat-paginator>
+      </mat-paginator> -->
     </mat-tab>
   </mat-tab-group>
 </div>

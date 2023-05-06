@@ -36,6 +36,7 @@ import { DecimalFormatPipe } from './pipe/decimal-format.pipe';
     CommentComponent,
     EmptyStateComponent,
     DecimalFormatPipe,
+    
   ],
   imports: [
     CommonModule,

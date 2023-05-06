@@ -1,4 +1,5 @@
  import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { url } from 'src/app/core/url';
 
 @Component({
   selector: 'app-toolbar',
@@ -11,7 +12,7 @@ export class ToolbarComponent {
 
   @Input() logo:string = ''
   @Input() title: string = ''
-
+  baseUrl = url
   navToggle = true;
   toggleNavBarIcon(): void{
       this.toggleSideNav.emit()

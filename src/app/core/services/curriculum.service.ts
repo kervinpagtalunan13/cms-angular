@@ -86,7 +86,7 @@ export class CurriculumService {
   }
 
   approveCurriculum(id:number){
-    return this.http.post(`${this.baseUrl}curriculums/approve/${id}`, {}).pipe(
+    return this.http.post<any>(`${this.baseUrl}curriculums/approve/${id}`, {}).pipe(
       catchError(handleError)
     )
   }

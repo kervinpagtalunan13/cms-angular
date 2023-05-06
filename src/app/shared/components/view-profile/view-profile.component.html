@@ -12,7 +12,7 @@
     </div>
   </div>
   <!-- <h1 mat-dialog-title>{{ title }}</h1> -->
-  <div class="p-4" [ngStyle]="{'background-color':'modalColor'}">
+  <div class="p-4" [ngStyle]="{ 'background-color': 'modalColor' }">
     <div mat-dialog-content>
       <div class="d-flex">
         <div
@@ -21,7 +21,8 @@
             width: 75px;
             height: 75px;
             background-image: url('{{
-            'http://localhost:8000/api/profiles/images/' +
+            baseUrl +
+              'profiles/images/' +
               (user?.profile?.profile_pic || 'no-image.jpg')
           }}');
             background-position: center;

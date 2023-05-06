@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { User } from 'src/app/core/models/user';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { url } from 'src/app/core/url';
 
 @Component({
   selector: 'app-curriculum-list',
@@ -178,7 +179,7 @@ export class CurriculumListComponent {
   curriculumPendings:Curriculum2[] = []
   error:boolean = false
   currentUser!: User
-
+  baseUrl = url
   newCurCount:number = 0
   newRevisionsCount:number = 0
   newCurPendingsCount:number = 0

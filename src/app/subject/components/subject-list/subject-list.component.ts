@@ -20,6 +20,12 @@ import { ContentService } from 'src/app/core/services/content.service';
 import { MatTabGroup } from '@angular/material/tabs';
 
 import { ApexGrid, ColumnConfiguration } from 'apex-grid';
+import { url } from 'src/app/core/url';
+interface asd {
+  entryId: string,
+  source: string
+  ts: number
+}
 ApexGrid.register();
 @Component({
   selector: 'app-subject-list',
@@ -27,15 +33,7 @@ ApexGrid.register();
   styleUrls: ['./subject-list.component.css']
 })
 export class SubjectListComponent implements OnInit{
-  // columns: ColumnConfiguration<any> = [
-  //   { field: 'price', title: 'Price', type:'number' },
-  //   { field: 'name', title: 'Name', type:'number' },
-  // ];
-  // products: any[] = [
-  //   { price: 1, asd: 2 },
-  //   { price: 1, asd: 2 },
-  //   { price: 1, asd: 2 },
-  // ];
+
   constructor(public dialog: MatDialog, 
               private subjectService: SubjectService, 
               public viewPdfDialog: MatDialog,
@@ -220,8 +218,6 @@ export class SubjectListComponent implements OnInit{
     });
   }
 
-  
-
   restoreSubject(id:number){
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -353,7 +349,7 @@ viewPdf(ref: string){
   templateUrl: 'view-pdf.html',
 })
 export class ViewPdfClass {
-  pdfLoc = 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/subjectsGetSyllabus/';
+  pdfLoc = url + 'subjectsGetSyllabus/';
   myUrl: SafeResourceUrl;
   constructor(
     private sanitizer: DomSanitizer,
