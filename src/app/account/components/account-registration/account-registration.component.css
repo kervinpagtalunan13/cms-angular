@@ -13,3 +13,7 @@
     margin-bottom: 10px;
   } */
   /* Put all the child divs in one line */
+
+  input {
+    width: 100%;
+  }

@@ -64,7 +64,8 @@ export class CurriculumCreateContainerComponent{
     secondSem: []
   }]
   buttonTxt = 'Create Curriculum'
- 
+  
+  submitted: boolean = false
   submit(subj: any){
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -83,6 +84,7 @@ export class CurriculumCreateContainerComponent{
         
         this.curriculumService.createCurriculum(data).subscribe({
           next: curriculum => {
+            this.submitted = true
             this.toast.showToastSuccess('Created Successfully', `curriclum has been created`)
             this.router.navigate(['/curriculums', curriculum.id])
           },
@@ -98,10 +100,12 @@ export class CurriculumCreateContainerComponent{
   }
 
   canDeactivate(){
+    if(this.submitted)
+      return this.submitted
     return confirm('Are you sure you want to discard your changes?');
   }
 }
 
-export function canDeactivateFn(component: CurriculumCreateContainerComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+export function canDeactivateCreateCur(component: CurriculumCreateContainerComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
   return component.canDeactivate();
 }

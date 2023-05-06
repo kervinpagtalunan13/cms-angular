@@ -51,7 +51,7 @@ export class CurriculumViewContainerComponent{
   version: any
   reviewer: any
   versions: any[] = []
-
+  user!: User
   openRevisionList(){
     this.dialog.open(RevisionListDialogComponent, {
       data: {
@@ -81,7 +81,8 @@ export class CurriculumViewContainerComponent{
       this.versions = curriculumOld.filter(old => old.curriculum_id == this.curriculum.id)
       
       this.reviewer = this.curriculum.approved_by
-
+      
+      this.user = this.curriculum.user
       this.currentUser = user
       this.userId = this.currentUser.id
       this.role = this.currentUser.role
