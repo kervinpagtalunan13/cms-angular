@@ -11,7 +11,7 @@ export class ToolbarComponent {
   @Output() toggleSideNav = new EventEmitter()
 
   @Input() logo:string = ''
-  @Input() title: string = ''
+  @Input() title: string = '' 
   baseUrl = url
   navToggle = true;
   toggleNavBarIcon(): void{
@@ -19,10 +19,10 @@ export class ToolbarComponent {
       this.navToggle = !this.navToggle;
 
       if(this.navToggle!=false){
-          this.toggleBtnNavBar = 'menu';
+          this.toggleBtnNavBar = 'keyboard_arrow_left';
       }
       else{
-          this.toggleBtnNavBar = 'keyboard_arrow_left';
+          this.toggleBtnNavBar = 'menu';
       }
   }
 }

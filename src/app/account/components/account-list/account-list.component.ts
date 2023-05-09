@@ -38,13 +38,21 @@ export class AccountListComponent2{
   neededData$ = combineLatest([
     this.accountService.users$,
     this.authService.getCurrentUser(),
-    this.authService.currentUser$
+    this.authService.currentUser$,
+    this.accountService.registerUser$
   ]).pipe(
-    tap(([users, userObs, user]) => {
+    tap(([users, userObs, user, registeredUser]) => {
       this.users = users
       this.user = user
       this.role = user?.role
       this.isLoading = false
+      
+      if(registeredUser){
+        if(!(users.map(user => user.id).includes(registeredUser.id))){
+          this.users.unshift(registeredUser)
+        }
+      }
+
     }),
     catchError(err => {
       this.isLoading = false
