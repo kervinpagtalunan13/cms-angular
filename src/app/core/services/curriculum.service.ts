@@ -66,7 +66,6 @@ export class CurriculumService {
     )
   }
 
-
   updateRevision(data:any){
     return this.http.patch(`${this.baseUrl}curriculums/updateRevision`, data).pipe(
       catchError(handleError)

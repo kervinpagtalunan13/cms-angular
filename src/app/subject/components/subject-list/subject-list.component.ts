@@ -373,7 +373,7 @@ export class AssignElectiveSubject implements OnInit{
     private subjectService: SubjectService,
     private toast: ToastService
   ) {
-
+    
   }
   modalColor = ''
   isDark = new AppComponent(this.contentService)
