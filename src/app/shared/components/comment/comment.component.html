@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <h2 class="comments d-flex align-items-center my-2">
-    <span class="me-1">Comments</span>
+    <span class="me-1">Latest Comments</span>
     <mat-icon class="mt-1">chat</mat-icon>
   </h2>
   <div
@@ -19,7 +19,7 @@
           <div>
             <mat-icon>announcement</mat-icon>
           </div>
-          this curriculum doesn't have comments
+          No Comments yet.
         </mat-card-content>
       </mat-card>
       <mat-card
@@ -38,7 +38,24 @@
           />
 
           <mat-card-subtitle>
-            <span>{{ comment.user?.profile?.name }}</span>
+            <span>{{ comment.user?.profile?.name }}, commented on </span>
+            <a
+              *ngIf="comment.curriculum"
+              [routerLink]="['/', 'curriculums', comment.curriculum_id]"
+            >
+              {{ comment.curriculum.department.department_code | uppercase }}
+              Curriculum v{{ comment.curriculum.version }}
+            </a>
+            <a
+              *ngIf="comment.curriculum_revision"
+              [routerLink]="[
+                '/',
+                'curriculums',
+                'revisions',
+                comment.curriculum_revision_id
+              ]"
+              >revision on revision id.{{ comment.curriculum_revision_id }}
+            </a>
             <div>
               <small class="">{{
                 comment.created_at | timeDifferencePipe
