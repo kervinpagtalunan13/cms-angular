@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import iziToast from 'izitoast';
+import { url } from 'src/app/core/url';
 
 @Component({
   selector: 'app-profile-container-shell',
@@ -22,7 +23,7 @@ export class ProfileContainerShellComponent {
   messageProfileError$ = new Subject<string>()
 
   user!:User | any
-
+  baseUrl = url
   neededData$ = combineLatest([
     this.authService.getCurrentUser(),
     this.authService.currentUser$

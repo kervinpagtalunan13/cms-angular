@@ -49,7 +49,8 @@ export interface departmentDetails{
 export class AccountListComponent {
 
   constructor(private userService: UserService,
-              private authService: AuthService
+              private authService: AuthService,
+              
     ){}
   
   isLoading:boolean = true
@@ -57,7 +58,7 @@ export class AccountListComponent {
   neededData$ = combineLatest([
     this.userService.users$,
     this.authService.getCurrentUser(),
-    this.authService.currentUser$
+    this.authService.currentUser$,
   ]).pipe(
     tap(),
     catchError(err => {

@@ -1,5 +1,5 @@
 <app-sidenav>
-  <div class="container p-4 bg-white" *ngIf="neededData$ | async">
+  <div class="container p-4" *ngIf="neededData$ | async" style="height: 100vh">
     <span class="h4">Departments</span>
     <mat-tab-group>
       <mat-tab
@@ -34,7 +34,8 @@
                     width: 70px;
                     height: 70px;
                     background-image: url('{{
-                        'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                        baseUrl +
+                          'profiles/images/' +
                           (member?.profile?.profile_pic || 'no-image.jpg')
                       }}');
                     background-position: center;

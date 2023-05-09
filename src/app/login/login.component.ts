@@ -21,7 +21,7 @@ export class LoginComponent{
         password: ''
     }
     constructor(private authService: AuthService, private router: Router,private dialog: MatDialog){}
-
+    
     error = new Subject<string>(); //valid creds bool
     
     checkCredentials(form: NgForm) :void{
@@ -29,7 +29,7 @@ export class LoginComponent{
             .subscribe({
                 next: response => {
                     this.error$.next('')
-                    this.router.navigate(['/user'])
+                    this.router.navigate(['/dashboard'])
                 },
                 error: err => {
                     this.error.next(err.message)

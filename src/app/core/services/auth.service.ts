@@ -4,12 +4,15 @@ import { BehaviorSubject, catchError, of, tap, throwError } from 'rxjs';
 import { AppError } from '../models/app-error';
 import { User } from '../models/user';
 import { handleError } from '../errorHandling/errorHandler';
+import { url } from '../url';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  baseUrl = `https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/`;
+  // baseUrl = `https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/`;
+  // baseUrl = `http://localhost:8000/api/`;
+  baseUrl = url;
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   currentUser$ = this.currentUserSubject.asObservable()
   currentUser!: User | any

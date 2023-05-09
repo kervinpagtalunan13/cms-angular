@@ -11,7 +11,7 @@
     padding-right: 15px;
     border-radius: 1rem;
     font-weight: 100;
-    color: white;
+    /* color: white; */
     font-size: 15px;
   }
   .title{
@@ -24,7 +24,6 @@
   }
   .container{
     /* width: 90%; */
-    background-color: white;
   }
   .tit{
     margin-right: 100px;

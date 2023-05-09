@@ -1,5 +1,5 @@
 import { SlicePipe } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, NgZone, OnInit, ViewChild  } from "@angular/core";
 import {Chart} from 'angular-highcharts';
 import { AuthService } from "../core/services/auth.service";
 import { EMPTY, catchError, combineLatest, map } from "rxjs";
@@ -17,13 +17,18 @@ import { DepartmentService } from "../core/services/department.service";
 
 export class dashboard implements OnInit{
 
+
+
     constructor(private authService: AuthService,
                 private curriculumService: CurriculumService,
                 private commentService: CommentService,
                 private accountService: AccountService,
                 private subjectService: SubjectService,
-                private departmentService: DepartmentService
-                ){}
+                private departmentService: DepartmentService,
+                )
+    {
+
+    }
   
 
   ngOnInit(): void {
@@ -81,10 +86,10 @@ export class dashboard implements OnInit{
         this.departmentService
 
         let data:any[] = departments.map(dep => {
-          return {name: dep.department_code, y: dep.subjects.length}
+          return {name: dep.department_code.toUpperCase(), y: dep.subjects.length}
         })
-        data = [...data, {name: 'none', y: subjects.filter(sub => !sub).length }]
-  
+        data = [...data, {name: 'NONE', y: subjects.filter(sub => !sub).length }]
+        data = data.filter(s => !!s.y)
         
         this.isLoading = false
         this.pieChartSubject = new Chart({
@@ -109,6 +114,10 @@ export class dashboard implements OnInit{
         })
         // console.log(comments.splice(0, 3));
         
+        let latestCurriculum = curriculums.filter(cur => cur.status == 'a').reduce((max, current) => {
+          return max.version > current.version ? max : max
+        })
+
         return {
           user: user,
           pendingCurriculums: curriculums.filter(cur => cur.status == 'p').length,
@@ -118,10 +127,8 @@ export class dashboard implements OnInit{
           latestSubmittedRevisions: !!revisions.length ? revisions.reduce((max, current) => {
             return new Date(current.created_at) > new Date(max.created_at) ? current : max
           }) : null,
+          latestCurriculum: latestCurriculum || null,
           latestComments: comments.splice(0, 3),
-          // latestSubmittedRevisions: revisions.reduce((max, current) => {
-          //   return new Date(current.created_at) > new Date(max.created_at) ? current : max
-          // }),
           curriculums: curriculums,
           comments: comments.splice(0, 3)
         }

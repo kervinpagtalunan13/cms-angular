@@ -5,6 +5,7 @@ import {AppComponent} from 'src/app/app.component';
 import { Content } from 'src/app/core/models/content.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ContentService } from 'src/app/core/services/content.service';
+import { url } from 'src/app/core/url';
 import { ToastService } from 'src/app/shared/services/toast.service';
 @Component({
   selector: 'app-content-management',
@@ -42,11 +43,11 @@ export class ContentManagementComponent {
     if(this.imageUrl)
       return this.imageUrl
     if(this.content.logo_path)
-      return 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/' + this.content.logo_path
+      return this.baseUrl + 'content/logo/' + this.content.logo_path
     else
-      return 'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/logo-cict.png' 
+      return this.baseUrl + 'content/logo/logo-cict.png' 
   }
-
+  baseUrl = url
   originalContent:any = {}
   neededData$ = combineLatest([
     this.contentService.content$,
@@ -152,23 +153,39 @@ export class ContentManagementComponent {
   toggleIsEdit(){
     this.isEdit = !this.isEdit
   }
+  main = new AppComponent(this.contentService);
+  ngDoCheck(): void {
+    if(!this.main.isDarkMode){
+      if(this.main.body){
+        this.main.body.classList.add('theme-light');
+        this.main.body.classList.remove('theme-dark');
+        }
+    }
+    else{
+      if(this.main.body){
+        this.main.body.classList.add('theme-dark');
+        this.main.body.classList.remove('theme-light');
+        }
+    }
+  }
 
-//  toggleTheme = new AppComponent();
-//  isDark=false;
-//  toggle(){
-//   if(!this.isDark)
-//   {
-//     this.toggleTheme.toggleDarkMode();
-//   this.isDark = true;
-//   console.log(this.isDark);
-// }
-  
-//   else {
-//   this.toggleTheme.toggleLightMode();
-//     this.isDark = false;
-//     console.log(this.isDark);
-// }
+  ngOnInit(){
+    if(!this.main.isDarkMode){
+      if(this.main.body){
+      this.main.body.classList.add('theme-light');
+      this.main.body.classList.remove('theme-dark');
+      }
+    }
+    else{
+      if(this.main.body){
+        this.main.body.classList.add('theme-dark');
+        this.main.body.classList.remove('theme-light');
+        }
+    }
+  }
 
-//  }
+  // reloadMain(){
+  //  this.main.reloadPage();
+  // }
 
 }

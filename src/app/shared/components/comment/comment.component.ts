@@ -2,6 +2,10 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { Comment } from '../../../core/models/comment'
 import { NgForm } from '@angular/forms';
 import { CommentService } from 'src/app/core/services/comment.service';
+import { AppComponent } from 'src/app/app.component';
+import { ContentService } from 'src/app/core/services/content.service';
+import { url } from 'src/app/core/url';
+// import context from 'react-bootstrap/esm/AccordionContext';
 
 @Component({
   selector: 'app-comment',
@@ -9,8 +13,10 @@ import { CommentService } from 'src/app/core/services/comment.service';
   styleUrls: ['./comment.component.css']
 })
 export class CommentComponent implements OnChanges, OnInit{
-  constructor(private commentService: CommentService){}
+  constructor(private commentService: CommentService,
+    private contentService: ContentService){}
 
+    baseUrl = url
   // @Input() comments:any
   @Input() type: string = ''
   @Input() action: string = ''
@@ -25,7 +31,9 @@ export class CommentComponent implements OnChanges, OnInit{
     subject: '',
     body: ''
   }
-
+  insideColor=''
+  commentColor=''
+  isDark = new AppComponent(this.contentService)
   ngOnInit(): void {
     this.commentService.commentSuccess.subscribe(
       data => {
@@ -33,6 +41,27 @@ export class CommentComponent implements OnChanges, OnInit{
         this.comment.body = ''
       }
     )
+    this.contentService.contentAction$.subscribe(
+      content => {
+
+        if(!!Number(content.is_dark_mode_active)){
+          this.insideColor='rgb(85, 85, 85)'
+          this.commentColor='rgb(64, 64, 64)'
+        }else{
+          this.insideColor='#F8F8F8'
+          this.commentColor='white'
+        }
+      }
+    )
+
+    // if(this.isDark.isDarkMode){
+    //   this.insideColor='rgb(85, 85, 85)'
+    //   this.commentColor='rgb(64, 64, 64)'
+    // }
+    // else{
+    //   this.insideColor='#F8F8F8'
+    //   this.commentColor='white'
+    // }
   }
 
   ngOnChanges(){

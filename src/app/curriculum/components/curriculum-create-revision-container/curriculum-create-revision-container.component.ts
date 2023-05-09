@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, Subject, catchError, combineLatest, map, tap } from 'rxjs';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { EMPTY, Observable, Subject, catchError, combineLatest, map, tap } from 'rxjs';
 import { Curriculum2 } from 'src/app/core/models/curriculum';
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { CommentService } from 'src/app/core/services/comment.service';
@@ -29,7 +29,6 @@ export class CurriculumCreateRevisionContainerComponent{
     ){}
   
   errorMessage$ = new Subject<string>()
-
   currentUser!:User
 
   neededData$ = combineLatest([
@@ -53,7 +52,7 @@ export class CurriculumCreateRevisionContainerComponent{
       this.role = this.currentUser.role
       this.comments = comments.filter(comment => comment.curriculum_id == id)
 
-      this.title = `CICT ${this.curriculum.department.department_code} Curriculum version ${this.curriculum.version}`
+      this.title = `CICT ${this.curriculum.department.department_code.toUpperCase()} Curriculum version ${this.curriculum.version}`
 
       this.subjects = JSON.parse(this.curriculum.metadata).subjects
       this.electiveSubjects = JSON.parse(this.curriculum.metadata).electiveSubjects
@@ -96,9 +95,10 @@ export class CurriculumCreateRevisionContainerComponent{
   buttonTxt = 'submit revision'
 
   canCreateRevision(){
-    return this.role !== 'reviewer'
+    return this.role !== 'reviewer' && this.status == 'a'
   }
 
+  submitted: boolean = false
   submit(subjects: any){
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -109,17 +109,19 @@ export class CurriculumCreateRevisionContainerComponent{
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const data = {...subjects, metadata: {
+        const data = {...subjects, 
+          metadata: {
           subjects: subjects.subjects,
           electiveSubjects: subjects.electiveSubjects,
           }, 
-        curriculumId: this.curriculum.id
+          curriculumId: this.curriculum.id,
         }
         
         // const data = { curriculumId: this.curriculum.id, metadata: subjects.subjects, version: subjects.version }
         
         this.curriculumService.createRevision(data).subscribe({
           next: (data:any) => {
+            this.submitted = true
             this.toast.showToastSuccess('Created Successfully', `revision has been created`)
             this.router.navigate(['/curriculums', 'revisions', data.curriculum.id])
           },
@@ -129,7 +131,11 @@ export class CurriculumCreateRevisionContainerComponent{
       }
     });
   }
+  canDeactivate(){
+    return (this.submitted || !this.canCreateRevision()) || confirm('Are you sure you want to discard your changes?')
+  }
+}
 
-
-   
+export function canDeactivateCreateRev(component: CurriculumCreateRevisionContainerComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+  return component.canDeactivate();
 }

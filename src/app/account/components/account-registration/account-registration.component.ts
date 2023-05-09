@@ -7,6 +7,8 @@ import { AccountService } from 'src/app/core/services/account.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { SubjectAddDialogComponent } from 'src/app/subject/components/subject-add-dialog/subject-add-dialog.component';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { AppComponent } from 'src/app/app.component';
+import { ContentService } from 'src/app/core/services/content.service';
 
 export interface registerForm{
   // firstName: string,
@@ -26,7 +28,9 @@ export interface registerForm{
 })
 
 export class AccountRegistrationComponent {
+  
   constructor(private accountService: AccountService, 
+              private contentService: ContentService,
               public dialogRef: MatDialogRef<SubjectAddDialogComponent>,
               private toast: ToastService
     ){}
@@ -34,19 +38,28 @@ export class AccountRegistrationComponent {
   showDep=false;
   role='';
   user!:User
-
+  modalColor=''
+  isDark = new AppComponent(this.contentService);
+  ngOnInit(){
+    if(this.isDark.isDarkMode){
+      this.modalColor='#3b3b3b'
+    }
+    else{
+      this.modalColor='#e4e4e7'
+    }
+  }
   errorMessage$ = new Subject<string>();
 
   onFileSelected() {
     const inputNode: any = document.querySelector('#file');
-  
+    
     if (typeof (FileReader) !== 'undefined') {
       const reader = new FileReader();
   
       reader.onload = (e: any) => {
         this.srcResult = e.target.result;
       };
-  
+      
       reader.readAsArrayBuffer(inputNode.files[0]);
     }
     return inputNode;

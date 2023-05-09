@@ -6,6 +6,9 @@ import { dashboard } from './dashboard.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChartModule } from 'angular-highcharts';
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { NgApexchartsModule } from 'ng-apexcharts';
+
+
 // import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -18,7 +21,8 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     MaterialModule,
     ChartModule,
     // NgChartsModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    NgApexchartsModule
   ]
 })
 export class DashboardModule { }

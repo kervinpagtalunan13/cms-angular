@@ -5,7 +5,9 @@ import { User } from 'src/app/core/models/user';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ContentService } from 'src/app/core/services/content.service';
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
-
+import { ContentManagementComponent } from 'src/app/content/components/content-management/content-management.component';
+import { MatDialog } from '@angular/material/dialog';
+import { url } from 'src/app/core/url';
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
@@ -14,6 +16,7 @@ import { CurriculumService } from 'src/app/core/services/curriculum.service';
 export class SidenavComponent {
 
   constructor(private route: ActivatedRoute, 
+    public dialog: MatDialog, 
               private authService: AuthService,
               private router: Router,
               private contentService: ContentService,
@@ -21,11 +24,7 @@ export class SidenavComponent {
     ){}
     
   showSideNav = false
-  // currentUser = this.authService.currentUser$
-  // currentUser$ = this.authService.getCurrentUser().pipe(
-  //   tap(user => console.log(user)
-  //   )
-  // )
+  baseUrl = url
 
   neededData$ = combineLatest([
     this.authService.getCurrentUser(),
@@ -70,5 +69,8 @@ export class SidenavComponent {
     this.authService.logout().subscribe(
       data => this.router.navigate(['/'])
     )
+  }
+  openDialog(){
+    this.dialog.open(ContentManagementComponent);
   }
 }

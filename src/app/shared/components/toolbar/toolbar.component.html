@@ -10,15 +10,16 @@
       width: 45px;
       height: 45px;
       background-image: url('{{
-          'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/content/logo/' +
-            (logo || 'logo-cict.png')
+          baseUrl + 'content/logo/' + (logo || 'logo-cict.png')
         }}');
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
       "
       ></div>
-      <b> CICT</b> {{ title }}
+      <b>CICT</b>
+      <pre>{{ " " }}</pre>
+      {{ title }}
     </span>
     <span class="example-spacer"></span>
   </mat-toolbar-row>

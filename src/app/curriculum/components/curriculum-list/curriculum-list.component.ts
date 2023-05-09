@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Curriculum, Curriculum2 } from 'src/app/core/models/curriculum';
 import {MatDialog} from '@angular/material/dialog';
-
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { EMPTY, catchError, combineLatest, map, tap } from 'rxjs';
@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { User } from 'src/app/core/models/user';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { url } from 'src/app/core/url';
 
 @Component({
   selector: 'app-curriculum-list',
@@ -178,7 +179,7 @@ export class CurriculumListComponent {
   curriculumPendings:Curriculum2[] = []
   error:boolean = false
   currentUser!: User
-
+  baseUrl = url
   newCurCount:number = 0
   newRevisionsCount:number = 0
   newCurPendingsCount:number = 0
@@ -192,7 +193,7 @@ export class CurriculumListComponent {
       this.currentUser = user
       this.curriculums = curriculums.filter(curr => curr.status != 'p')
       this.curriculumPendings = curriculums.filter(curr => curr.status == 'p')
-      console.log(revisions);
+      console.log(curriculums);
       
       this.revisions = revisions
       this.newRevisionsCount = revisions.filter(rev => rev.is_new).length
@@ -218,7 +219,12 @@ export class CurriculumListComponent {
       console.log(`Dialog result: ${result}`);
     });
   }
-
+  searchPlaceholder = 'Search in Existing...'
+  tab = 0
+  //changeTabEvent
+  changeTab(change:MatTabChangeEvent){
+   this.tab = change.index;
+  }
 
     //pang filter
     private _listFilter: string = '';
@@ -227,133 +233,127 @@ export class CurriculumListComponent {
     }
     set listFilter(value: string){
         this._listFilter=value;
-        this.filteredList = this.performFilter(value);
+        if(this.tab==0){
+        this.existingFilteredList = this.performFilter(value);
+        }
+        else if(this.tab==1){
+          this.revisionFilteredList = this.performRevisionFilter(value);
+        }
+        else if(this.tab==2){
+          this.pendingFilteredList = this.performFilter(value);
+        }
     }
     //pang filter
-  
-    filteredList: Curriculum[]=[]; //array ng filtered list
-  
-    data: Curriculum[] = [
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.2.1',
-      'date':'04-03-2005',
-      'author':'Kyla Delfin',
-      'role':'Chair',
-      'status':'Proposed',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.2.0',
-      'date':'01-12-2004',
-      'author':'Mang Ben',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.9',
-      'date':'01-12-2004',
-      'author':'Kervs',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.8',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.7',
-      'date':'01-12-2004',
-      'author':'Kervin',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.6',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.5',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-      {'title':'CICT Curriculum Ver.',
-      'version':'3.1.4',
-      'date':'01-12-2004',
-      'author':'Von Plaza',
-      'role':'Chair',
-      'status':'For revision',
-      "isCurrent":"false"},
-    ];
-  
+    revisionFilteredList = this.revisions;
+    existingFilteredList=this.curriculums; //array ng filtered list
+    pendingFilteredList=this.curriculums; //array ng filtered list
+    rev:any[]=[];
+    data: any[]=[];
+    //data= this.curriculums;
+    
     //pangfilter 
-    performFilter(filterBy: string): Curriculum[]{
+    performFilter(filterBy: string): Curriculum2[]{
       filterBy = filterBy.toLocaleLowerCase();
-      return this.data.filter((titles: Curriculum)=>
-      titles.title.toLowerCase().includes(filterBy)||
+      return this.data.filter((titles: Curriculum2)=>
+      titles.department.department_code.toLowerCase().includes(filterBy)||
       titles.version.toLowerCase().includes(filterBy)||
-      titles.date.toLowerCase().includes(filterBy)||
-      titles.author.toLowerCase().includes(filterBy)||
-      titles.role.toLowerCase().includes(filterBy)||
       titles.status.toLowerCase().includes(filterBy)||
-      titles.isCurrent.toLowerCase().includes(filterBy)
+      titles.user?.profile?.name.toLowerCase().includes(filterBy)||
+      titles.created_at.toLowerCase().includes(filterBy)
       );
   }
+
+  performRevisionFilter(filterBy: string): Curriculum2[]{
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.rev.filter((titles: Curriculum2)=>
+    titles.department?.department_code?.toLowerCase().includes(filterBy)||
+    titles.version.toLowerCase().includes(filterBy)||
+    titles.status.toLowerCase().includes(filterBy)||
+    titles.user?.profile?.name.toLowerCase().includes(filterBy)||
+    titles.created_at.toLowerCase().includes(filterBy)
+    );
+}
   //pangfilter
-   
-    
+  // The items to display on the current page
   //paginator
-    totalItems = this.data.length; // Total number of items in your table
-    pageSize = 3; // Number of items to display per page
-    pageSizeOptions = [3, 5, 10]; // Options for the number of items per page
-  
-    currentPageIndex = 0; // Current page index
-    displayedItems: any[] = []; // The items to display on the current page
+    existingtotalItems = 0; // Total number of items in your table
+    existingPageSize = 3; // Number of items to display per page
+    existingPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
+    existingCurrentPageIndex = 0; // Current page index
+
+    revisionTotalItems = 0; // Total number of items in your table
+    revisionPageSize = 3; // Number of items to display per page
+    revisionPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
+    revisionCurrentPageIndex = 0; // Current page index
+
+    pendingTotalItems = 0; // Total number of items in your table
+    pendingPageSize = 3; // Number of items to display per page
+    pendingPageSizeOptions = [3, 5, 10]; // Options for the number of items per page
+    pendingCurrentPageIndex = 0; // Current page index
+    
     //paginator
   
-    //pang filter
     ngOnInit(): void {
-      this.listFilter = '';
+      //this.listFilter = '';
     }
-    //pang filter
-  
-    //pang check kung may laman yung search input (para di mawalan ng laman yung table)
+    existing:any[]=[];
+    revision:any[]=[];
+    pending: any[] = []; 
+    
+    displayExisting:any[]=[];
+    displayRevision:any[]=[];
+    displayPending: any[] = []; 
     ngDoCheck(): void{
-      if(!this.listFilter){
-        this.totalItems = this.data.length;
-        this.loadPageWithoutFilter(this.currentPageIndex);
-      }
-      else{
-        this.totalItems = this.filteredList.length;
-        this.loadPageWithFilter(this.currentPageIndex);
-      }
+ 
+
+      this.existing=this.filteredData(0)
+      this.revision=this.filteredData(1)
+      this.pending=this.filteredData(2)
+
+      this.existingtotalItems = this.filteredData(0).length;
+      this.revisionTotalItems = this.filteredData(1).length;
+      this.pendingTotalItems = this.filteredData(2).length;
     }
   
-    //pang check kung may laman yung search input (para di mawalan ng laman yung table)
   
   
     //paginator
     onPageChange(event: PageEvent): void {
-      this.currentPageIndex = event.pageIndex;
-      this.pageSize = event.pageSize;
-      this.loadPageWithoutFilter(this.currentPageIndex);
+      if(this.tab==0){
+      this.existingCurrentPageIndex = event.pageIndex;
+      this.existingPageSize = event.pageSize;
+      this.loadPageWithoutFilter(this.existingCurrentPageIndex);
+      }
+      else if(this.tab==1){
+        this.revisionCurrentPageIndex = event.pageIndex;
+        this.revisionPageSize = event.pageSize;
+        this.loadPageWithoutFilter(this.revisionCurrentPageIndex);
+        }
+      else if(this.tab==2){
+        this.pendingCurrentPageIndex = event.pageIndex;
+        this.pendingPageSize = event.pageSize;
+        this.loadPageWithoutFilter(this.pendingCurrentPageIndex);
+        }
     }
     
     loadPageWithoutFilter(pageIndex: number): void {
-      const startIndex = pageIndex * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.displayedItems = this.data.slice(startIndex, endIndex);
-    }
-    loadPageWithFilter(pageIndex: number): void {
-      const startIndex = pageIndex * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.displayedItems = this.filteredList.slice(startIndex, endIndex);
+      let startIndex = 0;
+      let endIndex = 0;
+      if(this.tab==0){
+        startIndex = pageIndex * this.existingPageSize;
+        endIndex = startIndex + this.existingPageSize;
+        this.displayExisting = this.filteredData(0).slice(startIndex, endIndex);
+      }
+      else if(this.tab==1){
+        startIndex = pageIndex * this.revisionPageSize;
+        endIndex = startIndex + this.revisionPageSize;
+        this.displayRevision = this.revision.slice(startIndex, endIndex);
+      }
+      else if(this.tab==2){
+        startIndex = pageIndex * this.pendingPageSize;
+        endIndex = startIndex + this.pendingPageSize;
+        this.displayPending = this.pending.slice(startIndex, endIndex);
+      }
     }
   //paginator
 }

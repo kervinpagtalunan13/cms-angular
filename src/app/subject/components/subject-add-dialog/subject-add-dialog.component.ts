@@ -1,8 +1,10 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import { Subject } from 'rxjs';
+import { AppComponent } from 'src/app/app.component';
 import { AppError } from 'src/app/core/models/app-error';
 import { Department } from 'src/app/core/models/department';
+import { ContentService } from 'src/app/core/services/content.service';
 import { DepartmentService } from 'src/app/core/services/department.service';
 import { SubjectService } from 'src/app/core/services/subject.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
@@ -12,12 +14,23 @@ import { ToastService } from 'src/app/shared/services/toast.service';
   templateUrl: './subject-add-dialog.component.html',
   styleUrls: ['./subject-add-dialog.component.css']
 })
-export class SubjectAddDialogComponent {
+export class SubjectAddDialogComponent implements OnInit{
   constructor(public dialogRef: MatDialogRef<SubjectAddDialogComponent>, 
               private subjectService: SubjectService,
+              private contentService: ContentService,
               private departmentService: DepartmentService,
               private toast: ToastService
     ) {}
+    modalColor = ''
+    isDark = new AppComponent(this.contentService)
+  ngOnInit(){
+    if(this.isDark.isDarkMode){
+      this.modalColor='#3b3b3b'
+    }
+    else{
+      this.modalColor='#e4e4e7'
+    }
+  }
     
   department:number = 1
   isElective:boolean = false

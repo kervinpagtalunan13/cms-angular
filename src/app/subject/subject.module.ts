@@ -8,7 +8,9 @@ import { MaterialModule } from '../shared/material';
 import { SubjectAddDialogComponent } from './components/subject-add-dialog/subject-add-dialog.component';
 import { FormsModule } from '@angular/forms';
 import {OrderByPipe} from 'src/app/subject/components/subject-list/subject-list-sort.pipe'
+import { ApexGrid } from 'apex-grid';
 //import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer/ngx-extended-pdf-viewer";
+// import { ApexGridModule } from 'apex-grid';
 @NgModule({
   declarations: [
     SubjectListComponent,
@@ -22,7 +24,7 @@ import {OrderByPipe} from 'src/app/subject/components/subject-list/subject-list-
     SubjectRoutingModule,
     SharedModule,
     MaterialModule,
-    FormsModule
+    FormsModule,
   ]
 })
 export class SubjectModule { }

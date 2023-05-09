@@ -10,6 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ViewProfileComponent } from 'src/app/shared/components/view-profile/view-profile.component';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { url } from 'src/app/core/url';
 export interface UserData {
   age: number;
   name: string;
@@ -29,7 +30,7 @@ export class AccountListComponent2{
               private toast: ToastService
               ) {}
 
-
+  baseUrl = url
   user:User | any
   role:any = ''
   isLoading:boolean = true
@@ -37,13 +38,21 @@ export class AccountListComponent2{
   neededData$ = combineLatest([
     this.accountService.users$,
     this.authService.getCurrentUser(),
-    this.authService.currentUser$
+    this.authService.currentUser$,
+    this.accountService.registerUser$
   ]).pipe(
-    tap(([users, userObs, user]) => {
+    tap(([users, userObs, user, registeredUser]) => {
       this.users = users
       this.user = user
       this.role = user?.role
       this.isLoading = false
+      
+      if(registeredUser){
+        if(!(users.map(user => user.id).includes(registeredUser.id))){
+          this.users.unshift(registeredUser)
+        }
+      }
+
     }),
     catchError(err => {
       this.isLoading = false

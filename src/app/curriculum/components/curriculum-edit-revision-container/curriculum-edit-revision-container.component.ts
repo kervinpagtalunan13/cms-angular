@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, Observable, catchError, combineLatest, map, tap } from 'rxjs';
 import { Comment } from 'src/app/core/models/comment';
 import { Curriculum2 } from 'src/app/core/models/curriculum';
@@ -16,7 +16,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
   templateUrl: './curriculum-edit-revision-container.component.html',
   styleUrls: ['./curriculum-edit-revision-container.component.css']
 })
-export class CurriculumEditRevisionContainerComponent implements OnInit{
+export class CurriculumEditRevisionContainerComponent{
   constructor(private curriculumService: CurriculumService,
               private route: ActivatedRoute,
               private authService: AuthService,
@@ -44,6 +44,8 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
   buttonTxt = 'edit curriculum'
   electiveSubjects:any[] = []
   curriculumDepartment:any = ''
+  incrementRevision = false
+  user!: User
 
   neededData$ = combineLatest([
     this.route.data,
@@ -61,11 +63,13 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
       this.curriculum = revisions.find((curriculum:any) => curriculum.id == id)
       this.currUserId = this.curriculum.user_id
 
+      this.incrementRevision = this.curriculum.increment_version
+
       this.currentUser = user
       this.userId = this.currentUser.id
       this.role = this.currentUser.role
       this.comments = comments.filter(comment => comment.curriculum_revision_id == id)
-
+      this.user = this.curriculum.user
       this.title = `CICT ${this.curriculum.curriculum.department.department_code} Curriculum version ${this.curriculum.version}`
 
       this.subjects = JSON.parse(this.curriculum.metadata).subjects
@@ -84,9 +88,10 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
   )
 
   canEdit(){
-    return this.currUserId == this.userId
+    return this.currUserId == this.userId && this.status != 'a'
   }
 
+  submitted: boolean = false
   submit(subjects: any){
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -103,11 +108,14 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
           }, 
         id: this.curriculum.id
         }
+        
         // const body = {...data, id: this.curriculum.id}
         this.curriculumService.updateRevision(data).subscribe({
           next: (response:any) => {
+            this.submitted = true
             this.router.navigate(['/curriculums', 'revisions', response.id])
             this.toast.showToastSuccess('Edited Successfully', `revision has been edited`)
+            
           },
           error: err => {
             this.toast.showToastError('Creation Failed', `${err.message}`)
@@ -118,31 +126,11 @@ export class CurriculumEditRevisionContainerComponent implements OnInit{
       }
     });
   }
-
-
-  // curriculum$ = new Observable()
-
-  ngOnInit(): void {
-    // this.route.data.subscribe((data:any) => {
-    //   this.type = data.type
-    //   this.action = data.action
-    // })
-    // this.route.params.subscribe(({id}) => {
-    //   this.curriculum$ = this.curriculumService.getRevisionCurriculum(+id).pipe(
-    //     tap((curriculum:any) => {
-    //     this.curriculum = curriculum
-    //     this.currUserId = curriculum.user_id
-    //     this.subjects = JSON.parse(curriculum.metadata)
-    //     this.title = `CICT ${curriculum.curriculum.department.department_code} Curriculum version ${curriculum.curriculum.version}`
-    //     this.status = curriculum.status 
-    //     console.log(curriculum.user.profile.name);
-        
-    //     this.author = curriculum.user.profile.name
-    //     this.commentService.getRevisionComments(this.curriculum.id).pipe(
-    //       tap(comments => this.comments = comments)
-    //     ).subscribe()
-    //     })
-    //   )
-    // })
+  canDeactivate(){
+    return (this.submitted || !this.canEdit()) || confirm('Are you sure you want to discard your changes?')
   }
+}
+
+export function canDeactivateEditRev(component: CurriculumEditRevisionContainerComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+  return component.canDeactivate();
 }

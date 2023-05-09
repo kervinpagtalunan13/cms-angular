@@ -23,13 +23,27 @@
       <div>
         <button mat-flat-button color="primary" (click)="openDialog()">
           <mat-icon>add</mat-icon>
-          add User
+          Add User
         </button>
       </div>
     </div>
   </header>
 
-  <table class="table table-bordered mt-2">
+  <table class="table-bordered mt-2">
+    <!-- <mat-form-field style="width: 200px" class="example-form-field">
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="listFilter"
+      placeholder="Search..."
+    /> -->
+    <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                <mat-icon>clear</mat-icon>
+            </button> -->
+    <!-- </mat-form-field
+  ><mat-icon>search</mat-icon>
+  <table> -->
+
     <thead *ngIf="false">
       <tr>
         <th scope="col" style="padding: 40px">
@@ -51,18 +65,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of displayedItems">
+      <tr *ngFor="let user of displayedItems" class="border-0">
         <td
           scope="row"
-          class="d-flex align-items-center justify-content-between border mt-2"
-          style="
-            border: 1px solid gray;
-            border-left: 5px solid #d05834 !important;
-            width: 100%;
-          "
+          class="d-flex align-items-center justify-content-between border my-1"
+          style="border-left: 5px solid #d05834 !important; width: 100%"
         >
           <div class="float-left d-flex p-3 flex-column">
-            <div class="title d-inline-flex">
+            <div class="d-inline-flex">
               <div
                 class="rounded-circle me-3"
                 style="
@@ -72,7 +82,8 @@
                   background-repeat: no-repeat;
                   background-size: cover;
                   background-image: url('{{
-                  'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
+                  baseUrl +
+                    'profiles/images/' +
                     (user?.profile?.profile_pic || 'no-image.jpg')
                 }}');
                 "

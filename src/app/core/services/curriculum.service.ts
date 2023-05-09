@@ -23,6 +23,10 @@ export class CurriculumService {
     catchError(handleError)
   )
 
+  curriculumsOld$ = this.http.get<any[]>(`${this.baseUrl}curriculums/old-revisions`).pipe(
+    catchError(handleError)
+  )
+
   electiveSubjects$ = this.http.get<any[]>(`${this.baseUrl}electiveSubjects`).pipe(
     map(electiveSubjs => electiveSubjs.map(electiveSubj => {
       return {
@@ -57,11 +61,10 @@ export class CurriculumService {
 
   // revise
   approveRevision(id:number){
-    return this.http.post(`${this.baseUrl}curriculums/approveRevision/${id}`, {}).pipe(
+    return this.http.post<any>(`${this.baseUrl}curriculums/approveRevision/${id}`, {}).pipe(
       catchError(handleError)
     )
   }
-
 
   updateRevision(data:any){
     return this.http.patch(`${this.baseUrl}curriculums/updateRevision`, data).pipe(
@@ -82,7 +85,7 @@ export class CurriculumService {
   }
 
   approveCurriculum(id:number){
-    return this.http.post(`${this.baseUrl}curriculums/approve/${id}`, {}).pipe(
+    return this.http.post<any>(`${this.baseUrl}curriculums/approve/${id}`, {}).pipe(
       catchError(handleError)
     )
   }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 import { AppError } from '../models/app-error';
 import { AuthService } from './auth.service';
 
@@ -15,15 +15,14 @@ export class AccountService {
     ){ }
 
   private baseUrl = this.authService.baseUrl;
-
+  
   users$ = this.http.get<User[]>(`${this.baseUrl}users`);
-
+  registerUser$ = new BehaviorSubject<any | User>(null)
   register(credentials:any){
     return this.http.post(`${this.baseUrl}register`, credentials)
       .pipe(
         tap((res:any) => {
-          console.log(res)
-          // sessionStorage.setItem('token', res.token)
+          this.registerUser$.next(res.user)
         }),
         catchError(this.handleError)
       )

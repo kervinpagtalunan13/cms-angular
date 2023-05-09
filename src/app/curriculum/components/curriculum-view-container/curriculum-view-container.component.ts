@@ -45,7 +45,13 @@ export class CurriculumViewContainerComponent{
   electiveSubjects: any[] = []
   departmentId:any = ''
   revisions: any[] = []
-  
+  authorPic: string = ''
+  reviewerName: string = ''
+  reviewerPic: string = ''
+  version: any
+  reviewer: any
+  versions: any[] = []
+  user!: User
   openRevisionList(){
     this.dialog.open(RevisionListDialogComponent, {
       data: {
@@ -62,26 +68,34 @@ export class CurriculumViewContainerComponent{
     this.route.params.pipe(
       map(({id}) => id)
     ),
-    this.curriculumService.revisions$
+    this.curriculumService.revisions$,
+    this.curriculumService.curriculumsOld$
   ]).pipe(
-    tap(([data, user, curriculums, comments, id, revisions]) => {
+    tap(([data, user, curriculums, comments, id, revisions, curriculumOld]) => {
       this.type = data['type']
       this.action = data['action']
 
       this.curriculum = curriculums.find(curriculum => curriculum.id == id)
       this.currUserId = this.curriculum.user_id
 
+      this.versions = curriculumOld.filter(old => old.curriculum_id == this.curriculum.id)
+      
+      this.reviewer = this.curriculum.approved_by
+      
+      this.user = this.curriculum.user
       this.currentUser = user
       this.userId = this.currentUser.id
       this.role = this.currentUser.role
       this.comments = comments.filter(comment => comment.curriculum_id == id)
       this.departmentId = this.curriculum.department_id
-      this.title = `CICT ${this.curriculum.department.department_code} Curriculum version ${this.curriculum.version}`
+      this.title = `CICT ${this.curriculum.department.department_code.toUpperCase()} Curriculum version `
+
+      this.version = this.curriculum.version
 
       this.revisions = revisions.filter(revision => revision.curriculum_id == this.curriculum.id && revision.status == 'a')
       
-
       this.subjects = JSON.parse(this.curriculum.metadata).subjects
+      
       this.electiveSubjects = JSON.parse(this.curriculum.metadata).electiveSubjects
 
       this.status = this.curriculum.status   
@@ -90,7 +104,6 @@ export class CurriculumViewContainerComponent{
 
     }),
     catchError(err => {
-      console.log(err);
       
       this.error = true
       this.isLoading = false
@@ -117,6 +130,7 @@ export class CurriculumViewContainerComponent{
           next: response => {
             this.status = 'a'
             this.curriculum.status = 'a'
+            this.reviewer = response.approved_by
             this.toast.showToastSuccess('Approved Successfully', `curriculum has been approved`)
           },
           error: err => {

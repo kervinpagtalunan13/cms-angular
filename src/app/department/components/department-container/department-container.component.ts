@@ -5,6 +5,7 @@ import { handleError } from 'src/app/core/errorHandling/errorHandler';
 import { Department } from 'src/app/core/models/department';
 import { User } from 'src/app/core/models/user';
 import { DepartmentService } from 'src/app/core/services/department.service';
+import { url } from 'src/app/core/url';
 import { ViewProfileComponent } from 'src/app/shared/components/view-profile/view-profile.component';
 
 @Component({
@@ -20,7 +21,7 @@ export class DepartmentContainerComponent {
   departments!: Department[]
   errorInit:boolean = false
   isLoading:boolean = true
-
+  baseUrl = url
   neededData$ = combineLatest([
     this.departmentService.departments$
   ]).pipe(

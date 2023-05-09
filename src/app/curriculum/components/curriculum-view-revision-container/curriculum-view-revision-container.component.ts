@@ -34,7 +34,9 @@ export class CurriculumViewRevisionContainerComponent{
   currentUser!:User
   electiveSubjects:any[] = []
   curriculumDepartment:any = ''
-
+  reviewer: any
+  incrementRevision = false
+  user!: User
   neededData$ = combineLatest([
     this.route.data,
     this.authService.getCurrentUser(),
@@ -51,12 +53,18 @@ export class CurriculumViewRevisionContainerComponent{
       this.curriculum = revisions.find((curriculum:any) => curriculum.id == id)
       this.currUserId = this.curriculum.user_id
 
+      this.incrementRevision = this.curriculum.increment_version
+      this.reviewer = this.curriculum.approved_by
+      console.log(this.curriculum.user);
+      
+      this.user = this.user = this.curriculum.user
+      
       this.currentUser = user
       this.userId = this.currentUser.id
       this.role = this.currentUser.role
       this.comments = comments.filter(comment => comment.curriculum_revision_id == id)
 
-      this.title = `CICT ${this.curriculum.curriculum.department.department_code} Curriculum version ${this.curriculum.version}`
+      this.title = `CICT ${this.curriculum.curriculum.department.department_code.toUpperCase()} Curriculum version ${this.curriculum.version}`
       
 
       this.subjects = JSON.parse(this.curriculum.metadata).subjects
@@ -122,7 +130,12 @@ export class CurriculumViewRevisionContainerComponent{
           next: response => {
             this.curriculum.status = 'a'
             this.status = 'a'
+            
+            this.reviewer = response.approved_by
+
+            
             this.toast.showToastSuccess('Approved Successfully', `revision has been approved`)
+            
           },
           error: err => {
             this.toast.showToastError('Approved Failed', `Something occured while approving the revision`)
