@@ -1,4 +1,8 @@
-<div class="container" *ngIf="(neededData$ | async) && canCreate()">
+<div
+  class="container"
+  *ngIf="(neededData$ | async) && canCreate()"
+  style="height: 100vh"
+>
   <app-year-dropdown
     [subject]="subject"
     [type]="type"
