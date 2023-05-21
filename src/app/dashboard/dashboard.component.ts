@@ -83,7 +83,6 @@ export class dashboard implements OnInit{
           
         })
 
-        this.departmentService
 
         let data:any[] = departments.map(dep => {
           return {name: dep.department_code.toUpperCase(), y: dep.subjects.length}
@@ -91,7 +90,6 @@ export class dashboard implements OnInit{
         data = [...data, {name: 'NONE', y: subjects.filter(sub => !sub).length }]
         data = data.filter(s => !!s.y)
         
-        this.isLoading = false
         this.pieChartSubject = new Chart({
           chart:{
             // backgroundColor: '#FCFFC5',
@@ -117,6 +115,7 @@ export class dashboard implements OnInit{
         let latestCurriculum = curriculums.filter(cur => cur.status == 'a').reduce((max, current) => {
           return max.version > current.version ? max : max
         })
+        this.isLoading = false
 
         return {
           user: user,

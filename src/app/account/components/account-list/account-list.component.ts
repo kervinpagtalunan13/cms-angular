@@ -48,6 +48,7 @@ export class AccountListComponent2{
       this.isLoading = false
       
       if(registeredUser){
+        
         if(!(users.map(user => user.id).includes(registeredUser.id))){
           this.users.unshift(registeredUser)
         }

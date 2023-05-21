@@ -114,7 +114,7 @@
           <mat-label>Version</mat-label>
           <input
             type="number"
-            min="0"
+            min="1"
             matInput
             placeholder="Version"
             name="version"
@@ -375,6 +375,7 @@
                       type="number"
                       max="5"
                       min="0"
+                      [readonly]="true"
                       placeholder="Total Units"
                       [(ngModel)]="addForms[x]['firstSem'].totalUnits"
                       required
@@ -579,6 +580,7 @@
                       type="number"
                       max="5"
                       min="0"
+                      [readonly]="true"
                       placeholder="Total Units"
                       [(ngModel)]="isForms[x]['firstSem'].totalUnits"
                       required
@@ -684,7 +686,7 @@
             <tbody>
               <tr
                 *ngFor="let course of subjects.firstSem; let i = index"
-                style="border-bottom: 1px solid rgb(140, 140, 140)"
+                class="border-bottom"
               >
                 <td scope="row">{{ course.courseCode }}</td>
                 <td>{{ course.descriptiveTitle }}</td>
@@ -870,6 +872,7 @@
                       type="number"
                       max="5"
                       min="0"
+                      [readonly]="true"
                       placeholder="Total Units"
                       [(ngModel)]="addForms[x]['secondSem'].totalUnits"
                       required
@@ -1076,6 +1079,7 @@
                       type="number"
                       max="5"
                       min="0"
+                      [readonly]="true"
                       placeholder="Total Units"
                       [(ngModel)]="isForms[x]['secondSem'].totalUnits"
                       required

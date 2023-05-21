@@ -9,8 +9,22 @@
             <mat-label><mat-icon>search</mat-icon>Search</mat-label>
             <input matInput type="text" [(ngModel)]="listFilter" />
           </mat-form-field> -->
-          <div class="input-group flex-nowrap">
+          <div class="input-group flex-nowrap" *ngIf="selectedTabIndex == 0">
             <span class="input-group-text" id="addon-wrapping">
+              <mat-icon>search</mat-icon>
+            </span>
+            <input
+              type="text"
+              class="form-control shadow-none"
+              placeholder="Search here..."
+              aria-label="Username"
+              [(ngModel)]="listFilter"
+              aria-describedby="addon-wrapping"
+            />
+          </div>
+
+          <div class="input-group flex-nowrap" *ngIf="selectedTabIndex == 1">
+            <span class="input-group-text">
               <mat-icon>search</mat-icon>
             </span>
             <input

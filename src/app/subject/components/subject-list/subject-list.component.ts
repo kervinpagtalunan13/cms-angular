@@ -124,7 +124,7 @@ export class SubjectListComponent implements OnInit{
     this.subjectService.updateElective$,
     this.subjectService.subjectAdd$
   ]).pipe(
-    tap(([subjects, electiveSubjects, electives, addedElectiveSubject, user, updatedSubject, updatedElective, subjectAdd$]) => {
+    tap(([subjects, electiveSubjects, electives, addedElectiveSubject, user, updatedSubject, updatedElective, subjectAdd]) => {
       this.electiveSubjects = electiveSubjects
       this.electives = electives
       
@@ -132,7 +132,7 @@ export class SubjectListComponent implements OnInit{
       this.subjects = subjects
       
       if(addedElectiveSubject){
-        this.electives = [...this.electives, addedElectiveSubject]
+        this.electives = [addedElectiveSubject, ...this.electives]
       }
 
       if(updatedSubject){
@@ -141,9 +141,9 @@ export class SubjectListComponent implements OnInit{
       if(updatedElective){
         this.electives = this.electives.map(sub => sub.id == updatedElective.id ? updatedElective : sub)
       }
-      if(subjectAdd$){
+      if(subjectAdd){
         // this.subjects = [subjectAdd$,...this.subjects]
-        console.log(subjectAdd$);
+        console.log(subjectAdd);
         
       }
       // this.electiveSubjects.forEach(list => {        
@@ -175,7 +175,6 @@ export class SubjectListComponent implements OnInit{
   }
 
   removeSubject(id:number){
-    
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Remove Subject',

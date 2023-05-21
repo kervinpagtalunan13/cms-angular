@@ -1,75 +1,9 @@
-<!-- <div class="bg">
-  <div class="container">
-    <div class="h-100 d-flex align-items-center justify-content-center">
-      <div>
-        <img src="assets/bulsu.png" class="logos" />
-        <img src="assets/logo-cict.png" class="logos" />
-        <h3>
-          CICT<span>
-            Curriculum<br />
-            Management System</span
-          >
-        </h3>
-
-        <form
-          class="pt-2"
-          #loginForm="ngForm"
-          (ngSubmit)="checkCredentials(loginForm)"
-          id="loginForm"
-        >
-          <input
-            class="form-control shadow-none"
-            style="width: 375px"
-            placeholder="Email"
-            name="email"
-            [(ngModel)]="credentials.email"
-          />
-          <input
-            class="form-control mt-3 shadow-none"
-            style="width: 375px"
-            placeholder="Password"
-            name="password"
-            type="password"
-            [(ngModel)]="credentials.password"
-          />
-        </form>
-
-        <div *ngIf="error | async as errorMessage" class="mt-2 text-danger">
-          {{ errorMessage }}
-        </div>
-
-        <button
-          class="button btn mt-3"
-          color="primary"
-          type="submit"
-          form="loginForm"
-        >
-          Login
-        </button>
-
-        <div class="text-center mt-2">
-          <span class="text-center pointer" (click)="openForgotPass()"></span>
-        </div>
-
-        <button
-          mat-button
-          class="text-danger float-right"
-          style="margin-left: 120px"
-          (click)="openForgotPass()"
-        >
-          Forgot Password?
-        </button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <nav class="navbar navbar-expand-lg">
   <div class="container py-2 px-4">
     <div class="d-flex align-items-center">
       <div class="bg-light rounded p-2" style="width: min-content">
         <img
-          src="https://www.bulsu-cict.com/CICT.png"
+          src="https://www.bulsu.edu.ph/resources/colleges-logo/CICT.png"
           alt=""
           class="img-fluid"
           style="max-width: 50px"

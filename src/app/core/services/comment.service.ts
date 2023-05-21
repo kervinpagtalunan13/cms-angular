@@ -17,6 +17,7 @@ export class CommentService {
   commentSuccess = new Subject();
 
   comments$ = this.http.get<Comment[]>(`${this.baseUrl}comments`).pipe(
+    tap(x => console.log(x)),
     catchError(handleError)
   )
   

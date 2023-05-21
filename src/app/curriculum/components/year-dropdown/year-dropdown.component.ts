@@ -598,7 +598,9 @@ export class YearDropdownComponent {
       errors.push('invalid subject')
     
     // this.editFormError[yearLevel][sem] = errors.join(', ')
-    this.toastService.showToastError('Error', errors.join(', '))
+    if(errors.length){
+      this.toastService.showToastError('Error', errors.join(', '))
+    }
 
     if(errors.length == 0){
       const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode).syllabus_path

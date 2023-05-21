@@ -44,7 +44,6 @@ export class SubjectAddDialogComponent implements OnInit{
   departments: Department[] | undefined
   departments$ = this.departmentService.departments$.subscribe({
     next: departments => {
-      console.log(departments);
       
       this.departments = departments
     }
