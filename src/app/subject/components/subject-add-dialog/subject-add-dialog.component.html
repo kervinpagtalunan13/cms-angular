@@ -5,7 +5,7 @@
       <span class="h5">Create Subject</span>
     </div>
   </div>
-  <div class="p-4" [ngStyle]="{'background-color':modalColor}">
+  <div class="p-4" [ngStyle]="{ 'background-color': modalColor }">
     <div mat-dialog-content>
       <form
         enctype="multipart/form-data"
@@ -14,24 +14,6 @@
         id="form"
       >
         <div class="d-flex gap-2 align-items-center">
-          <!-- <div class="form-floating mb-3">
-            <select
-              class="form-select shadow-none"
-              name="departmentId"
-              style="margin-right: 20px"
-              [(ngModel)]="department"
-              (change)="departmentOnChange()"
-            >
-              <option
-                *ngFor="let department of departments"
-                [value]="department.id"
-              >
-                {{ department.department_code | uppercase }}
-              </option>
-              <option value="">None</option>
-            </select>
-            <label for="departmentId">Department</label>
-          </div> -->
           <mat-form-field appearance="fill">
             <mat-label>Department</mat-label>
             <mat-select
@@ -55,15 +37,6 @@
             >Elective</mat-checkbox
           >
         </div>
-        <!-- <div class="form-floating mb-3" *ngIf="isElective">
-          <select class="form-select shadow-none" name="description" ngModel>
-            <option *ngFor="let x of [1, 2, 3, 4, 5]" [value]="x" selected>
-              {{ "Elective " + x }}
-            </option>
-          </select>
-          <label for="elective">Elective</label>
-        </div> -->
-
         <mat-form-field appearance="fill" *ngIf="isElective">
           <mat-label>Elective</mat-label>
           <mat-select name="description" ngModel>
@@ -72,16 +45,6 @@
             }}</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <!-- <div class="form-floating mb-3">
-          <input
-            class="form-control shadow-none"
-            placeholder="Subject Code"
-            name="subjectCode"
-            ngModel
-          />
-          <label for="subjectCode">Subject Code</label>
-        </div> -->
 
         <mat-form-field class="example-full-width">
           <mat-label>Subject Code</mat-label>
@@ -92,15 +55,6 @@
             ngModel
           />
         </mat-form-field>
-        <!-- <div class="form-floating mb-3" *ngIf="!isElective">
-          <input
-            class="form-control shadow-none"
-            placeholder="Description"
-            name="description"
-            ngModel
-          />
-          <label for="description">Description</label>
-        </div> -->
 
         <mat-form-field
           class="example-full-width"
@@ -116,6 +70,47 @@
             ngModel
           />
         </mat-form-field>
+
+        <div class="d-flex gap-2">
+          <mat-form-field>
+            <mat-label>lec units</mat-label>
+            <input
+              matInput
+              placeholder="lec units"
+              name="lec_units"
+              ngModel
+              type="number"
+              max="5"
+              min="1"
+            />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>lab units</mat-label>
+            <input
+              matInput
+              placeholder="lab units"
+              name="lab_units"
+              ngModel
+              type="number"
+              max="5"
+              min="1"
+            />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>hrs/week</mat-label>
+            <input
+              matInput
+              placeholder="hrs per week"
+              name="hrs_per_week"
+              ngModel
+              type="number"
+              max="5"
+              min="1"
+            />
+          </mat-form-field>
+        </div>
 
         <input
           name="syllabus"

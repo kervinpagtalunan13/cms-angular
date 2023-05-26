@@ -8,6 +8,7 @@ import { CurriculumService } from 'src/app/core/services/curriculum.service';
 import { ContentManagementComponent } from 'src/app/content/components/content-management/content-management.component';
 import { MatDialog } from '@angular/material/dialog';
 import { url } from 'src/app/core/url';
+import { AccountService } from 'src/app/core/services/account.service';
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
@@ -16,21 +17,27 @@ import { url } from 'src/app/core/url';
 export class SidenavComponent {
 
   constructor(private route: ActivatedRoute, 
-    public dialog: MatDialog, 
+              public dialog: MatDialog, 
               private authService: AuthService,
               private router: Router,
               private contentService: ContentService,
-              private curriculumService: CurriculumService
+              private curriculumService: CurriculumService,
+              private accountService: AccountService
     ){}
     
   showSideNav = false
   baseUrl = url
-
+  pendingCount = 0
   neededData$ = combineLatest([
     this.authService.getCurrentUser(),
     this.authService.currentUser$,
-    
+
+    // this.accountService.pendingUser$,
+    // this.accountService.pendingsCount$
   ]).pipe(
+    // tap(([,,,pendingCount]) => {
+    //   this.pendingCount = pendingCount
+    // }),
     map(([x, user]) => {
       return user
     })

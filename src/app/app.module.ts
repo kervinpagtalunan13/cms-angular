@@ -13,13 +13,14 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptor/auth.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { RegisterComponent } from './register/register.component';
 ;
 
 
 @NgModule({
   declarations: [
     AppComponent, 
-    LoginComponent, LandingPageComponent, 
+    LoginComponent, LandingPageComponent, RegisterComponent, 
   ],
   imports: [
     BrowserModule,

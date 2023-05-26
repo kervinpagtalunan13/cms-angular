@@ -155,7 +155,6 @@ export class YearDropdownComponent {
     return this.filteredSubjects.filter(sub => sub[fieldName].toLowerCase().includes(this.isForms[index][sem][fieldName2].toLowerCase()))    
   }
 
-
   subjectCodeInputs(){
 
   }
@@ -283,6 +282,8 @@ export class YearDropdownComponent {
     }, 0) 
     return totaleclUnits
   }
+
+
   getLabUnits(yearLvl:number, sem:number){
     const units = this.subject[yearLvl][sem ? 'secondSem' : 'firstSem'].map(subj => Number(subj.labUnits))
     const totalablUnits = units.reduce((accumulator:number, currentValue:number) => {
@@ -329,7 +330,7 @@ export class YearDropdownComponent {
         console.log(subjects);
         
         const subs = subjects.filter(subj => subj.department_id == this.departmentId || !subj.department_id)
-        console.log(subs);
+        // console.log(subs);
         
         this.availableSubjects = [...subjects]   
         this.filteredSubjects = [...subjects]
@@ -586,12 +587,7 @@ export class YearDropdownComponent {
 
   editCourse(form: NgForm, yearLevel:number, sem:string){
     const errors = []
-    if(form.value.totalUnits > 5)
-      errors.push('total units should not exceed 5')
-    if(form.value.hoursPerWeek > 5)
-      errors.push('hours per week should not exceed 5 hours')
-    if(form.value.hoursPerWeek < 1)
-    errors.push('hours per week should not below 1 hour')
+
     if(this.isSubjectAlreadyAdded(form.value, 'edit'))
       errors.push('subject is already added')
     if(this.isSubjectValid(form.value))
@@ -603,9 +599,21 @@ export class YearDropdownComponent {
     }
 
     if(errors.length == 0){
-      const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode).syllabus_path
+      const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode)
+
+      const additionalValue = {
+        lecUnits: syllabus.lec_units,
+        labUnits: syllabus.lab_units,
+        hoursPerWeek: syllabus.hrs_per_week, 
+        totalUnits: syllabus.lec_units + syllabus.lab_units
+      }
+
       this.subject[yearLevel][sem === 'firstSem' ? 'firstSem' : 'secondSem'][this.selectedSubjIndex] = 
-      {...this.subject[yearLevel][sem === 'firstSem' ? 'firstSem' : 'secondSem'][this.selectedSubjIndex], ...form.value, syllabus: syllabus}
+      {...this.subject[yearLevel][sem === 'firstSem' ? 'firstSem' : 'secondSem'][this.selectedSubjIndex], ...form.value, syllabus: syllabus.syllabus_path, ...additionalValue}
+      console.log(additionalValue);
+      
+      // this.subject[yearLevel]['firstSem'].push({...form.value, syllabus: syllabus.syllabus_path, isElective: syllabus.isElective, ...additionalValue})
+
       this.isEditFormShow[yearLevel][sem] = false
       // this.selectedCourse = this.getSubjectDs()
     }
@@ -626,46 +634,42 @@ export class YearDropdownComponent {
 
   // adding subject
   addSubject(form: NgForm, yearLevel:number, sem:string){
-    // if(!NgForm || form.value.preReq || form.value.coReq){
     const errors = []
-    if(form.value.totalUnits > 5)
-      errors.push('total units should not exceed 5')
-    if(form.value.hoursPerWeek > 5)
-      errors.push('hours per week should not exceed 5 hours')
-    if(form.value.hoursPerWeek < 1)
-      errors.push('hours per week should not below 1 hour')
+
     if(this.isSubjectAlreadyAdded(form.value))
       errors.push('subject is already added')
     if(this.isSubjectValid(form.value))
       errors.push('invalid subject')
     
     
-    // this.addFormError[yearLevel][sem] = errors.join(', ')
     if(errors.length){
       this.toastService.showToastError('Error', errors.join(', '))
     }
 
     
     if(errors.length == 0){
-      const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode).syllabus_path
-      const isElective = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode).is_elective
+      const syllabus = this.availableSubjects.find(subj => subj.subject_code == form.value.courseCode)
+    
+      const additionalValue = {
+        lecUnits: syllabus.lec_units,
+        labUnits: syllabus.lab_units,
+        hoursPerWeek: syllabus.hrs_per_week, 
+        totalUnits: syllabus.lec_units + syllabus.lab_units
+      }
+
       if(sem === 'firstSem'){
-        this.subject[yearLevel]['firstSem'].push({...form.value, syllabus: syllabus, isElective: isElective})
-        this.addForms[yearLevel]['firstSem'] = this.getSubjectDs()
-        console.log({...form.value, syllabus: syllabus});
+        this.subject[yearLevel]['firstSem'].push({...form.value, syllabus: syllabus.syllabus_path, isElective: syllabus.isElective, ...additionalValue})
         
-        // form.reset();
-        // this.removeAddForm(yearLevel, sem);
+        this.addForms[yearLevel]['firstSem'] = this.getSubjectDs()
+
       }
       else{
 
-        this.subject[yearLevel]['secondSem'].push({...form.value, syllabus: syllabus, isElective: isElective})
+        this.subject[yearLevel]['secondSem'].push({...form.value, syllabus: syllabus.syllabus_path, isElective: syllabus.isElective, ...additionalValue})
         this.addForms[yearLevel]['secondSem'] = this.getSubjectDs()
-        // form.reset();
-        // this.removeAddForm(yearLevel, sem);
+
       }
     }
-    // }
   }
 
   isSubjectAlreadyAdded(subjData: any, type?: string){

@@ -338,65 +338,6 @@
 
                   <mat-form-field
                     class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="lecUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Lec Units"
-                      [(ngModel)]="addForms[x]['firstSem'].lecUnits"
-                      (input)="unitsOnChange(x, 'firstSem', 'add')"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="labUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Lab Units"
-                      [(ngModel)]="addForms[x]['firstSem'].labUnits"
-                      (input)="unitsOnChange(x, 'firstSem', 'add')"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="totalUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      [readonly]="true"
-                      placeholder="Total Units"
-                      [(ngModel)]="addForms[x]['firstSem'].totalUnits"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 90px; margin-right: 10px"
-                    ><input
-                      name="hoursPerWeek"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Hours Per Week"
-                      [(ngModel)]="addForms[x]['firstSem'].hoursPerWeek"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
                     style="width: 80px; margin-right: 10px"
                   >
                     <mat-label>Pre-Requisite</mat-label
@@ -540,65 +481,6 @@
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="lecUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Lec Units"
-                      (input)="unitsOnChange(x, 'firstSem', 'edit')"
-                      [(ngModel)]="isForms[x]['firstSem'].lecUnits"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="labUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Lab Units"
-                      [(ngModel)]="isForms[x]['firstSem'].labUnits"
-                      (input)="unitsOnChange(x, 'firstSem', 'edit')"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="totalUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      [readonly]="true"
-                      placeholder="Total Units"
-                      [(ngModel)]="isForms[x]['firstSem'].totalUnits"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 90px; margin-right: 10px"
-                    ><input
-                      name="hoursPerWeek"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Hours Per Week"
-                      [(ngModel)]="isForms[x]['firstSem'].hoursPerWeek"
-                      required
-                  /></mat-form-field>
 
                   <mat-form-field
                     class="subject-input"
@@ -832,7 +714,7 @@
                       </mat-option>
                     </mat-autocomplete></mat-form-field
                   >
-
+                  <!-- 
                   <mat-form-field
                     class="subject-input"
                     style="width: 60px; margin-right: 10px"
@@ -890,7 +772,7 @@
                       placeholder="Hours Per Week"
                       [(ngModel)]="addForms[x]['secondSem'].hoursPerWeek"
                       required
-                  /></mat-form-field>
+                  /></mat-form-field> -->
 
                   <mat-form-field
                     class="subject-input"
@@ -1039,65 +921,6 @@
                       </mat-option>
                     </mat-autocomplete></mat-form-field
                   >
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="lecUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Lec Units"
-                      (input)="unitsOnChange(x, 'secondSem', 'edit')"
-                      [(ngModel)]="isForms[x]['secondSem'].lecUnits"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="labUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Lab Units"
-                      (input)="unitsOnChange(x, 'secondSem', 'edit')"
-                      [(ngModel)]="isForms[x]['secondSem'].labUnits"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 60px; margin-right: 10px"
-                    ><input
-                      name="totalUnits"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      [readonly]="true"
-                      placeholder="Total Units"
-                      [(ngModel)]="isForms[x]['secondSem'].totalUnits"
-                      required
-                  /></mat-form-field>
-
-                  <mat-form-field
-                    class="subject-input"
-                    style="width: 90px; margin-right: 10px"
-                    ><input
-                      name="hoursPerWeek"
-                      matInput
-                      type="number"
-                      max="5"
-                      min="0"
-                      placeholder="Hours Per Week"
-                      [(ngModel)]="isForms[x]['secondSem'].hoursPerWeek"
-                      required
-                  /></mat-form-field>
 
                   <mat-form-field
                     class="subject-input"

@@ -64,8 +64,10 @@ export class AccountRegistrationComponent {
     }
     return inputNode;
   }
+
   error$ = new Subject<string>();
   success$ = new Subject<string>()
+  
   onCancel() {
     this.dialogRef.close(false);
   }

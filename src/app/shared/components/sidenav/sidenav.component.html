@@ -81,6 +81,9 @@
       >
         <mat-icon fontIcon="supervisor_account" class="me-3"></mat-icon>
         Accounts
+        <span class="badge rounded-pill bg-danger ms-2" *ngIf="true">{{
+          pendingCount
+        }}</span>
       </mat-list-item>
       <mat-list-item
         role="listitem"

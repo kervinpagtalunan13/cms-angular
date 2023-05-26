@@ -8,6 +8,7 @@ import { CommentService } from "../core/services/comment.service";
 import { AccountService } from "../core/services/account.service";
 import { SubjectService } from "../core/services/subject.service";
 import { DepartmentService } from "../core/services/department.service";
+import { Curriculum2 } from "../core/models/curriculum";
 
 @Component({
     selector:'dash-board',
@@ -45,7 +46,7 @@ export class dashboard implements OnInit{
 
     isLoading:boolean = true
     error:boolean = false
-
+    role = "";
     neededData$ = combineLatest([
       this.authService.getCurrentUser(),
       this.curriculumService.curriculums$,
@@ -56,7 +57,7 @@ export class dashboard implements OnInit{
       this.departmentService.departments$
     ]).pipe(
       map(([user, curriculums, revisions, comments, users, subjects, departments]) => {
-        
+        this.role = user.role
         this.data = [
           {name: 'Admin', y: users.filter(u => u.role == 'admin').length},
           {name: 'Commitee Chair', y: users.filter(u => u.role == 'chair').length},
@@ -112,9 +113,15 @@ export class dashboard implements OnInit{
         })
         // console.log(comments.splice(0, 3));
         
-        let latestCurriculum = curriculums.filter(cur => cur.status == 'a').reduce((max, current) => {
-          return max.version > current.version ? max : max
+        let latestCurriculum = curriculums.filter(cur => cur.status == 'a')
+        let latestCur: Curriculum2 | null = null
+        if(latestCurriculum.length){
+          latestCur = latestCurriculum.reduce((max, current) => {
+            return max.version > current.version ? current : max
         })
+      }
+
+        
         this.isLoading = false
 
         return {
@@ -126,7 +133,7 @@ export class dashboard implements OnInit{
           latestSubmittedRevisions: !!revisions.length ? revisions.reduce((max, current) => {
             return new Date(current.created_at) > new Date(max.created_at) ? current : max
           }) : null,
-          latestCurriculum: latestCurriculum || null,
+          latestCurriculum: latestCur || null,
           latestComments: comments.splice(0, 3),
           curriculums: curriculums,
           comments: comments.splice(0, 3)

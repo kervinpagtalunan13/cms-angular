@@ -81,7 +81,7 @@
             *ngIf="!subjects.length"
           ></app-empty-state>
 
-          <table style="width: 100%">
+          <table style="width: 100%" *ngIf="subjects.length">
             <!-- ======= -->
             <!-- <div class="d-flex justify-content-end my-1">
             <mat-form-field style="width: 200px" class="example-form-field">
@@ -192,6 +192,7 @@
             </tbody>
           </table>
           <mat-paginator
+            *ngIf="subjects.length"
             [length]="totalItems"
             [pageSize]="pageSize"
             [pageSizeOptions]="pageSizeOptions"
@@ -220,7 +221,11 @@
             *ngIf="!electives.length"
           ></app-empty-state>
           <!-- *ngIf="!department.members.length" -->
-          <table style="width: 100%" class="table table-bordered">
+          <table
+            style="width: 100%"
+            class="table table-bordered"
+            *ngIf="electives.length"
+          >
             <thead class="border text-center">
               <tr class="border text-center">
                 <th>Description</th>
@@ -266,7 +271,11 @@
             </tbody>
           </table>
 
-          <table style="width: 100%; margin-top: 50px" class="border">
+          <table
+            style="width: 100%; margin-top: 50px"
+            class="border"
+            *ngIf="electives.length"
+          >
             <thead class="border text-center">
               <tr class="border">
                 <th class="text-center" colspan="4">Elective Table</th>

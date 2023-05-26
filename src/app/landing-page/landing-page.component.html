@@ -16,12 +16,37 @@
       </div>
     </div>
 
-    <button
-      class="bg-dark text-light btn rounded-pill -3 px-5 fw-semibold"
-      [routerLink]="['/login']"
-    >
-      Login
-    </button>
+    <div>
+      <!-- class="bg-dark text-light btn rounded-pill -3 px-5 fw-semibold" -->
+      <!-- <a [routerLink]="['/register']" class="me-3 text-light">Register</a>
+      <button
+        class="bg-dark text-light btn rounded-pill -3 px-5 fw-semibold"
+        [routerLink]="['/login']"
+      >
+        Login
+      </button> -->
+      <button
+        class="bg-dark text-light btn rounded-pill px-5 pe-4 fw-semibold"
+        style="
+          border-top-right-radius: 0px !important;
+          border-bottom-right-radius: 0px !important;
+          border-right: 2px white solid !important;
+        "
+        [routerLink]="['/register']"
+      >
+        Register
+      </button>
+      <button
+        class="bg-dark text-light btn px-5 ps-4 fw-semibold rounded-pill"
+        style="
+          border-top-left-radius: 0px !important;
+          border-bottom-left-radius: 0px !important;
+        "
+        [routerLink]="['/login']"
+      >
+        Login
+      </button>
+    </div>
   </div>
 </nav>
 <main class="100vh" style="height: ">

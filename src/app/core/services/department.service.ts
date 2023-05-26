@@ -17,4 +17,7 @@ export class DepartmentService {
   departments$ = this.http.get<Department[]>(`${this.baseUrl}departments`).pipe(
     catchError(handleError)
   )
+  departments2$ = this.http.get<Department[]>(`${this.baseUrl}departmentsList`).pipe(
+    catchError(handleError)
+  )
 }

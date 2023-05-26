@@ -11,6 +11,7 @@ import { MatSort } from '@angular/material/sort';
 import { ViewProfileComponent } from 'src/app/shared/components/view-profile/view-profile.component';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { url } from 'src/app/core/url';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 export interface UserData {
   age: number;
   name: string;
@@ -35,6 +36,9 @@ export class AccountListComponent2{
   role:any = ''
   isLoading:boolean = true
   error: boolean = false
+  users: User[] = []
+  pendingUsers: User[] = []
+  inactiveUsers: User[] = []
   neededData$ = combineLatest([
     this.accountService.users$,
     this.authService.getCurrentUser(),
@@ -42,13 +46,15 @@ export class AccountListComponent2{
     this.accountService.registerUser$
   ]).pipe(
     tap(([users, userObs, user, registeredUser]) => {
-      this.users = users
       this.user = user
       this.role = user?.role
       this.isLoading = false
+
+      this.pendingUsers = users.filter(user => !user.is_approved)
+      this.users = users.filter(user => user.is_approved)
       
+
       if(registeredUser){
-        
         if(!(users.map(user => user.id).includes(registeredUser.id))){
           this.users.unshift(registeredUser)
         }
@@ -65,6 +71,36 @@ export class AccountListComponent2{
   canView(){
     // return this.role === 'admin'
     return true
+  }
+
+  approveAccountCreation(userParam: User){
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Approve account?',
+        message: 'Are you sure you want to approve this account to be created?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+
+        this.accountService.approveAccount(userParam.id).subscribe(
+          {
+            next: user => {
+              this.pendingUsers = this.pendingUsers.filter(user => user.id != userParam.id)
+              this.users.unshift(userParam);
+      
+              this.toast.showToastSuccess('Approve Successfuly', 'User has been changed successfully')
+            },
+            error: err => {
+              this.toast.showToastError('Approve Error', 'Error occured while approving account')
+            }
+          }
+        )
+
+
+      } 
+    });
   }
 
   viewProfile(user: User){
@@ -93,12 +129,7 @@ export class AccountListComponent2{
   }
 
   isLoading$ = new BehaviorSubject<boolean>(true)
-  users$ = this.accountService.users$.subscribe(
-    users => {
-        this.users = users
-        this.isLoading$.next(false)
-    }
-  )
+
 
   openDialog() {
     const dialogRef = this.dialog.open(AccountRegistrationComponent);
@@ -118,7 +149,6 @@ export class AccountListComponent2{
   }
 
   filteredList: User[] = [];
-  users: User[] = []
  
 //pangfilter 
 performFilter(filterBy: string): User[]{

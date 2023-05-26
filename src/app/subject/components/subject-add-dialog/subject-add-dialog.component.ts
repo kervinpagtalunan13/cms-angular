@@ -76,7 +76,6 @@ export class SubjectAddDialogComponent implements OnInit{
     }else{
       data.is_elective = 0
     }
-    console.log(data);
     
     const fd = new FormData()
     
@@ -84,6 +83,10 @@ export class SubjectAddDialogComponent implements OnInit{
     fd.append('description', data.description)
     fd.append('departmentId', data.departmentId)
     fd.append('is_elective', data.is_elective)
+    fd.append('lab_units', data.lab_units)
+    fd.append('lec_units', data.lec_units)
+    fd.append('total_units',  (Number(data.lec_units) + Number(data.lab_units)).toString())
+    fd.append('hrs_per_week', data.hrs_per_week)
     fd.append('syllabus', this.selectedFile)
     
     this.subjectService.addSubject(fd)

@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, of, retry, tap, throwError } from 'rxjs';
 import { AppError } from '../models/app-error';
 import { User } from '../models/user';
 import { handleError } from '../errorHandling/errorHandler';
@@ -56,6 +56,7 @@ export class AuthService {
 
     return this.http.post(`${this.baseUrl}getUser`, {})
       .pipe(
+
         tap((user: any) => {
           this.currentUserSubject.next(user)
           this.currentUser = user

@@ -8,6 +8,7 @@ export interface User{
   department_id:string | null,
   created_at: string;
   updated_at: string;
+  is_approved: boolean;
   status: string,
   email_verified_at: string,
   profile?: Profile | null,

@@ -1,9 +1,4 @@
 <div class="container p-4" *ngIf="(neededData$ | async) && canView()">
-  <app-empty-state
-    name="Users"
-    message="once Admin have added User, you'll see it here"
-    *ngIf="!users.length"
-  ></app-empty-state>
   <header class="d-flex justify-content-between align-items-center">
     <span class="h3">Accounts</span>
     <div class="d-flex align-items-center gap-2">
@@ -20,117 +15,167 @@
           aria-describedby="addon-wrapping"
         />
       </div>
-      <div>
-        <button mat-flat-button color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon>
-          Add User
-        </button>
-      </div>
     </div>
   </header>
-
-  <table class="table-bordered mt-2">
-    <!-- <mat-form-field style="width: 200px" class="example-form-field">
-    <input
-      matInput
-      type="text"
-      [(ngModel)]="listFilter"
-      placeholder="Search..."
-    /> -->
-    <!-- <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                <mat-icon>clear</mat-icon>
-            </button> -->
-    <!-- </mat-form-field
-  ><mat-icon>search</mat-icon>
-  <table> -->
-
-    <thead *ngIf="false">
-      <tr>
-        <th scope="col" style="padding: 40px">
-          <span class="tit">Accounts</span>
-        </th>
-        <th style="padding: 20px">
-          <!-- <button mat-raised-button color="primary"></button> -->
-
-          <!-- [routerLink]="['register']" -->
-          <button
-            mat-raised-button
-            color="primary"
-            style="float: right"
-            (click)="openDialog()"
-          >
-            Create New
-          </button>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of displayedItems" class="border-0">
-        <td
-          scope="row"
-          class="d-flex align-items-center justify-content-between border my-1"
-          style="border-left: 5px solid #d05834 !important; width: 100%"
-        >
-          <div class="float-left d-flex p-3 flex-column">
-            <div class="d-inline-flex">
-              <div
-                class="rounded-circle me-3"
-                style="
-                  width: 70px;
-                  height: 70px;
-                  background-position: center;
-                  background-repeat: no-repeat;
-                  background-size: cover;
-                  background-image: url('{{
-                  baseUrl +
-                    'profiles/images/' +
-                    (user?.profile?.profile_pic || 'no-image.jpg')
-                }}');
-                "
-              ></div>
-              <div
-                class="float-left d-flex p-3 flex-column"
-                style="font-size: small"
-              >
-                <span class="name"
-                  >{{ user?.profile?.name || "not yet set his/her name" }} ({{
-                    user?.role | titlecase
-                  }})</span
-                >
-                <span class="department"
-                  >{{ user?.department?.description }}
-                  <span
-                    style="text-transform: uppercase; font-weight: bold"
-                    *ngIf="user?.department?.department_code"
-                    >({{ user?.department?.department_code }})</span
-                  ></span
-                >
-                <span class="email">{{ user.email }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="">
-            <button
-              mat-raised-button
-              color="primary"
-              style="width: 100px; margin-right: 30px"
-              (click)="viewProfile(user)"
+  <mat-tab-group>
+    <mat-tab label="Active">
+      <app-empty-state
+        name="active Users"
+        message="once Admin have added User, you'll see it here"
+        *ngIf="!users.length"
+      ></app-empty-state>
+      <table class="table-bordered mt-2">
+        <tbody>
+          <tr *ngFor="let user of displayedItems" class="border-0">
+            <td
+              scope="row"
+              class="d-flex align-items-center justify-content-between border my-1"
+              style="border-left: 5px solid #d05834 !important; width: 100%"
             >
-              View
-            </button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+              <div class="float-left d-flex p-3 flex-column">
+                <div class="d-inline-flex">
+                  <div
+                    class="rounded-circle me-3"
+                    style="
+                      width: 70px;
+                      height: 70px;
+                      background-position: center;
+                      background-repeat: no-repeat;
+                      background-size: cover;
+                      background-image: url('{{
+                      baseUrl +
+                        'profiles/images/' +
+                        (user?.profile?.profile_pic || 'no-image.jpg')
+                    }}');
+                    "
+                  ></div>
+                  <div
+                    class="float-left d-flex p-3 flex-column"
+                    style="font-size: small"
+                  >
+                    <span class="name"
+                      >{{
+                        user?.profile?.name || "not yet set his/her name"
+                      }}
+                      ({{ user?.role | titlecase }})</span
+                    >
+                    <span class="department"
+                      >{{ user?.department?.description }}
+                      <span
+                        style="text-transform: uppercase; font-weight: bold"
+                        *ngIf="user?.department?.department_code"
+                        >({{ user?.department?.department_code }})</span
+                      ></span
+                    >
+                    <span class="email">{{ user.email }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  style="width: 100px; margin-right: 30px"
+                  (click)="viewProfile(user)"
+                >
+                  View
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-  <mat-paginator
-    [length]="totalItems"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizeOptions"
-    (page)="onPageChange($event)"
-  >
-  </mat-paginator>
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)"
+        *ngIf="users.length"
+      >
+      </mat-paginator>
+    </mat-tab>
+    <mat-tab label="Inactive">
+      <app-empty-state
+        name="inactive Users"
+        message="once admins move an user to inactive, you'll see it here"
+        *ngIf="!inactiveUsers.length"
+      ></app-empty-state>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Pending
+        <span class="badge rounded-pill bg-danger ms-2" *ngIf="true">{{
+          pendingUsers.length
+        }}</span>
+      </ng-template>
+      <app-empty-state
+        name="pending Users"
+        message="once user have registered, you'll see it here to epprove"
+        *ngIf="!pendingUsers.length"
+      ></app-empty-state>
+      <table>
+        <tbody>
+          <tr *ngFor="let user of pendingUsers" class="border-0">
+            <td
+              class="d-flex align-items-center justify-content-between border my-1"
+              style="border-left: 5px solid #d05834 !important; width: 100%"
+            >
+              <div class="float-left d-flex p-3 flex-column">
+                <div class="d-inline-flex">
+                  <div
+                    class="rounded-circle me-3"
+                    style="
+                      width: 70px;
+                      height: 70px;
+                      background-position: center;
+                      background-repeat: no-repeat;
+                      background-size: cover;
+                      background-image: url('{{
+                      baseUrl +
+                        'profiles/images/' +
+                        (user?.profile?.profile_pic || 'no-image.jpg')
+                    }}');
+                    "
+                  ></div>
+                  <div
+                    class="float-left d-flex p-3 flex-column"
+                    style="font-size: small"
+                  >
+                    <span class="name"
+                      >{{
+                        user?.profile?.name || "not yet set his/her name"
+                      }}
+                      ({{ user?.role | titlecase }})</span
+                    >
+                    <span class="department"
+                      >{{ user?.department?.description }}
+                      <span
+                        style="text-transform: uppercase; font-weight: bold"
+                        *ngIf="user?.department?.department_code"
+                        >({{ user?.department?.department_code }})</span
+                      ></span
+                    >
+                    <span class="email">{{ user.email }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  style="width: 100px; margin-right: 30px"
+                  (click)="approveAccountCreation(user)"
+                >
+                  Approve
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-tab>
+  </mat-tab-group>
 </div>
 <div class="d-flex" *ngIf="isLoading">
   <app-spinner class="mx-auto"></app-spinner>

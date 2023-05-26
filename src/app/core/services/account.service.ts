@@ -15,8 +15,18 @@ export class AccountService {
     ){ }
 
   private baseUrl = this.authService.baseUrl;
-  
+  pendingsCount$ = new BehaviorSubject<number>(0);
+  pendingCount = 0
+
   users$ = this.http.get<User[]>(`${this.baseUrl}users`);
+  pendingUser$ = this.http.get<User[]>(`${this.baseUrl}users`).pipe(
+    tap(users => {
+      this.pendingCount = users.filter(user => !user.is_approved).length
+      this.pendingsCount$.next(this.pendingCount)
+    })
+  )
+  ;
+
   registerUser$ = new BehaviorSubject<any | User>(null)
   register(credentials:any){
     return this.http.post(`${this.baseUrl}register`, credentials)
@@ -30,6 +40,17 @@ export class AccountService {
 
   sendEmailForgotPassword(email: string){
     return this.http.post(`${this.baseUrl}forgot-password`, {email: email}).pipe(
+
+      catchError(this.handleError)
+    )
+  }
+
+  approveAccount(id: number){
+    return this.http.patch(`${this.baseUrl}users/${id}`, {is_approved: true}).pipe(
+      tap(user => {
+        this.pendingCount--;
+        this.pendingsCount$.next(this.pendingCount)
+      }),
       catchError(this.handleError)
     )
   }

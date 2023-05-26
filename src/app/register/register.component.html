@@ -1,0 +1,170 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container py-2 px-4">
+    <div class="d-flex align-items-center">
+      <div class="bg-light rounded p-2" style="width: min-content">
+        <img
+          src="https://www.bulsu.edu.ph/resources/colleges-logo/CICT.png"
+          alt=""
+          class="img-fluid"
+          style="max-width: 50px"
+        />
+      </div>
+      <div class="ms-2 d-none d-sm-block">
+        <span class="h5">Bulacan State University</span>
+        <br />
+        <span class="text-light">College of Information and Technology</span>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="100vh" *ngIf="departments$ | async as departments">
+  <div class="row container mx-auto g-4 align-items-center">
+    <div class="col-md-6 rounded-4 border img-wrapper d-none d-md-block">
+      <img
+        src="https://pia.gov.ph/uploads/2022/10/216526d932cb76aaaa3344f01d0ce9f7-800-1200.jpeg"
+        alt=""
+        class="img-fluid rounded-4"
+        style="transform: rotate(3deg)"
+      />
+    </div>
+    <div class="p-3 col-md-6">
+      <form
+        class="form mx-auto"
+        style="max-width: 450px"
+        #form="ngForm"
+        (ngSubmit)="submitForm(form)"
+        id="form"
+      >
+        <span class="h3">Registration</span>
+
+        <div>
+          <!-- style="max-width: 375px" -->
+          <input
+            class="form-control shadow-none mt-2"
+            name="email"
+            placeholder="Email"
+            type="email"
+            ngModel
+          />
+        </div>
+        <div>
+          <!-- style="max-width: 375px" -->
+          <input
+            class="form-control shadow-none mt-2"
+            name="password"
+            placeholder="password"
+            type="password"
+            ngModel
+          />
+        </div>
+        <div>
+          <!-- style="max-width: 375px" -->
+          <input
+            class="form-control shadow-none mt-2"
+            name="password_confirmation"
+            placeholder="confirm password "
+            type="password"
+            ngModel
+          />
+        </div>
+
+        <div>
+          <label
+            for="role"
+            class="form-label"
+            style="margin-bottom: -5px !important"
+            >Role:
+          </label>
+          <select
+            class="form-select shadow-none"
+            name="role"
+            style="margin-right: 20px"
+            [(ngModel)]="role"
+            (change)="isShowDep()"
+          >
+            <option value="chair" selected>Committee Chair</option>
+            <option value="faculty">Committee Members</option>
+            <option value="reviewer">Stakeholders</option>
+          </select>
+        </div>
+
+        <div *ngIf="showDep">
+          <label
+            for="departmentId"
+            class="form-label"
+            style="margin-bottom: -5px !important"
+            >Department</label
+          >
+          <select
+            class="form-select shadow-none"
+            name="departmentId"
+            color="primary"
+            style="margin-right: 20px; width: 100%"
+            ngModel
+          >
+            <option
+              value="department.id"
+              *ngFor="let department of departments; let c = index"
+              selected
+            >
+              {{ department.department_code | uppercase }}
+            </option>
+            <!-- <option value="2">BLIS</option> -->
+          </select>
+        </div>
+
+        <app-notification
+          class="mt-2"
+          *ngIf="error$ | async as errorMessage"
+          [message]="errorMessage"
+          type="error"
+          (close)="closeAlert()"
+        >
+        </app-notification>
+        <app-notification
+          class="mt-2"
+          *ngIf="success$ | async as message"
+          [message]="message"
+          type="success"
+          (close)="closeSuccessAlert()"
+        ></app-notification>
+
+        <div class="mt-2">
+          <button
+            mat-flat-button
+            type="submit"
+            color="primay"
+            class="text-light"
+            style="background-color: #d05834; width: 100%"
+          >
+            Register
+          </button>
+        </div>
+        <div class="text-start">
+          <a [routerLink]="['/login']">Back to login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<style>
+  main {
+    margin-top: 5rem;
+  }
+  nav {
+    background-color: #d05834;
+  }
+  .title {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #d05834;
+  }
+  .title-sub {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+  .img-wrapper {
+    border-color: #d05834 !important;
+  }
+</style>

@@ -1,0 +1,39 @@
+.bg{
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
+.container{
+
+  /* background-color: white;
+  width: 500px;
+  height: 100vh;
+  float: left; */
+}
+.etch3{
+  margin-top: 20px;
+  font-size: 30px;
+  font-family: 'century gothic';
+  font-weight: bold;
+}
+.etch3 span{
+  font-family: 'century gothic';
+  font-weight: 100;
+}
+.inputs{
+  width: 335px;
+
+}
+.logos{
+  width: 100px;
+}
+.button{
+  border-width: 0px;
+  width: 100%;
+
+  background-color: #D05834 !important;
+  color: white;
+  font-family: 'century gothic';
+  font-weight: bold;
+}

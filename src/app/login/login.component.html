@@ -52,8 +52,9 @@
               name="email"
               [(ngModel)]="credentials.email"
             />
+
             <input
-              class="form-control mt-3 shadow-none"
+              class="form-control shadow-none mt-2"
               style="width: 375px"
               placeholder="Password"
               name="password"
@@ -78,15 +79,17 @@
           <div class="text-center mt-2">
             <span class="text-center pointer" (click)="openForgotPass()"></span>
           </div>
-
-          <button
-            mat-button
-            class="text-danger float-right"
-            style="margin-left: 120px"
-            (click)="openForgotPass()"
-          >
-            Forgot Password?
-          </button>
+          <div class="text-center">
+            <button mat-button class="text-danger" (click)="openForgotPass()">
+              Forgot Password?
+            </button>
+          </div>
+          <div class="mt-2 text-center">
+            <span>
+              Don't have an account?,
+              <a [routerLink]="['/register']">Register</a></span
+            >
+          </div>
         </div>
       </div>
     </div>

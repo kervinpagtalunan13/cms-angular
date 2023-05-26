@@ -51,6 +51,8 @@ export class SubjectListComponent implements OnInit{
   }
 
   clickEditSubject(data:any, type:string){
+    console.log(data);
+    
     this.dialog.open(EditSubject, {
       data: {
         subject: data,
@@ -555,6 +557,11 @@ export class EditSubject implements OnInit{
     
     if(form.value.description != this.subject.description) fd.append('description', form.value.description)
     if(this.selectedFile) fd.append('syllabus', this.selectedFile)
+    fd.append('lec_units', form.value.lec_units);
+    fd.append('lab_units', form.value.lab_units);
+    fd.append('total_units',  (Number(form.value.lec_units) + Number(form.value.lab_units)).toString())
+
+    fd.append('hrs_per_week', form.value.hrs_per_week);
      
     this.subjectService.updateSubject(fd, this.type, this.subject.id) 
       .subscribe({
@@ -578,6 +585,7 @@ export class EditSubject implements OnInit{
   get subject(){
     return this.data.subject
   }
+
 
   onCancel(){    
     this.dialogRef.close(false)
