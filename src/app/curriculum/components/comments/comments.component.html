@@ -24,16 +24,17 @@
         *ngFor="let comment of comments"
         [ngStyle]="{ 'background-color': commentColor }"
       >
-        <mat-card-header>
+        <mat-card-header class="">
           <img
             mat-card-avatar
             src="{{
               'https://www.slarenasitsolutions.com/4iadonis/public_html/index.php/api/profiles/images/' +
                 (comment?.user?.profile?.profile_pic || 'no-image.jpg')
             }}"
+            class="border"
           />
 
-          <mat-card-subtitle>
+          <mat-card-subtitle class="flex-grow-1">
             <span>{{
               comment.user?.profile?.name || "not set his/her name yet"
             }}</span>
@@ -43,9 +44,42 @@
               }}</small>
             </div>
           </mat-card-subtitle>
+          <div
+            class="position-absolute top-0 end-0 pt-3 pe-3"
+            *ngIf="userId == comment.user_id"
+          >
+            <mat-icon (click)="deleteComment(comment.id)">delete</mat-icon>
+            <mat-icon (click)="clickEditComment(comment.id)">edit</mat-icon>
+          </div>
         </mat-card-header>
         <mat-card-content class="mt-2">
-          <p>{{ comment.body }}</p>
+          <p *ngIf="!isShowForm(comment.id)">{{ comment.body }}</p>
+          <form
+            action=""
+            *ngIf="isShowForm(comment.id)"
+            #commentForm="ngForm"
+            (ngSubmit)="editComment(comment.id, commentForm)"
+          >
+            <textarea
+              name="body"
+              id=""
+              cols="29"
+              rows="3"
+              [ngModel]="comment.body"
+              >{{ comment.body }}</textarea
+            >
+            <button type="submit" mat-flat-button color="primary" class="me-2">
+              Confirm
+            </button>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              (click)="clickCancelComment(comment.id)"
+            >
+              Cancel
+            </button>
+          </form>
         </mat-card-content>
       </mat-card>
     </div>

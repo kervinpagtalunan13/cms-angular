@@ -2,7 +2,7 @@
   <header class="d-flex justify-content-between align-items-center">
     <span class="h3">Accounts</span>
     <div class="d-flex align-items-center gap-2">
-      <div class="input-group flex-nowrap">
+      <div class="input-group flex-nowrap" *ngIf="selectedTabIndex == 0">
         <span class="input-group-text" id="addon-wrapping">
           <mat-icon>search</mat-icon>
         </span>
@@ -15,9 +15,35 @@
           aria-describedby="addon-wrapping"
         />
       </div>
+      <div class="input-group flex-nowrap" *ngIf="selectedTabIndex == 1">
+        <span class="input-group-text" id="addon-wrapping">
+          <mat-icon>search</mat-icon>
+        </span>
+        <input
+          type="text"
+          class="form-control shadow-none"
+          placeholder="Search here..."
+          aria-label="Username"
+          [(ngModel)]="inactiveUsersFilter"
+          aria-describedby="addon-wrapping"
+        />
+      </div>
+      <div class="input-group flex-nowrap" *ngIf="selectedTabIndex == 2">
+        <span class="input-group-text" id="addon-wrapping">
+          <mat-icon>search</mat-icon>
+        </span>
+        <input
+          type="text"
+          class="form-control shadow-none"
+          placeholder="Search here..."
+          aria-label="Username"
+          [(ngModel)]="pendingUsersFilter"
+          aria-describedby="addon-wrapping"
+        />
+      </div>
     </div>
   </header>
-  <mat-tab-group>
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Active">
       <app-empty-state
         name="active Users"
@@ -101,6 +127,67 @@
         message="once admins move an user to inactive, you'll see it here"
         *ngIf="!inactiveUsers.length"
       ></app-empty-state>
+      <table class="table-bordered mt-2">
+        <tbody>
+          <tr *ngFor="let user of filteredInactiveUsers()" class="border-0">
+            <td
+              scope="row"
+              class="d-flex align-items-center justify-content-between border my-1"
+              style="border-left: 5px solid #d05834 !important; width: 100%"
+            >
+              <div class="float-left d-flex p-3 flex-column">
+                <div class="d-inline-flex">
+                  <div
+                    class="rounded-circle me-3"
+                    style="
+                      width: 70px;
+                      height: 70px;
+                      background-position: center;
+                      background-repeat: no-repeat;
+                      background-size: cover;
+                      background-image: url('{{
+                      baseUrl +
+                        'profiles/images/' +
+                        (user?.profile?.profile_pic || 'no-image.jpg')
+                    }}');
+                    "
+                  ></div>
+                  <div
+                    class="float-left d-flex p-3 flex-column"
+                    style="font-size: small"
+                  >
+                    <span class="name"
+                      >{{
+                        user?.profile?.name || "not yet set his/her name"
+                      }}
+                      ({{ user?.role | titlecase }})</span
+                    >
+                    <span class="department"
+                      >{{ user?.department?.description }}
+                      <span
+                        style="text-transform: uppercase; font-weight: bold"
+                        *ngIf="user?.department?.department_code"
+                        >({{ user?.department?.department_code }})</span
+                      ></span
+                    >
+                    <span class="email">{{ user.email }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  style="width: 100px; margin-right: 30px"
+                  (click)="viewProfile(user)"
+                >
+                  View
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
@@ -116,7 +203,7 @@
       ></app-empty-state>
       <table>
         <tbody>
-          <tr *ngFor="let user of pendingUsers" class="border-0">
+          <tr *ngFor="let user of filteredPendingUsers()" class="border-0">
             <td
               class="d-flex align-items-center justify-content-between border my-1"
               style="border-left: 5px solid #d05834 !important; width: 100%"

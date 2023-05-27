@@ -39,24 +39,39 @@ export class AccountListComponent2{
   users: User[] = []
   pendingUsers: User[] = []
   inactiveUsers: User[] = []
+  selectedTabIndex = 0
   neededData$ = combineLatest([
     this.accountService.users$,
     this.authService.getCurrentUser(),
     this.authService.currentUser$,
-    this.accountService.registerUser$
+    this.accountService.registerUser$,
+    this.accountService.toggleStatus$
   ]).pipe(
-    tap(([users, userObs, user, registeredUser]) => {
+    tap(([users, userObs, user, registeredUser, toggleStatus]) => {
       this.user = user
       this.role = user?.role
       this.isLoading = false
 
       this.pendingUsers = users.filter(user => !user.is_approved)
-      this.users = users.filter(user => user.is_approved)
+      this.users = users.filter(user => user.status == 'a' && user.is_approved)
+      this.inactiveUsers = users.filter(user => user.status == 'i' && user.is_approved)
       
 
       if(registeredUser){
         if(!(users.map(user => user.id).includes(registeredUser.id))){
           this.users.unshift(registeredUser)
+        }
+      }
+
+      if(toggleStatus){
+        if(toggleStatus.status == 'a'){
+          if(!this.users.find(user => user.id == toggleStatus.id))
+            this.users.unshift(toggleStatus)
+          this.inactiveUsers = this.inactiveUsers.filter(user => user.id != toggleStatus.id)
+        }else{
+          if(!this.inactiveUsers.find(user => user.id == toggleStatus.id))
+            this.inactiveUsers.unshift(toggleStatus)
+          this.users = this.users.filter(user => user.id != toggleStatus.id)
         }
       }
 
@@ -69,8 +84,39 @@ export class AccountListComponent2{
   )
 
   canView(){
-    // return this.role === 'admin'
-    return true
+    return this.role === 'admin'
+    // return true
+  }
+
+  inactiveUsersFilter = ""
+  filteredInactiveUsers(){
+    if(!this.inactiveUsersFilter){
+      return this.inactiveUsers
+    }
+
+    const filter = this.inactiveUsersFilter.toLocaleLowerCase();
+    return this.inactiveUsers.filter(user => {
+      return user.profile?.name.toLocaleLowerCase().includes(filter)||
+      user.department?.description.toLocaleLowerCase().includes(filter)||
+      user.department?.department_code.toLocaleLowerCase().includes(filter)||
+      user.email.toLocaleLowerCase().includes(filter)||
+      user.role.toLocaleLowerCase().includes(filter)
+    })
+  }
+
+  pendingUsersFilter = ""
+  filteredPendingUsers(): User[]{
+    if(!this.pendingUsersFilter){
+      return this.pendingUsers
+    }
+
+    const filter = this.pendingUsersFilter.toLocaleLowerCase();
+    return this.pendingUsers.filter(user => {
+      return user.department?.description.toLocaleLowerCase().includes(filter)||
+      user.department?.department_code.toLocaleLowerCase().includes(filter)||
+      user.email.toLocaleLowerCase().includes(filter)||
+      user.role.toLocaleLowerCase().includes(filter)
+    })
   }
 
   approveAccountCreation(userParam: User){

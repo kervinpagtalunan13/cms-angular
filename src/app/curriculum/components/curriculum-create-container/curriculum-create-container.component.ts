@@ -67,6 +67,11 @@ export class CurriculumCreateContainerComponent{
   
   submitted: boolean = false
   submit(subj: any){
+    if(!this.userDeptId){
+      this.toast.showToastError('Creation Failed', `please select a department`)
+      return
+    }
+
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -74,7 +79,7 @@ export class CurriculumCreateContainerComponent{
         message: 'Are you sure you want to create this curriculum?'
       }
     });
-
+    
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const data = {...subj, subjects: {

@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, tap, throwError } from 'rxjs';
 import { AppError } from '../models/app-error';
 import { AuthService } from './auth.service';
 
@@ -16,6 +16,7 @@ export class AccountService {
 
   private baseUrl = this.authService.baseUrl;
   pendingsCount$ = new BehaviorSubject<number>(0);
+  toggleStatus$ = new BehaviorSubject<User | null>(null);
   pendingCount = 0
 
   users$ = this.http.get<User[]>(`${this.baseUrl}users`);
@@ -57,6 +58,7 @@ export class AccountService {
 
   toggleStatus(id: number, data: any){
     return this.http.patch<User>(`${this.baseUrl}users/${id}`, data).pipe(
+      tap(user => this.toggleStatus$.next(user)),
       catchError(this.handleError)
     )
   }

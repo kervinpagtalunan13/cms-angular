@@ -17,7 +17,7 @@ export class CommentService {
   commentSuccess = new Subject();
 
   comments$ = this.http.get<Comment[]>(`${this.baseUrl}comments`).pipe(
-    tap(x => console.log(x)),
+    map(comments => comments.filter(comment => comment.status == 'a')),
     catchError(handleError)
   )
   
@@ -37,5 +37,15 @@ export class CommentService {
     return this.http.post<Comment>(`${this.baseUrl}comments`, data).pipe(
       tap(data => this.commentSuccess.next('success'))
     )
+  }
+
+  editComment(id: number, body: any){
+    return this.http.patch<Comment>(`${this.baseUrl}comments/${id}`, {...body, id: id}).pipe(
+      tap(data => this.commentSuccess.next('success'))
+    )
+  }
+
+  deleteComment(id: number){
+    return this.http.patch<Comment>(`${this.baseUrl}comments/${id}`, {status: 'i', id: id})
   }
 }
